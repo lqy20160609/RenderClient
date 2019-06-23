@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout popMeunView;
     private FrameLayout contentView;
     private CardView cardView;
+    // test
 
     private void initView(){
         popMeunView = (DrawerLayout)findViewById(R.id.drawer_layout);
