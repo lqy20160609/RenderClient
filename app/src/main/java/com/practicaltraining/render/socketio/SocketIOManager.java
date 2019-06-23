@@ -1,15 +1,16 @@
 package com.practicaltraining.render.socketio;
 
 import android.os.AsyncTask;
+import android.util.Base64;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 import com.practicaltraining.render.callbacks.GetPhotoCompleted;
 import com.practicaltraining.render.utils.StaticVar;
 
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -22,28 +23,35 @@ import java.net.Socket;
 public class SocketIOManager {
     private volatile static SocketIOManager socketIOManagerInstance;
     private Socket socket;
-    private static BufferedReader br;
-    private static PrintWriter printWriter;
-    private static String result = "";
-    private static StringBuilder sb = new StringBuilder();
-    private static GetPhotoCompleted finishcallback;
+    private BufferedInputStream bis;
+    private PrintWriter printWriter;
+    private String result = "";
+    private StringBuilder sb = new StringBuilder();
+    private GetPhotoCompleted finishcallback;
 
-    private SocketIOManager() throws IOException {
-        socket = new Socket(StaticVar.serverAddress, StaticVar.serverPort);
-        printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-                socket.getOutputStream(), "UTF-8")), true);
-        br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+    private SocketIOManager() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    socket = new Socket(StaticVar.serverAddress, StaticVar.serverPort);
+                    socket.setKeepAlive(true);
+                    printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+                            socket.getOutputStream(), "UTF-8")), true);
+                    bis = new BufferedInputStream(socket.getInputStream());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
     }
 
     public static SocketIOManager getInstance() {
         if (socketIOManagerInstance == null) {
             synchronized (SocketIOManager.class) {
                 if (socketIOManagerInstance == null) {
-                    try {
-                        socketIOManagerInstance = new SocketIOManager();
-                    }catch (IOException e){
-                        e.printStackTrace();
-                    }
+                    socketIOManagerInstance = new SocketIOManager();
                     return socketIOManagerInstance;
                 }
             }
@@ -60,7 +68,7 @@ public class SocketIOManager {
         mTask.execute();
     }
 
-    private static class GetNewSceneTask extends AsyncTask {
+    private class GetNewSceneTask extends AsyncTask {
         @Override
         protected Object doInBackground(Object[] params) {
             try {
@@ -69,11 +77,20 @@ public class SocketIOManager {
                 json.put("render", 1);
                 json.put("renderType", "Optix");
                 printWriter.println(json.toJSONString());
-                while ((result = br.readLine()) != null) {
+                int s;
+                byte buff[] = new byte[1024];
+                while (bis.read(buff, 0, 1024) != -1) {
+                    result =new String(Base64.decode(buff,Base64.DEFAULT));
                     sb.append(result);
+                    Log.d("lqyDeBug result", result);
+                    if (bis.available() <= 0) {
+                        break;
+                    }
+
                 }
                 return 1;
             } catch (IOException e) {
+                Log.d("lqyDeBug exception", "发送异常");
                 e.printStackTrace();
                 return 0;
             }
@@ -81,7 +98,8 @@ public class SocketIOManager {
 
         @Override
         protected void onPostExecute(Object o) {
-            if (o.equals(1)) {
+            if (o.toString().equals("1")) {
+                Log.d("lqyDeBug onPostExecute", sb.toString());
                 finishcallback.getDataCompleted(sb.toString());
             }
         }
