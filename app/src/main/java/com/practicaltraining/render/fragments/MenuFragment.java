@@ -5,6 +5,7 @@ package com.practicaltraining.render.fragments;
  * 2019.6.22
  * 弹出菜单fragment 用于挂载各种功能实现
  */
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,28 +17,26 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
 import com.practicaltraining.render.R;
 import com.practicaltraining.render.callbacks.GetPhotoCompleted;
 import com.practicaltraining.render.socketio.SocketIOManager;
+import com.practicaltraining.render.utils.StringUtils;
+
+import java.io.IOException;
 
 public class MenuFragment extends Fragment {
     private Button testButton;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.meun_fragment,container,false);
+        View rootView = inflater.inflate(R.layout.meun_fragment, container, false);
         testButton = rootView.findViewById(R.id.testButton);
-        SocketIOManager.getInstance().setFinishcallback(new GetPhotoCompleted() {
-            @Override
-            public void getDataCompleted(String data) {
-                Log.d("lqyDeBug callback",data);
-                Toast.makeText(getActivity(),data,Toast.LENGTH_LONG).show();
-            }
-        });
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SocketIOManager.getInstance().getNewScence();
+                //SocketIOManager.getInstance().getNewScence();
+                SocketIOManager.getInstance().finishcallback.getDataCompleted("111");
             }
         });
         return rootView;

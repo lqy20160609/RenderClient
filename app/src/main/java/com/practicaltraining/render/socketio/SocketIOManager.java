@@ -7,6 +7,7 @@ import android.util.Log;
 import com.alibaba.fastjson.JSONObject;
 import com.practicaltraining.render.callbacks.GetPhotoCompleted;
 import com.practicaltraining.render.utils.StaticVar;
+import com.practicaltraining.render.utils.StringUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
@@ -27,7 +28,7 @@ public class SocketIOManager {
     private PrintWriter printWriter;
     private String result = "";
     private StringBuilder sb = new StringBuilder();
-    private GetPhotoCompleted finishcallback;
+    public GetPhotoCompleted finishcallback;
 
     private SocketIOManager() {
         new Thread(new Runnable() {
@@ -80,13 +81,12 @@ public class SocketIOManager {
                 int s;
                 byte buff[] = new byte[1024];
                 while (bis.read(buff, 0, 1024) != -1) {
-                    result =new String(Base64.decode(buff,Base64.DEFAULT));
-                    sb.append(result);
-                    Log.d("lqyDeBug result", result);
+                    //result =new String(Base64.decode(buff,Base64.DEFAULT));
+                    result=StringUtils.byteToStr(buff);
+                    Log.d("lqyDeBug total address", result+"");
                     if (bis.available() <= 0) {
                         break;
                     }
-
                 }
                 return 1;
             } catch (IOException e) {
