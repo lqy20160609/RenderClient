@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Render</string>
-</resources>
+    <string-array name="mymenu">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    </resources>

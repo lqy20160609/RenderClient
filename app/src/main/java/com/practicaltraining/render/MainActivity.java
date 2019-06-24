@@ -13,12 +13,16 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout popMeunView;
     private FrameLayout contentView;
     private CardView cardView;
+
+    private ListView lis;
     // test
 
     private void initView(){
@@ -37,12 +41,17 @@ public class MainActivity extends AppCompatActivity {
         });
         cardView = (CardView)findViewById(R.id.card_view);
     }
-
+    private void drawMenuList(){
+        ArrayAdapter<CharSequence> adap=ArrayAdapter.createFromResource(getApplicationContext(),R.array.mymenu,R.layout.list_element);
+        lis=(ListView)findViewById(R.id.menulist);
+        lis.setAdapter(adap);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        drawMenuList();//绘制菜单表项
         popMeunView.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
