@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -15,9 +16,11 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.practicaltraining.render.callbacks.GetPhotoCompleted;
@@ -28,9 +31,10 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout popMeunView;
-    private FrameLayout contentView;
+    private ConstraintLayout contentView;
     private CardView cardView;
     private ImageView img;
+    private TextView postest;
     private Bitmap bitmap;
     private String imgAddress;
     // test
@@ -38,10 +42,11 @@ public class MainActivity extends AppCompatActivity {
     private void initView(){
         popMeunView = (DrawerLayout)findViewById(R.id.drawer_layout);
         popMeunView.setScrimColor(Color.TRANSPARENT);
-        contentView = (FrameLayout)findViewById(R.id.content_view);
+        contentView = (ConstraintLayout)findViewById(R.id.content_view);
         img = (ImageView)findViewById(R.id.testImage);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        postest=(TextView)findViewById(R.id.postest);
         getSupportActionBar().setTitle("");
         toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -60,6 +65,51 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         cardView = (CardView)findViewById(R.id.card_view);
+        //接收触控信息
+        img.setOnTouchListener(new View.OnTouchListener() {
+            int mode=0;
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+
+                switch (event.getAction()&MotionEvent.ACTION_MASK){
+                    //action_mask实现多点触控（只能最多识别两个触控点）
+                    case MotionEvent.ACTION_DOWN:
+                        mode=1;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mode=0;
+                        break;
+                    case MotionEvent.ACTION_POINTER_DOWN:
+                        mode+=1;
+                        break;
+                    case MotionEvent.ACTION_POINTER_UP:
+                        mode-=1;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if(mode==1){
+                            postest.setText("You position:("+event.getX()+","+event.getY()+")");
+                        }
+                        if(mode>=2){
+                            postest.setText("You position:("+event.getX(0)+","+event.getY(0)
+                                    +")&("+event.getX(1)+","+event.getY(1)+")");
+                            //methtest.setText("You are scaling:"+spacing(event));
+                        }
+                        break;
+                    default:
+                        postest.setText("Hello!!!");
+                        break;
+                }
+                return true;
+            }
+
+            //其他的功能
+            private float spacing(MotionEvent event){
+                float x=event.getX(0)-event.getX(1);
+                float y=event.getY(0)-event.getY(1);
+                return x*x+y*y;
+            }
+        });
+
     }
 
     @Override
