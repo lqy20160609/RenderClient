@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">Render</string>
-    <string-array name="mymenu">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
+    <string name="testhello">Hello!!!</string>
+    <string name="testmethod">I can tell you the method</string>
     </resources>
