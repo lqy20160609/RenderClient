@@ -13,16 +13,21 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout popMeunView;
     private FrameLayout contentView;
     private CardView cardView;
 
-    private ListView lis;
+    private String[] datas = {"test1","test2","test3","test4","test5"};
+    private ArrayAdapter<String> adapter;
+    private ListView listView;
     // test
 
     private void initView(){
@@ -42,16 +47,31 @@ public class MainActivity extends AppCompatActivity {
         cardView = (CardView)findViewById(R.id.card_view);
     }
     private void drawMenuList(){
-        ArrayAdapter<CharSequence> adap=ArrayAdapter.createFromResource(getApplicationContext(),R.array.mymenu,R.layout.list_element);
-        lis=(ListView)findViewById(R.id.menulist);
-        lis.setAdapter(adap);
+        listView = (ListView) findViewById(R.id.menulist);
+//        初始化适配器
+        adapter = new ArrayAdapter<>(this,android.R.layout.simple_expandable_list_item_1,datas);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                Toast.makeText(getApplicationContext(),"您打开了："+adapter.getItem(i),Toast.LENGTH_SHORT).show();
+            }
+        });
+        /*listView.setOnItemClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });*/
     }
-    @Override
+            @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
         drawMenuList();//绘制菜单表项
+
         popMeunView.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
