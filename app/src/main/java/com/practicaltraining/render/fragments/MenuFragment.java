@@ -19,14 +19,17 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.practicaltraining.render.R;
+import com.practicaltraining.render.callbacks.ChangeCurrentFragment;
 import com.practicaltraining.render.callbacks.GetPhotoCompleted;
+import com.practicaltraining.render.core.FragmentSwitchManager;
 import com.practicaltraining.render.socketio.SocketIOManager;
 import com.practicaltraining.render.utils.StringUtils;
 
 import java.io.IOException;
 
-public class MenuFragment extends Fragment {
+public class MenuFragment extends FatherFragment {
     private Button testButton;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -36,7 +39,10 @@ public class MenuFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //SocketIOManager.getInstance().getNewScence();
-                SocketIOManager.getInstance().finishcallback.getDataCompleted("111");
+                //SocketIOManager.getInstance().finishcallback.getDataCompleted("111");
+                FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
+                        MenuFragment.class.getName(),SettingFragment.class.getName());
+                changeCurrentFragment.changeCurrentFragment(SettingFragment.class.getName());
             }
         });
         return rootView;

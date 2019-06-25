@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +24,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.practicaltraining.render.callbacks.ChangeCurrentFragment;
 import com.practicaltraining.render.callbacks.GetPhotoCompleted;
+import com.practicaltraining.render.core.FragmentSwitchManager;
+import com.practicaltraining.render.fragments.MenuFragment;
+import com.practicaltraining.render.fragments.SettingFragment;
 import com.practicaltraining.render.socketio.SocketIOManager;
 import com.practicaltraining.render.utils.BitmapUtils;
 
@@ -37,7 +42,15 @@ public class MainActivity extends AppCompatActivity {
     private TextView postest;
     private Bitmap bitmap;
     private String imgAddress;
-    // test
+    private MenuFragment menuFragment;
+    private SettingFragment settingFragment;
+    public Fragment currentFragment=null;
+    private ChangeCurrentFragment changeCurrentFragment=new ChangeCurrentFragment() {
+        @Override
+        public void changeCurrentFragment(String newTag) {
+            currentFragment = getSupportFragmentManager().findFragmentByTag(newTag);
+        }
+    };
 
     private void initView(){
         popMeunView = (DrawerLayout)findViewById(R.id.drawer_layout);
@@ -109,7 +122,11 @@ public class MainActivity extends AppCompatActivity {
                 return x*x+y*y;
             }
         });
-
+        menuFragment = new MenuFragment();
+        settingFragment = new SettingFragment();
+        menuFragment.setChangeCurrentFragment(changeCurrentFragment);
+        settingFragment.setChangeCurrentFragment(changeCurrentFragment);
+        //selectfragment  treefragment
     }
 
     @Override
@@ -117,6 +134,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
+                menuFragment,R.id.nav_view);
+        FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
+                settingFragment,R.id.nav_view);
+
+        currentFragment = menuFragment;
         popMeunView.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -138,6 +161,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDrawerOpened(View drawerView) {
+                FragmentSwitchManager.getInstance().switchToNextFragment(getSupportFragmentManager(),
+                        currentFragment,currentFragment,R.id.nav_view);
                 cardView.setRadius(20);
             }
 
@@ -152,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     public int getStatusBarHeight(Context context) {
         int result = 0;
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen",
@@ -161,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return result;
     }
+
     private class GetBitmapTask extends AsyncTask {
         @Override
         protected Object doInBackground(Object[] params) {
