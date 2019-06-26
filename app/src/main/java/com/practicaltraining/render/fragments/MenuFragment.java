@@ -29,12 +29,14 @@ import java.io.IOException;
 
 public class MenuFragment extends FatherFragment {
     private Button testButton;
+    private Button tangButton;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.meun_fragment, container, false);
         testButton = rootView.findViewById(R.id.testButton);
+        tangButton = rootView.findViewById(R.id.tang);
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -45,6 +47,16 @@ public class MenuFragment extends FatherFragment {
                 changeCurrentFragment.changeCurrentFragment(SettingFragment.class.getName());
             }
         });
+
+        tangButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
+                        MenuFragment.class.getName(),ModelsFragment.class.getName());
+                changeCurrentFragment.changeCurrentFragment(ModelsFragment.class.getName());
+            }
+        });
+
         return rootView;
     }
 }
