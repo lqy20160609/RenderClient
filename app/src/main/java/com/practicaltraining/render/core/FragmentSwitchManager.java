@@ -35,6 +35,7 @@ public class FragmentSwitchManager {
     public void addNewFragmentWithOutHide(FragmentManager fragmentManager,Fragment fragment,int container){
         fragmentManager.beginTransaction()
                 .add(container, fragment, fragment.getClass().getName())
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit();
     }
 
@@ -45,7 +46,7 @@ public class FragmentSwitchManager {
             if (!nextFragment.isAdded()) {
                 addNewFragmentWithOutHide(fragmentManager, nextFragment, container);
             } else {
-                transaction.show(nextFragment).commit();
+                transaction.show(nextFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             }
         }else if (currentFragment != nextFragment) {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -53,7 +54,7 @@ public class FragmentSwitchManager {
             if (!nextFragment.isAdded()) {
                 addNewFragmentWithOutHide(fragmentManager, nextFragment, container);
             } else {
-                transaction.show(nextFragment).commit();
+                transaction.show(nextFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
             }
         }else{
             FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -70,7 +71,7 @@ public class FragmentSwitchManager {
         Fragment targetFragment = fragmentManager.findFragmentByTag(targetTag);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.hide(currentFragment);
-        transaction.show(targetFragment).commit();
+        transaction.show(targetFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
     }
 
 }

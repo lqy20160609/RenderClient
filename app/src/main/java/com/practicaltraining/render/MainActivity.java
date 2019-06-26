@@ -29,7 +29,7 @@ import com.practicaltraining.render.fragments.MenuFragment;
 import com.practicaltraining.render.fragments.ModelsFragment;
 import com.practicaltraining.render.fragments.SettingFragment;
 
-import com.practicaltraining.render.socketio.SocketIOManager;
+import com.practicaltraining.render.core.SocketIOManager;
 import com.practicaltraining.render.utils.BitmapUtils;
 
 import java.io.IOException;

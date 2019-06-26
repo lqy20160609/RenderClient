@@ -1,7 +1,6 @@
-package com.practicaltraining.render.socketio;
+package com.practicaltraining.render.core;
 
 import android.os.AsyncTask;
-import android.util.Base64;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
@@ -81,7 +80,6 @@ public class SocketIOManager {
                 int s;
                 byte buff[] = new byte[1024];
                 while (bis.read(buff, 0, 1024) != -1) {
-                    //result =new String(Base64.decode(buff,Base64.DEFAULT));
                     result=StringUtils.byteToStr(buff);
                     Log.d("lqyDeBug total address", result+"");
                     if (bis.available() <= 0) {
@@ -97,11 +95,11 @@ public class SocketIOManager {
         }
 
         @Override
-        protected void onPostExecute(Object o) {
-            if (o.toString().equals("1")) {
-                Log.d("lqyDeBug onPostExecute", sb.toString());
-                finishcallback.getDataCompleted(sb.toString());
-            }
+            protected void onPostExecute(Object o) {
+                if (o.toString().equals("1")) {
+                    Log.d("lqyDeBug onPostExecute", sb.toString());
+                    finishcallback.getDataCompleted(sb.toString());
+                }
         }
     }
 }

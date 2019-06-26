@@ -46,7 +46,7 @@ public class SettingRecyclerViewAdapter extends RecyclerView.Adapter<SettingRecy
     @NonNull
     @Override
     public mViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.settingrecyclerviewitem,parent,false);
+        View mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.settingrecyclerview_item,parent,false);
         return new mViewHolder(mView);
     }
 
