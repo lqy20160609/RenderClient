@@ -16,19 +16,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.practicaltraining.render.callbacks.ChangeCurrentFragment;
 import com.practicaltraining.render.callbacks.GetPhotoCompleted;
+
 import com.practicaltraining.render.core.FragmentSwitchManager;
 import com.practicaltraining.render.fragments.MenuFragment;
+import com.practicaltraining.render.fragments.ModelsFragment;
 import com.practicaltraining.render.fragments.SettingFragment;
+
 import com.practicaltraining.render.socketio.SocketIOManager;
 import com.practicaltraining.render.utils.BitmapUtils;
 
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView postest;
     private Bitmap bitmap;
     private String imgAddress;
+
     private MenuFragment menuFragment;
     private SettingFragment settingFragment;
     public Fragment currentFragment=null;
@@ -51,6 +52,11 @@ public class MainActivity extends AppCompatActivity {
             currentFragment = getSupportFragmentManager().findFragmentByTag(newTag);
         }
     };
+
+    // test
+    //add sth due to Recyclerview
+    private ModelsFragment modelsFragment;
+
 
     private void initView(){
         popMeunView = (DrawerLayout)findViewById(R.id.drawer_layout);
@@ -127,6 +133,9 @@ public class MainActivity extends AppCompatActivity {
         menuFragment.setChangeCurrentFragment(changeCurrentFragment);
         settingFragment.setChangeCurrentFragment(changeCurrentFragment);
         //selectfragment  treefragment
+
+        modelsFragment=new ModelsFragment();
+        modelsFragment.setChangeCurrentFragment(changeCurrentFragment);
     }
 
     @Override
@@ -138,8 +147,11 @@ public class MainActivity extends AppCompatActivity {
                 menuFragment,R.id.nav_view);
         FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
                 settingFragment,R.id.nav_view);
+        FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
+                modelsFragment,R.id.nav_view);//my adding
 
         currentFragment = menuFragment;
+
         popMeunView.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
