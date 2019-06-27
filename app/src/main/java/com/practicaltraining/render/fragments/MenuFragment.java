@@ -19,13 +19,15 @@ import com.practicaltraining.render.core.FragmentSwitchManager;
 public class MenuFragment extends FatherFragment {
     private Button testButton;
     private Button tangButton;
-
+    private Button ssButton;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.meun_fragment, container, false);
         testButton = rootView.findViewById(R.id.testButton);
         tangButton = rootView.findViewById(R.id.tang);
+        ssButton = rootView.findViewById(R.id.ss);
+
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -46,6 +48,15 @@ public class MenuFragment extends FatherFragment {
             }
         });
 
+        ssButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
+                        MenuFragment.class.getName(),TreeFragment.class.getName());
+                changeCurrentFragment.changeCurrentFragment(TreeFragment.class.getName());
+            }
+        });
         return rootView;
+
     }
 }

@@ -32,6 +32,7 @@ import com.practicaltraining.render.fragments.ModelsFragment;
 import com.practicaltraining.render.fragments.SettingFragment;
 
 import com.practicaltraining.render.core.SocketIOManager;
+import com.practicaltraining.render.fragments.TreeFragment;
 import com.practicaltraining.render.utils.BitmapUtils;
 
 import java.io.IOException;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private MenuFragment menuFragment;
     private SettingFragment settingFragment;
     public Fragment currentFragment=null;
+    private TreeFragment treeFragment;
     private ChangeCurrentFragment changeCurrentFragment=new ChangeCurrentFragment() {
         @Override
         public void changeCurrentFragment(String newTag) {
@@ -131,10 +133,12 @@ public class MainActivity extends AppCompatActivity {
         menuFragment = new MenuFragment();
         settingFragment = new SettingFragment();
         modelsFragment=new ModelsFragment();
+        treeFragment = new TreeFragment();
 
         menuFragment.setChangeCurrentFragment(changeCurrentFragment);
         settingFragment.setChangeCurrentFragment(changeCurrentFragment);
         modelsFragment.setChangeCurrentFragment(changeCurrentFragment);
+        treeFragment.setChangeCurrentFragment(changeCurrentFragment);
     }
 
     @Override
@@ -148,7 +152,8 @@ public class MainActivity extends AppCompatActivity {
                 settingFragment,R.id.nav_view);
         FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
                 modelsFragment,R.id.nav_view);//my adding
-
+        FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
+                treeFragment,R.id.nav_view);
         currentFragment = menuFragment;
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
