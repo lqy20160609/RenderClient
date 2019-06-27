@@ -20,7 +20,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.practicaltraining.render.callbacks.ChangeCurrentFragment;
 import com.practicaltraining.render.callbacks.GetPhotoCompleted;
 
@@ -36,13 +38,11 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout popMeunView;
-    private ConstraintLayout contentView;
     private CardView cardView;
     private ImageView img;
     private TextView postest;
     private Bitmap bitmap;
-    private String imgAddress;
-
+    private FloatingActionButton backButton;
     private MenuFragment menuFragment;
     private SettingFragment settingFragment;
     public Fragment currentFragment=null;
@@ -59,13 +59,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void initView(){
-        popMeunView = (DrawerLayout)findViewById(R.id.drawer_layout);
+        popMeunView = findViewById(R.id.drawer_layout);
         popMeunView.setScrimColor(Color.TRANSPARENT);
-        contentView = (ConstraintLayout)findViewById(R.id.content_view);
-        img = (ImageView)findViewById(R.id.testImage);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //contentView = findViewById(R.id.content_view);
+        img = findViewById(R.id.testImage);
+        backButton = findViewById(R.id.nav_back_button);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        postest=(TextView)findViewById(R.id.postest);
+        postest=findViewById(R.id.postest);
         getSupportActionBar().setTitle("");
         toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -77,13 +78,12 @@ public class MainActivity extends AppCompatActivity {
         SocketIOManager.getInstance().setFinishcallback(new GetPhotoCompleted() {
             @Override
             public void getDataCompleted(String data) {
-                imgAddress = data;
-                GetBitmapTask mTask = new GetBitmapTask();
+                GetBitmapTask mTask = new GetBitmapTask(data);
                 mTask.execute();
 
             }
         });
-        cardView = (CardView)findViewById(R.id.card_view);
+        cardView = findViewById(R.id.card_view);
         //接收触控信息
         img.setOnTouchListener(new View.OnTouchListener() {
             int mode=0;
@@ -130,11 +130,10 @@ public class MainActivity extends AppCompatActivity {
         });
         menuFragment = new MenuFragment();
         settingFragment = new SettingFragment();
+        modelsFragment=new ModelsFragment();
+
         menuFragment.setChangeCurrentFragment(changeCurrentFragment);
         settingFragment.setChangeCurrentFragment(changeCurrentFragment);
-        //selectfragment  treefragment
-
-        modelsFragment=new ModelsFragment();
         modelsFragment.setChangeCurrentFragment(changeCurrentFragment);
     }
 
@@ -151,6 +150,20 @@ public class MainActivity extends AppCompatActivity {
                 modelsFragment,R.id.nav_view);//my adding
 
         currentFragment = menuFragment;
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String currentTag = currentFragment.getTag();
+                if (currentTag.equals(SettingFragment.class.getName())){
+                    FragmentSwitchManager.getInstance().switchToNextFragmentByTag(
+                            getSupportFragmentManager(),
+                            currentTag,ModelsFragment.class.getName());
+                    currentFragment = modelsFragment;
+                }else{
+                    popMeunView.closeDrawers();
+                }
+            }
+        });
 
         popMeunView.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
@@ -201,10 +214,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class GetBitmapTask extends AsyncTask {
+        private String imageAddress;
+
+        public GetBitmapTask(String imageAddress) {
+            this.imageAddress = imageAddress;
+        }
+
         @Override
         protected Object doInBackground(Object[] params) {
             try {
-                bitmap = BitmapUtils.getBitmapFromInternet("https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1561340570&di=bdaa21bd775e74987f6e55b5d526e21a&src=http://s7.sinaimg.cn/middle/45b486b8g89ae748c9d06&690");
+                bitmap = BitmapUtils.getBitmapFromInternet(imageAddress);
                 return 1;
             } catch (IOException e) {
                 e.printStackTrace();

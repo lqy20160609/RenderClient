@@ -56,5 +56,7 @@ public class SettingFragment extends FatherFragment {
         data.add(new SettingItem(R.drawable.light,"更改光照"));
         data.add(new SettingItem(R.drawable.texture,"更改纹理"));
         data.add(new SettingItem(R.drawable.color,"更改颜色"));
+        data.add(new SettingItem(R.drawable.addmodel,"添加模型"));
+
     }
 }
