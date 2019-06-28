@@ -64,32 +64,22 @@ public class SocketIOManager {
         this.finishcallback = finishcallback;
     }
 
-    public void getNewScence(float preX,float preY, float currentX, float currentY) {
-        GetNewSceneTask mTask = new GetNewSceneTask(preX,preY,currentX,currentY);
+    public void getNewScence(JSONObject json) {
+        GetNewSceneTask mTask = new GetNewSceneTask(json);
         mTask.execute();
     }
 
     private class GetNewSceneTask extends AsyncTask {
-        private float preX, preY, currentX, currentY;
+        private JSONObject json;
 
-        public GetNewSceneTask(float preX, float preY, float currentX, float currentY) {
-            this.preX = preX;
-            this.preY = preY;
-            this.currentX = currentX;
-            this.currentY = currentY;
+        public GetNewSceneTask(JSONObject json) {
+            this.json = json;
         }
 
         @Override
         protected Object doInBackground(Object[] params) {
             try {
                 sb = new StringBuilder();
-                JSONObject json = new JSONObject();
-                json.put("render", 1);
-                json.put("renderType", "Optix");
-                json.put("preX", preX);
-                json.put("preY", preY);
-                json.put("currentX", currentX);
-                json.put("currentY", currentY);
                 printWriter.println(json.toJSONString());
                 byte buff[] = new byte[1024];
                 while (bis.read(buff, 0, 1024) != -1) {

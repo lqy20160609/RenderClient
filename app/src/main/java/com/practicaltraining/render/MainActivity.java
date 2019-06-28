@@ -4,6 +4,7 @@ package com.practicaltraining.render;
  * 2019.6.22
  * 主界面 使用drawerLayout
  */
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -19,10 +20,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
+
+import com.alibaba.fastjson.JSONObject;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.practicaltraining.render.callbacks.ChangeCurrentFragment;
 import com.practicaltraining.render.callbacks.GetPhotoCompleted;
@@ -40,14 +42,19 @@ import com.practicaltraining.render.views.MySurfaceView;
 
 import java.io.IOException;
 
-import static java.lang.Thread.currentThread;
-
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout popMeunView;
     private CardView cardView;
     private MySurfaceView img;
     private TextView postest;
-    private float preX=-1;
+    private Toolbar toolbar;
+    private RadioGroup rgTrans;
+    private RadioGroup rgAxis;
+    private int currentOpType=-1;
+    private int finalType=-1;
+    //private RadioButton rbTranslate,rbScale,rbRotate,rbAxisX,rbAxisY,rbAxisZ;
+    private float preX=-1,preY=-1;
+    private long startTime,endTime;
     private Bitmap bitmap;
     private FloatingActionButton backButton;
     private MenuFragment menuFragment;
@@ -60,144 +67,89 @@ public class MainActivity extends AppCompatActivity {
             currentFragment = getSupportFragmentManager().findFragmentByTag(newTag);
         }
     };
-
-    // test
-    //add sth due to Recyclerview
     private ModelsFragment modelsFragment;
 
 
     private void initView(){
         popMeunView = findViewById(R.id.drawer_layout);
         popMeunView.setScrimColor(Color.TRANSPARENT);
-        //contentView = findViewById(R.id.content_view);
         img = findViewById(R.id.testImage);
+        rgTrans = findViewById(R.id.rg_trans);
+        rgAxis = findViewById(R.id.rg_axis);
         backButton = findViewById(R.id.nav_back_button);
-        Toolbar toolbar =  findViewById(R.id.toolbar);
+        toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         postest=findViewById(R.id.postest);
         getSupportActionBar().setTitle("");
         toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popMeunView.openDrawer(GravityCompat.START);
-            }
-        });
-        SocketIOManager.getInstance().setFinishcallback(new GetPhotoCompleted() {
-            @Override
-            public void getDataCompleted(String data) {
-                GetBitmapTask mTask = new GetBitmapTask(StaticVar.picServerAddress+data+".jpg");
-                mTask.execute();
-
-            }
-        });
         cardView = findViewById(R.id.card_view);
+
+
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void initListener(){
+        // 设置toolBar监听
+        toolbar.setNavigationOnClickListener(v -> popMeunView.openDrawer(GravityCompat.START));
+        // 设置获取图片回调
+        SocketIOManager.getInstance().setFinishcallback(data -> {
+            GetBitmapTask mTask = new GetBitmapTask(StaticVar.picServerAddress+data+".jpg");
+            mTask.execute();
+
+        });
         //接收触控信息
         img.setOnTouchListener(new View.OnTouchListener() {
             int mode=0;
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                float currentX=event.getX();
-                float currentY=event.getY();
+
                 switch (event.getAction()&MotionEvent.ACTION_MASK){
-                    //action_mask实现多点触控（只能最多识别两个触控点）
                     case MotionEvent.ACTION_DOWN:
                         mode=1;
-                        preX=currentX;
+                        preX=event.getX();
+                        preY=event.getY();
+                        startTime = System.currentTimeMillis();
                         break;
                     case MotionEvent.ACTION_UP:
                         mode=0;
-                        break;
-//                    case MotionEvent.ACTION_POINTER_DOWN:
-//                        mode+=1;
-//                        break;
-//                    case MotionEvent.ACTION_POINTER_UP:
-//                        mode-=1;
-//                        break;
                     case MotionEvent.ACTION_MOVE:
                         if(mode==1){
-                            float newX = currentX-preX;
-                            postest.setText("You position:("+event.getX()+","+event.getY()+")");
-                            if (Math.abs(newX)>=10){
-                                SocketIOManager.getInstance().getNewScence(preX,0,currentX,0);
-                                preX=currentX;
-                                //Log.d("lqyDebug","发送网络请求");
+                            endTime = System.currentTimeMillis();
+                            if (endTime-startTime>=60){
+                                float currentX=event.getX();
+                                float currentY=event.getY();
+                                startTime = System.currentTimeMillis();
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put("operation_type",finalType);
+                                jsonObject.put("para",calLength(finalType,preX,preY,
+                                        currentX,currentY));
+                                SocketIOManager.getInstance().getNewScence(jsonObject);
+                                Log.d("jsonToSend",jsonObject.toJSONString());
+                                preX = currentX;
+                                preY = currentY;
                             }
+
                         }
-//                        if(mode>=2){
-//                            postest.setText("You position:("+event.getX(0)+","+event.getY(0)
-//                                    +")&("+event.getX(1)+","+event.getY(1)+")");
-//                            //methtest.setText("You are scaling:"+spacing(event));
-//                        }
                         break;
                     default:
-                        postest.setText("Hello!!!");
                         break;
                 }
                 return true;
             }
-
-            //其他的功能
-            private float spacing(MotionEvent event){
-                float x=event.getX(0)-event.getX(1);
-                float y=event.getY(0)-event.getY(1);
-                return x*x+y*y;
+        });
+        // 设置返回键监听
+        backButton.setOnClickListener(view -> {
+            String currentTag = currentFragment.getTag();
+            if (currentTag.equals(SettingFragment.class.getName())){
+                FragmentSwitchManager.getInstance().switchToNextFragmentByTag(
+                        getSupportFragmentManager(),
+                        currentTag,ModelsFragment.class.getName());
+                currentFragment = modelsFragment;
+            }else{
+                popMeunView.closeDrawers();
             }
         });
-        menuFragment = new MenuFragment();
-        settingFragment = new SettingFragment();
-        modelsFragment=new ModelsFragment();
-        treeFragment = new TreeFragment();
-
-        menuFragment.setChangeCurrentFragment(changeCurrentFragment);
-        settingFragment.setChangeCurrentFragment(changeCurrentFragment);
-        modelsFragment.setChangeCurrentFragment(changeCurrentFragment);
-        treeFragment.setChangeCurrentFragment(changeCurrentFragment);
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try{
-//                    for (int i=0;i<100;i++){
-//                        currentThread().sleep(70);
-//                        SocketIOManager.getInstance().getNewScence();
-//                    }
-//                }catch (Exception e){
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
-
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        initView();
-        FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
-                menuFragment,R.id.nav_view);
-        FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
-                settingFragment,R.id.nav_view);
-        FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
-                modelsFragment,R.id.nav_view);//my adding
-        FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
-                treeFragment,R.id.nav_view);
-        currentFragment = menuFragment;
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String currentTag = currentFragment.getTag();
-                if (currentTag.equals(SettingFragment.class.getName())){
-                    FragmentSwitchManager.getInstance().switchToNextFragmentByTag(
-                            getSupportFragmentManager(),
-                            currentTag,ModelsFragment.class.getName());
-                    currentFragment = modelsFragment;
-                }else{
-                    popMeunView.closeDrawers();
-                }
-            }
-        });
-
+        // 设置抽屉组件监听以及动画计算
         popMeunView.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -234,6 +186,85 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        // 设置选择操作单选按钮监听
+        rgTrans.setOnCheckedChangeListener((radioGroup, i) -> {
+            switch (i){
+                case R.id.rb_translate:
+                    currentOpType = 0;
+                    rgAxis.setVisibility(View.VISIBLE);
+                    break;
+                case R.id.rb_scale:
+                    currentOpType = 1;
+                    rgAxis.setVisibility(View.INVISIBLE);
+                    break;
+                case R.id.rb_rotate:
+                    currentOpType = 2;
+                    rgAxis.setVisibility(View.VISIBLE);
+                    break;
+            }
+        });
+        // 设置选择坐标轴单选按钮监听
+        rgAxis.setOnCheckedChangeListener((radioGroup, i) -> {
+            switch (i){
+                case R.id.rb_axisX:
+                    if (currentOpType==0){
+                        finalType = 2;
+                    }else if (currentOpType==1){
+                        finalType = 5;
+                    }else if(currentOpType==2){
+                        finalType = 8;
+                    }
+                    break;
+                case R.id.rb_axisY:
+                    if (currentOpType==0){
+                        finalType = 3;
+                    }else if (currentOpType==1){
+                        finalType = 6;
+                    }else if(currentOpType==2){
+                        finalType = 8;
+                    }
+                    break;
+                case R.id.rb_axisZ:
+                    if (currentOpType==0){
+                        finalType = 4;
+                    }else if (currentOpType==1){
+                        finalType = 7;
+                    }else if(currentOpType==2){
+                        finalType = 8;
+                    }
+                    break;
+            }
+        });
+    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        initView();
+        if (savedInstanceState==null){
+            menuFragment = new MenuFragment();
+            settingFragment = new SettingFragment();
+            modelsFragment=new ModelsFragment();
+            treeFragment = new TreeFragment();
+
+            menuFragment.setChangeCurrentFragment(changeCurrentFragment);
+            settingFragment.setChangeCurrentFragment(changeCurrentFragment);
+            modelsFragment.setChangeCurrentFragment(changeCurrentFragment);
+            treeFragment.setChangeCurrentFragment(changeCurrentFragment);
+            FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
+                    menuFragment,R.id.nav_view);
+            FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
+                    settingFragment,R.id.nav_view);
+            FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
+                    modelsFragment,R.id.nav_view);//my adding
+            FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
+                    treeFragment,R.id.nav_view);
+            currentFragment = menuFragment;
+        }else{
+            FragmentSwitchManager.getInstance().switchToNextFragment(getSupportFragmentManager(),
+                    currentFragment,currentFragment,R.id.container);
+        }
+        initListener();
     }
 
     public int getStatusBarHeight(Context context) {
@@ -270,6 +301,46 @@ public class MainActivity extends AppCompatActivity {
                 img.setBitmap(bitmap);
 
             }
+        }
+    }
+    public double calLength(int opType,float x1,float y1,float x2,float y2){
+        float x0=0,y0=0;
+        boolean flag = false;
+        switch (opType){
+            case 2:
+                x0=1;y0=0;
+                flag = true;
+                break;
+            case 3:
+                x0=0;y0=-1;
+                flag = true;
+                break;
+            case 4:
+                x0=-1;y0=1;
+                flag = true;
+                break;
+            case 5:
+                x0=1;y0=0;
+                flag = true;
+                break;
+            case 6:
+                x0=0;y0=-1;
+                flag = true;
+                break;
+            case 7:
+                x0=-1;y0=1;
+                flag = true;
+                break;
+        }
+        if (!flag){
+            return y2-y1;
+        }else{
+
+            double l1 = Math.sqrt(x0*x0+y0*y0);
+            double l2 = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+            double cos = (x0*(x2-x1)+y0*(y2-y1))/(l1*l2);
+            Log.d("lqyDebug COS",cos+"");
+            return cos*l2;
         }
     }
 }
