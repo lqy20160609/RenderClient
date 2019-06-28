@@ -30,6 +30,7 @@ import com.practicaltraining.render.callbacks.ChangeCurrentFragment;
 import com.practicaltraining.render.callbacks.GetPhotoCompleted;
 
 import com.practicaltraining.render.core.FragmentSwitchManager;
+import com.practicaltraining.render.fragments.ColorFragment;
 import com.practicaltraining.render.fragments.MenuFragment;
 import com.practicaltraining.render.fragments.ModelsFragment;
 import com.practicaltraining.render.fragments.SettingFragment;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private SettingFragment settingFragment;
     public Fragment currentFragment=null;
     private TreeFragment treeFragment;
+    private ColorFragment colorFragment;
     private ChangeCurrentFragment changeCurrentFragment=new ChangeCurrentFragment() {
         @Override
         public void changeCurrentFragment(String newTag) {
@@ -246,19 +248,23 @@ public class MainActivity extends AppCompatActivity {
             settingFragment = new SettingFragment();
             modelsFragment=new ModelsFragment();
             treeFragment = new TreeFragment();
+            colorFragment=new ColorFragment();
 
             menuFragment.setChangeCurrentFragment(changeCurrentFragment);
             settingFragment.setChangeCurrentFragment(changeCurrentFragment);
             modelsFragment.setChangeCurrentFragment(changeCurrentFragment);
             treeFragment.setChangeCurrentFragment(changeCurrentFragment);
+            colorFragment.setChangeCurrentFragment(changeCurrentFragment);
             FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
                     menuFragment,R.id.nav_view);
             FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
                     settingFragment,R.id.nav_view);
             FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
-                    modelsFragment,R.id.nav_view);//my adding
+                    modelsFragment,R.id.nav_view);
             FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
                     treeFragment,R.id.nav_view);
+            FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
+                    colorFragment,R.id.nav_view);
             currentFragment = menuFragment;
         }else{
             FragmentSwitchManager.getInstance().switchToNextFragment(getSupportFragmentManager(),
