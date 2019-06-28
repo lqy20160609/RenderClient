@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,14 +35,19 @@ import com.practicaltraining.render.fragments.SettingFragment;
 import com.practicaltraining.render.core.SocketIOManager;
 import com.practicaltraining.render.fragments.TreeFragment;
 import com.practicaltraining.render.utils.BitmapUtils;
+import com.practicaltraining.render.utils.StaticVar;
+import com.practicaltraining.render.views.MySurfaceView;
 
 import java.io.IOException;
+
+import static java.lang.Thread.currentThread;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout popMeunView;
     private CardView cardView;
-    private ImageView img;
+    private MySurfaceView img;
     private TextView postest;
+    private float preX=-1;
     private Bitmap bitmap;
     private FloatingActionButton backButton;
     private MenuFragment menuFragment;
@@ -80,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         SocketIOManager.getInstance().setFinishcallback(new GetPhotoCompleted() {
             @Override
             public void getDataCompleted(String data) {
-                GetBitmapTask mTask = new GetBitmapTask(data);
+                GetBitmapTask mTask = new GetBitmapTask(StaticVar.picServerAddress+data+".jpg");
                 mTask.execute();
 
             }
@@ -91,30 +97,38 @@ public class MainActivity extends AppCompatActivity {
             int mode=0;
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-
+                float currentX=event.getX();
+                float currentY=event.getY();
                 switch (event.getAction()&MotionEvent.ACTION_MASK){
                     //action_mask实现多点触控（只能最多识别两个触控点）
                     case MotionEvent.ACTION_DOWN:
                         mode=1;
+                        preX=currentX;
                         break;
                     case MotionEvent.ACTION_UP:
                         mode=0;
                         break;
-                    case MotionEvent.ACTION_POINTER_DOWN:
-                        mode+=1;
-                        break;
-                    case MotionEvent.ACTION_POINTER_UP:
-                        mode-=1;
-                        break;
+//                    case MotionEvent.ACTION_POINTER_DOWN:
+//                        mode+=1;
+//                        break;
+//                    case MotionEvent.ACTION_POINTER_UP:
+//                        mode-=1;
+//                        break;
                     case MotionEvent.ACTION_MOVE:
                         if(mode==1){
+                            float newX = currentX-preX;
                             postest.setText("You position:("+event.getX()+","+event.getY()+")");
+                            if (Math.abs(newX)>=10){
+                                SocketIOManager.getInstance().getNewScence(preX,0,currentX,0);
+                                preX=currentX;
+                                //Log.d("lqyDebug","发送网络请求");
+                            }
                         }
-                        if(mode>=2){
-                            postest.setText("You position:("+event.getX(0)+","+event.getY(0)
-                                    +")&("+event.getX(1)+","+event.getY(1)+")");
-                            //methtest.setText("You are scaling:"+spacing(event));
-                        }
+//                        if(mode>=2){
+//                            postest.setText("You position:("+event.getX(0)+","+event.getY(0)
+//                                    +")&("+event.getX(1)+","+event.getY(1)+")");
+//                            //methtest.setText("You are scaling:"+spacing(event));
+//                        }
                         break;
                     default:
                         postest.setText("Hello!!!");
@@ -139,6 +153,20 @@ public class MainActivity extends AppCompatActivity {
         settingFragment.setChangeCurrentFragment(changeCurrentFragment);
         modelsFragment.setChangeCurrentFragment(changeCurrentFragment);
         treeFragment.setChangeCurrentFragment(changeCurrentFragment);
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try{
+//                    for (int i=0;i<100;i++){
+//                        currentThread().sleep(70);
+//                        SocketIOManager.getInstance().getNewScence();
+//                    }
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
+
     }
 
     @Override
@@ -228,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Object doInBackground(Object[] params) {
             try {
-                bitmap = BitmapUtils.getBitmapFromInternet(imageAddress);
+                bitmap = BitmapUtils.getBitmapFromInternet("http://"+imageAddress);
                 return 1;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -239,12 +267,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Object o) {
             if (o.toString().equals("1")) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        img.setImageBitmap(bitmap);
-                    }
-                });
+                img.setBitmap(bitmap);
+
             }
         }
     }

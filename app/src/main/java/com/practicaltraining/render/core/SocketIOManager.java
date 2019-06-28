@@ -40,6 +40,7 @@ public class SocketIOManager {
                             socket.getOutputStream(), "UTF-8")), true);
                     bis = new BufferedInputStream(socket.getInputStream());
                 } catch (IOException e) {
+                    Log.d("lqyDebug","连接失败");
                     e.printStackTrace();
                 }
             }
@@ -63,12 +64,21 @@ public class SocketIOManager {
         this.finishcallback = finishcallback;
     }
 
-    public void getNewScence() {
-        GetNewSceneTask mTask = new GetNewSceneTask();
+    public void getNewScence(float preX,float preY, float currentX, float currentY) {
+        GetNewSceneTask mTask = new GetNewSceneTask(preX,preY,currentX,currentY);
         mTask.execute();
     }
 
     private class GetNewSceneTask extends AsyncTask {
+        private float preX, preY, currentX, currentY;
+
+        public GetNewSceneTask(float preX, float preY, float currentX, float currentY) {
+            this.preX = preX;
+            this.preY = preY;
+            this.currentX = currentX;
+            this.currentY = currentY;
+        }
+
         @Override
         protected Object doInBackground(Object[] params) {
             try {
@@ -76,12 +86,16 @@ public class SocketIOManager {
                 JSONObject json = new JSONObject();
                 json.put("render", 1);
                 json.put("renderType", "Optix");
+                json.put("preX", preX);
+                json.put("preY", preY);
+                json.put("currentX", currentX);
+                json.put("currentY", currentY);
                 printWriter.println(json.toJSONString());
-                int s;
                 byte buff[] = new byte[1024];
                 while (bis.read(buff, 0, 1024) != -1) {
                     result=StringUtils.byteToStr(buff);
-                    Log.d("lqyDeBug total address", result+"");
+                    sb.append(result);
+                    Log.d("lqyDeBug pic address", result+"");
                     if (bis.available() <= 0) {
                         break;
                     }
