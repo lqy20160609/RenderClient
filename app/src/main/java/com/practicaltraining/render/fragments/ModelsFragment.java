@@ -7,9 +7,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.practicaltraining.render.R;
 import com.practicaltraining.render.adapters.ModelRecyclerViewAdapter;
+import com.practicaltraining.render.callbacks.OnSettingItemClickListener;
 import com.practicaltraining.render.objects.ModelItem;
 
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ public class ModelsFragment extends FatherFragment {
     private int[] modelImgsId;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View rootView=inflater.inflate(R.layout.resources_fragment,container,false);
+        final View rootView=inflater.inflate(R.layout.resources_fragment,container,false);
         //列表添加数据
         modelNames=new String[]{"0","1","2"};//物体的名字
         modelImgsId=new int[]{R.drawable.ic_launcher_background};//物体缩略图
@@ -36,6 +38,12 @@ public class ModelsFragment extends FatherFragment {
         modelsResources.setLayoutManager(reslayout);
         ModelRecyclerViewAdapter resadap=new ModelRecyclerViewAdapter(modelRes);
         modelsResources.setAdapter(resadap);
+        resadap.setOnSettingItemClickListener(new OnSettingItemClickListener() {
+            @Override
+            public void onSettingItemClick(int position) {
+                Toast.makeText(getContext(),modelRes.get(position).getName(),Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return rootView;
     }

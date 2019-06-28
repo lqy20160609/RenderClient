@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.practicaltraining.render.R;
 import com.practicaltraining.render.adapters.SettingRecyclerViewAdapter;
 import com.practicaltraining.render.callbacks.OnSettingItemClickListener;
+import com.practicaltraining.render.core.FragmentSwitchManager;
 import com.practicaltraining.render.objects.SettingItem;
 
 import java.util.ArrayList;
@@ -45,6 +46,11 @@ public class SettingFragment extends FatherFragment {
             public void onSettingItemClick(int position) {
                 Toast.makeText(getContext(),"点击了"+mAdapter.getItem(position).getDescription(),
                         Toast.LENGTH_LONG).show();
+                if(position==2){
+                    FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
+                            SettingFragment.class.getName(),ColorFragment.class.getName());
+                    changeCurrentFragment.changeCurrentFragment(ColorFragment.class.getName());
+                }
             }
         });
         recyclerView.setAdapter(mAdapter);

@@ -1,5 +1,6 @@
 package com.practicaltraining.render.adapters;
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,8 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.practicaltraining.render.MainActivity;
 import com.practicaltraining.render.R;
+import com.practicaltraining.render.callbacks.OnSettingItemClickListener;
 import com.practicaltraining.render.objects.ModelItem;
 
 import java.util.List;
@@ -30,19 +34,25 @@ public class ModelRecyclerViewAdapter extends RecyclerView.Adapter<ModelRecycler
     }
     @NonNull
     @Override
-    public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.resourcesrecyclerview_item, parent, false);
+    public VH onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
+        //创建组件
+        final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.resourcesrecyclerview_item, parent, false);
+
         return new VH(v);
     }
-
+    private OnSettingItemClickListener onSettingItemClickListener;
+    public void setOnSettingItemClickListener(OnSettingItemClickListener onSettingItemClickListener) {
+        this.onSettingItemClickListener = onSettingItemClickListener;
+    }
     @Override
-    public void onBindViewHolder(@NonNull VH holder, int position) {
+    public void onBindViewHolder(@NonNull VH holder, final int position) {
+        //传递数据
         holder.name.setText(mData.get(position).getName());
         holder.icon.setImageResource(mData.get(position).getId());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 向服务器传递参数返回图片地址
+                onSettingItemClickListener.onSettingItemClick(position);
             }
         });
     }
