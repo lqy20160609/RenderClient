@@ -7,12 +7,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+
+import com.alibaba.fastjson.JSONObject;
 import com.practicaltraining.render.R;
 import com.practicaltraining.render.adapters.ModelRecyclerViewAdapter;
-import com.practicaltraining.render.callbacks.OnSettingItemClickListener;
+import com.practicaltraining.render.core.SocketIOManager;
 import com.practicaltraining.render.objects.ModelItem;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +42,13 @@ public class ModelsFragment extends FatherFragment {
         modelsResources.setLayoutManager(reslayout);
         ModelRecyclerViewAdapter resadap=new ModelRecyclerViewAdapter(modelRes);
         modelsResources.setAdapter(resadap);
-        resadap.setOnSettingItemClickListener(new OnSettingItemClickListener() {
-            @Override
-            public void onSettingItemClick(int position) {
-                Toast.makeText(getContext(),modelRes.get(position).getName(),Toast.LENGTH_SHORT).show();
-            }
+        resadap.setOnSettingItemClickListener(position -> {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("operation_type",0);
+            jsonObject.put("para",position);
+            //SocketIOManager.getInstance().sendParam(jsonObject);
+            changeCurrentFragment.changeCurrentFragment(TreeFragment.class.getName());
+            closeDrawer.onCloseDrawer();
         });
 
         return rootView;

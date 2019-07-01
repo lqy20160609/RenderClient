@@ -66,6 +66,12 @@ public class FragmentSwitchManager {
         }
     }
 
+    public void hideFragmentByTag(FragmentManager fragmentManager,String tag){
+        Fragment currentFragment = fragmentManager.findFragmentByTag(tag);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.hide(currentFragment).commit();
+    }
+
     public void switchToNextFragmentByTag(FragmentManager fragmentManager,String currentTag,String targetTag){
         Fragment currentFragment = fragmentManager.findFragmentByTag(currentTag);
         Fragment targetFragment = fragmentManager.findFragmentByTag(targetTag);

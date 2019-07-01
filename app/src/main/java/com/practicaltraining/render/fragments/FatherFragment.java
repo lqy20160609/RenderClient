@@ -12,9 +12,15 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
 import com.practicaltraining.render.callbacks.ChangeCurrentFragment;
+import com.practicaltraining.render.callbacks.CloseDrawer;
 
 public class FatherFragment extends Fragment {
     ChangeCurrentFragment changeCurrentFragment;
+    CloseDrawer closeDrawer;
+
+    public void setCloseDrawer(CloseDrawer closeDrawer) {
+        this.closeDrawer = closeDrawer;
+    }
 
     public void setChangeCurrentFragment(ChangeCurrentFragment changeCurrentFragment) {
         this.changeCurrentFragment = changeCurrentFragment;
