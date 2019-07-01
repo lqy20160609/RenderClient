@@ -12,6 +12,7 @@ import com.practicaltraining.render.R;
 import com.practicaltraining.render.TreeView.holder.IconTreeItemHolder;
 import com.practicaltraining.render.TreeView.model.TreeNode;
 import com.practicaltraining.render.TreeView.view.AndroidTreeView;
+import com.practicaltraining.render.core.FragmentSwitchManager;
 
 public class TreeFragment extends FatherFragment {
     private AndroidTreeView tView;
@@ -28,9 +29,15 @@ public class TreeFragment extends FatherFragment {
 
         View treeView = inflater.inflate(R.layout.fragment_default, null, false);
         ViewGroup containerView = treeView.findViewById(R.id.container);
-
+        IconTreeItemHolder.setTreeFragToModelFrag(()->{
+            FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
+                    TreeFragment.class.getName(),ModelsFragment.class.getName());
+            changeCurrentFragment.changeCurrentFragment(ModelsFragment.class.getName());
+        });
         TreeNode root = TreeNode.root();
-        TreeNode ObjRoot = new TreeNode(new IconTreeItemHolder.IconTreeItem("Root"));
+        IconTreeItemHolder treeItemHolder = new IconTreeItemHolder(getContext());
+        IconTreeItemHolder.IconTreeItem iconTreeItem = new IconTreeItemHolder.IconTreeItem("Root");
+        TreeNode ObjRoot = new TreeNode(iconTreeItem);
         root.addChild(ObjRoot);
         tView = new AndroidTreeView(getActivity(), root);
         tView.setDefaultAnimation(true);
@@ -51,21 +58,17 @@ public class TreeFragment extends FatherFragment {
 
 
     }
-    private TreeNode.TreeNodeClickListener nodeClickListener = new TreeNode.TreeNodeClickListener() {
-        @Override
-        public void onClick(TreeNode node, Object value) {
-            //IconTreeItemHolder.IconTreeItem item = (IconTreeItemHolder.IconTreeItem) value;
-            //statusBar.setText("Last clicked: " + item.text);
-        }
+    private TreeNode.TreeNodeClickListener nodeClickListener = (node, value) -> {
+        //IconTreeItemHolder.IconTreeItem item = (IconTreeItemHolder.IconTreeItem) value;
+        //statusBar.setText("Last clicked: " + item.text);
     };
     //长按显示所点击的内容
-    private TreeNode.TreeNodeLongClickListener nodeLongClickListener = new TreeNode.TreeNodeLongClickListener() {
-        @Override
-        public boolean onLongClick(TreeNode node, Object value) {
-            IconTreeItemHolder.IconTreeItem item = (IconTreeItemHolder.IconTreeItem) value;
-            Toast.makeText(getActivity(), "Long click: " + item.text, Toast.LENGTH_SHORT).show();
-            return true;
-        }
+    private TreeNode.TreeNodeLongClickListener nodeLongClickListener = (node, value) -> {
+        IconTreeItemHolder.IconTreeItem item = (IconTreeItemHolder.IconTreeItem) value;
+        FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
+                TreeFragment.class.getName(),SettingFragment.class.getName());
+        changeCurrentFragment.changeCurrentFragment(SettingFragment.class.getName());
+        return true;
     };
     //储存信息
     @Override

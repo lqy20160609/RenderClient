@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.github.johnkil.print.PrintView;
 import com.practicaltraining.render.R;
 import com.practicaltraining.render.TreeView.model.TreeNode;
+import com.practicaltraining.render.callbacks.TreeFragToModelFrag;
 
 
 /**
@@ -19,6 +20,11 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
 
     public IconTreeItemHolder(Context context) {
         super(context);
+    }
+    private static TreeFragToModelFrag treeFragToModelFrag;
+
+    public static void setTreeFragToModelFrag(TreeFragToModelFrag s) {
+        treeFragToModelFrag = s;
     }
 
     @Override
@@ -33,20 +39,11 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
 
         arrowView = view.findViewById(R.id.arrow_icon);
 
-        view.findViewById(R.id.btn_addFolder).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TreeNode newObject = new TreeNode(new IconTreeItemHolder.IconTreeItem( "New Object"));
-                getTreeView().addNode(node, newObject);
-            }
+        view.findViewById(R.id.btn_addFolder).setOnClickListener(v -> {
+            treeFragToModelFrag.switchToModel();
         });
 
-        view.findViewById(R.id.btn_delete).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getTreeView().removeNode(node);
-            }
-        });
+        view.findViewById(R.id.btn_delete).setOnClickListener(v -> getTreeView().removeNode(node));
 
         //if My computer
         if (node.getLevel() == 1) {

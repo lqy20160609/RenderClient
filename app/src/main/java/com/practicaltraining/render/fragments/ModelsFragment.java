@@ -24,6 +24,7 @@ public class ModelsFragment extends FatherFragment {
     private List<ModelItem> modelRes=new ArrayList<>();
     private String[] modelNames;
     private int[] modelImgsId;
+    public static int meshCount=0;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         final View rootView=inflater.inflate(R.layout.resources_fragment,container,false);
@@ -46,7 +47,8 @@ public class ModelsFragment extends FatherFragment {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("operation_type",0);
             jsonObject.put("para",position);
-            SocketIOManager.getInstance().sendParam(jsonObject);
+            //SocketIOManager.getInstance().sendParam(jsonObject);
+            meshCount++;
             changeCurrentFragment.changeCurrentFragment(TreeFragment.class.getName());
             closeDrawer.onCloseDrawer();
         });

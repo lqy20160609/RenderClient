@@ -147,12 +147,19 @@ public class MainActivity extends AppCompatActivity {
         backButton.setOnClickListener(view -> {
             String currentTag = currentFragment.getTag();
             if (currentTag.equals(SettingFragment.class.getName())){
-                FragmentSwitchManager.getInstance().switchToNextFragmentByTag(
-                        getSupportFragmentManager(),
-                        currentTag,ModelsFragment.class.getName());
-                currentFragment = modelsFragment;
-            }else{
+                FragmentSwitchManager.getInstance().switchToPreFragmentByTag(getSupportFragmentManager(),
+                        currentTag,TreeFragment.class.getName());
+                currentFragment=treeFragment;
+            }else if (currentTag.equals(TreeFragment.class.getName())){
                 popMeunView.closeDrawers();
+            }else if(currentTag.equals(ModelsFragment.class.getName())){
+                if (ModelsFragment.meshCount==0){
+                    popMeunView.closeDrawers();
+                }else{
+                    FragmentSwitchManager.getInstance().switchToPreFragmentByTag(getSupportFragmentManager(),
+                            currentTag,TreeFragment.class.getName());
+                    currentFragment=treeFragment;
+                }
             }
         });
         // 设置抽屉组件监听以及动画计算
@@ -247,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
             json.put("operation_type",12);
             json.put("viewWidth",imgWidth);
             json.put("viewHeight",imgHeight);
-            SocketIOManager.getInstance().sendParam(json);
+            //SocketIOManager.getInstance().sendParam(json);
         });
         // 向服务器发送屏幕宽高
     }
