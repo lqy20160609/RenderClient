@@ -21,6 +21,7 @@ import java.net.Socket;
  * socket通信管理 单例模式 保持链接 异步发送接收数据
  */
 public class SocketIOManager {
+    private static String TAG = "SocketIOManager";
     private volatile static SocketIOManager socketIOManagerInstance;
     private Socket socket;
     private BufferedInputStream bis;
@@ -30,19 +31,16 @@ public class SocketIOManager {
     public GetPhotoCompleted finishcallback;
 
     private SocketIOManager() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    socket = new Socket(StaticVar.serverAddress, StaticVar.serverPort);
-                    socket.setKeepAlive(true);
-                    printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-                            socket.getOutputStream(), "UTF-8")), true);
-                    bis = new BufferedInputStream(socket.getInputStream());
-                } catch (IOException e) {
-                    Log.d("lqyDebug","连接失败");
-                    e.printStackTrace();
-                }
+        new Thread(()-> {
+            try {
+                socket = new Socket(StaticVar.serverAddress, StaticVar.serverPort);
+                socket.setKeepAlive(true);
+                printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+                        socket.getOutputStream(), "UTF-8")), true);
+                bis = new BufferedInputStream(socket.getInputStream());
+            } catch (IOException e) {
+                Log.d(TAG+" constructor","连接失败");
+                e.printStackTrace();
             }
         }).start();
 
@@ -69,6 +67,11 @@ public class SocketIOManager {
         mTask.execute();
     }
 
+    public void sendParam(JSONObject json){
+        SendParamTask mTask = new SendParamTask(json);
+        mTask.execute();
+    }
+
     private class GetNewSceneTask extends AsyncTask {
         private JSONObject json;
 
@@ -85,14 +88,14 @@ public class SocketIOManager {
                 while (bis.read(buff, 0, 1024) != -1) {
                     result=StringUtils.byteToStr(buff);
                     sb.append(result);
-                    Log.d("lqyDeBug pic address", result+"");
+                    Log.d(TAG+" pic address", result+"");
                     if (bis.available() <= 0) {
                         break;
                     }
                 }
                 return 1;
             } catch (IOException e) {
-                Log.d("lqyDeBug exception", "发送异常");
+                Log.d(TAG, "发送异常");
                 e.printStackTrace();
                 return 0;
             }
@@ -101,9 +104,46 @@ public class SocketIOManager {
         @Override
             protected void onPostExecute(Object o) {
                 if (o.toString().equals("1")) {
-                    Log.d("lqyDeBug onPostExecute", sb.toString());
                     finishcallback.getDataCompleted(sb.toString());
                 }
+        }
+    }
+
+
+    private class SendParamTask extends AsyncTask {
+        private JSONObject json;
+
+        public SendParamTask(JSONObject json) {
+            this.json = json;
+        }
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            try {
+                sb = new StringBuilder();
+                printWriter.println(json.toJSONString());
+                byte buff[] = new byte[1024];
+                while (bis.read(buff, 0, 1024) != -1) {
+                    result=StringUtils.byteToStr(buff);
+                    sb.append(result);
+                    Log.d(TAG+" paramBack", result+"");
+                    if (bis.available() <= 0) {
+                        break;
+                    }
+                }
+                return 1;
+            } catch (IOException e) {
+                Log.d(TAG, "发送异常");
+                e.printStackTrace();
+                return 0;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            if (o.toString().equals("1")) {
+                Log.d(TAG, sb.toString());
+            }
         }
     }
 }

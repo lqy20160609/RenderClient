@@ -41,6 +41,7 @@ public class SettingFragment extends FatherFragment {
         mAdapter.initData(data);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 3, OrientationHelper.VERTICAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
+
         mAdapter.setOnSettingItemClickListener(new OnSettingItemClickListener() {
             @Override
             public void onSettingItemClick(int position) {
@@ -52,7 +53,9 @@ public class SettingFragment extends FatherFragment {
                     changeCurrentFragment.changeCurrentFragment(ColorFragment.class.getName());
                 }
             }
+
         });
+
         recyclerView.setAdapter(mAdapter);
 
         return rootView;

@@ -28,11 +28,11 @@ public class ModelsFragment extends FatherFragment {
         //列表添加数据
         modelNames=new String[]{"0","1","2"};//物体的名字
         modelImgsId=new int[]{R.drawable.ic_launcher_background};//物体缩略图
-        for(int i=0;i<modelNames.length*7;i++){
-            modelRes.add(new ModelItem(modelNames[i%3],modelImgsId[0]));
+        for (String modelName : modelNames) {
+            modelRes.add(new ModelItem(modelName, modelImgsId[0]));
         }
         //设置recyclerlist参数
-        modelsResources=(RecyclerView)rootView.findViewById(R.id.resources);
+        modelsResources=rootView.findViewById(R.id.resources);
         modelsResources.setHasFixedSize(true);
         GridLayoutManager reslayout=new GridLayoutManager(rootView.getContext(),3,
                 OrientationHelper.VERTICAL,false);

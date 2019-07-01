@@ -17,9 +17,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -53,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
     private RadioGroup rgAxis;
     private int currentOpType=-1;
     private int finalType=-1;
-    //private RadioButton rbTranslate,rbScale,rbRotate,rbAxisX,rbAxisY,rbAxisZ;
     private float preX=-1,preY=-1;
     private long startTime,endTime;
     private Bitmap bitmap;
@@ -63,12 +64,7 @@ public class MainActivity extends AppCompatActivity {
     public Fragment currentFragment=null;
     private TreeFragment treeFragment;
     private ColorFragment colorFragment;
-    private ChangeCurrentFragment changeCurrentFragment=new ChangeCurrentFragment() {
-        @Override
-        public void changeCurrentFragment(String newTag) {
-            currentFragment = getSupportFragmentManager().findFragmentByTag(newTag);
-        }
-    };
+    private ChangeCurrentFragment changeCurrentFragment= newTag -> currentFragment = getSupportFragmentManager().findFragmentByTag(newTag);
     private ModelsFragment modelsFragment;
 
 
@@ -85,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
         toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
         cardView = findViewById(R.id.card_view);
-
-
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -117,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_MOVE:
                         if(mode==1){
                             endTime = System.currentTimeMillis();
-                            if (endTime-startTime>=60){
+                            if (endTime-startTime>=50){
                                 float currentX=event.getX();
                                 float currentY=event.getY();
                                 startTime = System.currentTimeMillis();
@@ -129,8 +123,7 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d("jsonToSend",jsonObject.toJSONString());
                                 preX = currentX;
                                 preY = currentY;
-                            }
-
+                           }
                         }
                         break;
                     default:
@@ -237,6 +230,17 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         });
+        // 向服务器发送屏幕宽高
+        WindowManager manager = this.getWindowManager();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        manager.getDefaultDisplay().getMetrics(outMetrics);
+        int width = outMetrics.widthPixels;
+        int height = outMetrics.heightPixels;
+        JSONObject json = new JSONObject();
+        json.put("operation_type",12);
+        json.put("width",width);
+        json.put("height",height);
+        //.getInstance().sendParam(json);
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -341,7 +345,6 @@ public class MainActivity extends AppCompatActivity {
         if (!flag){
             return y2-y1;
         }else{
-
             double l1 = Math.sqrt(x0*x0+y0*y0);
             double l2 = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
             double cos = (x0*(x2-x1)+y0*(y2-y1))/(l1*l2);

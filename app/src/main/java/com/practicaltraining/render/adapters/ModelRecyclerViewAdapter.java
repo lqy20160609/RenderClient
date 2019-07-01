@@ -18,6 +18,12 @@ import com.practicaltraining.render.objects.ModelItem;
 import java.util.List;
 
 public class ModelRecyclerViewAdapter extends RecyclerView.Adapter<ModelRecyclerViewAdapter.VH> {
+    private OnSettingItemClickListener onSettingItemClickListener;
+
+    public void setOnSettingItemClickListener(OnSettingItemClickListener onSettingItemClickListener) {
+        this.onSettingItemClickListener = onSettingItemClickListener;
+    }
+
     public static class VH extends RecyclerView.ViewHolder{
         TextView name;
         ImageView icon;
@@ -39,10 +45,6 @@ public class ModelRecyclerViewAdapter extends RecyclerView.Adapter<ModelRecycler
         final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.resourcesrecyclerview_item, parent, false);
 
         return new VH(v);
-    }
-    private OnSettingItemClickListener onSettingItemClickListener;
-    public void setOnSettingItemClickListener(OnSettingItemClickListener onSettingItemClickListener) {
-        this.onSettingItemClickListener = onSettingItemClickListener;
     }
     @Override
     public void onBindViewHolder(@NonNull VH holder, final int position) {
