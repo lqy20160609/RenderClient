@@ -9,11 +9,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.practicaltraining.render.R;
+import com.practicaltraining.render.callbacks.OnSettingItemClickListener;
 import com.practicaltraining.render.objects.ModelItem;
 
 import java.util.List;
 
 public class ModelRecyclerViewAdapter extends RecyclerView.Adapter<ModelRecyclerViewAdapter.VH> {
+    private OnSettingItemClickListener onSettingItemClickListener;
+
+    public void setOnSettingItemClickListener(OnSettingItemClickListener onSettingItemClickListener) {
+        this.onSettingItemClickListener = onSettingItemClickListener;
+    }
+
     public static class VH extends RecyclerView.ViewHolder{
         TextView name;
         ImageView icon;
@@ -39,11 +46,8 @@ public class ModelRecyclerViewAdapter extends RecyclerView.Adapter<ModelRecycler
     public void onBindViewHolder(@NonNull VH holder, int position) {
         holder.name.setText(mData.get(position).getName());
         holder.icon.setImageResource(mData.get(position).getId());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // 向服务器传递参数返回图片地址
-            }
+        holder.itemView.setOnClickListener(view -> {
+            onSettingItemClickListener.onSettingItemClick(position);
         });
     }
 

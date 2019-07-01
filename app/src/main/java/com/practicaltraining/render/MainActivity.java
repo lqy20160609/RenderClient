@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
                     modelsFragment,R.id.nav_view);//my adding
             FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
                     treeFragment,R.id.nav_view);
-            currentFragment = menuFragment;
+            currentFragment = modelsFragment;
         }else{
             FragmentSwitchManager.getInstance().switchToNextFragment(getSupportFragmentManager(),
                     currentFragment,currentFragment,R.id.container);

@@ -40,13 +40,11 @@ public class SettingFragment extends FatherFragment {
         mAdapter.initData(data);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 3, OrientationHelper.VERTICAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
-        mAdapter.setOnSettingItemClickListener(new OnSettingItemClickListener() {
-            @Override
-            public void onSettingItemClick(int position) {
-                Toast.makeText(getContext(),"点击了"+mAdapter.getItem(position).getDescription(),
-                        Toast.LENGTH_LONG).show();
-            }
+        mAdapter.setOnSettingItemClickListener(position -> {
+            Toast.makeText(getContext(),"点击了"+mAdapter.getItem(position).getDescription(),
+                    Toast.LENGTH_LONG).show();
         });
+
         recyclerView.setAdapter(mAdapter);
 
         return rootView;
