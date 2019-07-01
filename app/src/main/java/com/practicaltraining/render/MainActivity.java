@@ -9,7 +9,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,12 +16,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -135,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                                 jsonObject.put("preY",preY);
                                 jsonObject.put("currentX",currentX);
                                 jsonObject.put("currentY",currentY);
-                                //SocketIOManager.getInstance().getNewScence(jsonObject);
+                                SocketIOManager.getInstance().getNewScence(jsonObject);
                                 preX = currentX;
                                 preY = currentY;
                            }
@@ -249,9 +245,9 @@ public class MainActivity extends AppCompatActivity {
             imgHeight = img.getHeight();
             JSONObject json = new JSONObject();
             json.put("operation_type",12);
-            json.put("width",imgWidth);
-            json.put("height",imgHeight);
-            //SocketIOManager.getInstance().sendParam(json);
+            json.put("viewWidth",imgWidth);
+            json.put("viewHeight",imgHeight);
+            SocketIOManager.getInstance().sendParam(json);
         });
         // 向服务器发送屏幕宽高
     }
@@ -327,7 +323,6 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Object o) {
             if (o.toString().equals("1")) {
                 img.setBitmap(bitmap);
-
             }
         }
     }

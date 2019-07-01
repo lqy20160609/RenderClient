@@ -46,7 +46,7 @@ public class ModelsFragment extends FatherFragment {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("operation_type",0);
             jsonObject.put("para",position);
-            //SocketIOManager.getInstance().sendParam(jsonObject);
+            SocketIOManager.getInstance().sendParam(jsonObject);
             changeCurrentFragment.changeCurrentFragment(TreeFragment.class.getName());
             closeDrawer.onCloseDrawer();
         });

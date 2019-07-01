@@ -66,6 +66,41 @@ public class FragmentSwitchManager {
         }
     }
 
+    public void switchToPreFragment(FragmentManager fragmentManager,Fragment currentFragment,
+                                     Fragment preFragment, int container) {
+        if (currentFragment==null){
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            if (!preFragment.isAdded()) {
+                addNewFragmentWithOutHide(fragmentManager, preFragment, container);
+            } else {
+                transaction.show(preFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).commit();
+            }
+        }else if (currentFragment!=preFragment){
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.hide(currentFragment);
+            if (!preFragment.isAdded()) {
+                addNewFragmentWithOutHide(fragmentManager, preFragment, container);
+            } else {
+                transaction.show(preFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).commit();
+            }
+        }else{
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            if (!currentFragment.isAdded()) {
+                addNewFragmentWithOutHide(fragmentManager, currentFragment, container);
+            } else {
+                transaction.show(currentFragment).commit();
+            }
+        }
+    }
+
+    public void switchToPreFragmentByTag(FragmentManager fragmentManager,String currentTag,String preTag){
+        Fragment currentFragment = fragmentManager.findFragmentByTag(currentTag);
+        Fragment preFragment = fragmentManager.findFragmentByTag(preTag);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.hide(currentFragment);
+        transaction.show(preFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).commit();
+    }
+
     public void hideFragmentByTag(FragmentManager fragmentManager,String tag){
         Fragment currentFragment = fragmentManager.findFragmentByTag(tag);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
