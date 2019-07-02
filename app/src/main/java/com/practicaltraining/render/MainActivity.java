@@ -26,17 +26,14 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.practicaltraining.render.TreeView.model.TreeNode;
 import com.practicaltraining.render.callbacks.ChangeCurrentFragment;
 import com.practicaltraining.render.callbacks.CloseDrawer;
-import com.practicaltraining.render.callbacks.GetPhotoCompleted;
 
 import com.practicaltraining.render.core.FragmentSwitchManager;
 
 import com.practicaltraining.render.fragments.ColorFragment;
 
 
-import com.practicaltraining.render.fragments.MenuFragment;
 import com.practicaltraining.render.fragments.ModelsFragment;
 import com.practicaltraining.render.fragments.SettingFragment;
 
@@ -63,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
     private long startTime, endTime;
     private Bitmap bitmap;
     private FloatingActionButton backButton;
-    private MenuFragment menuFragment;
     private SettingFragment settingFragment;
     public Fragment currentFragment = null;
     private TreeFragment treeFragment;
@@ -272,14 +268,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initView();
         if (savedInstanceState == null) {
-            menuFragment = new MenuFragment();
             settingFragment = new SettingFragment();
             modelsFragment = new ModelsFragment();
             treeFragment = new TreeFragment();
             colorFragment = new ColorFragment();
 
-            menuFragment.setChangeCurrentFragment(changeCurrentFragment);
-            menuFragment.setCloseDrawer(closeDrawer);
             settingFragment.setChangeCurrentFragment(changeCurrentFragment);
             settingFragment.setCloseDrawer(closeDrawer);
             modelsFragment.setChangeCurrentFragment(changeCurrentFragment);
@@ -288,8 +281,6 @@ public class MainActivity extends AppCompatActivity {
             treeFragment.setCloseDrawer(closeDrawer);
             colorFragment.setChangeCurrentFragment(changeCurrentFragment);
             colorFragment.setCloseDrawer(closeDrawer);
-            FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
-                    menuFragment, R.id.nav_view);
             FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
                     settingFragment, R.id.nav_view);
             FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
