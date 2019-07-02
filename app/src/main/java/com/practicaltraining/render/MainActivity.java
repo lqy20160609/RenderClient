@@ -35,7 +35,6 @@ import com.practicaltraining.render.core.FragmentSwitchManager;
 
 import com.practicaltraining.render.fragments.ColorFragment;
 
-import com.practicaltraining.render.fragments.LightFragment;
 
 import com.practicaltraining.render.fragments.MenuFragment;
 import com.practicaltraining.render.fragments.ModelsFragment;
@@ -66,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton backButton;
     private MenuFragment menuFragment;
     private SettingFragment settingFragment;
-    private LightFragment lightFragment;
     public Fragment currentFragment = null;
     private TreeFragment treeFragment;
     private ColorFragment colorFragment;
