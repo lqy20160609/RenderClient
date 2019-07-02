@@ -31,6 +31,10 @@ public class TreeNode {
     private Object mValue;
     private boolean mExpanded;
 
+    public int getmId() {
+        return mId;
+    }
+
     public static TreeNode root() {
         TreeNode root = new TreeNode(null);
         root.setSelectable(false);
@@ -45,14 +49,16 @@ public class TreeNode {
         children = new ArrayList<>();
         mValue = value;
     }
-//添加单个节点
+
+    //添加单个节点
     public TreeNode addChild(TreeNode childNode) {
         childNode.mParent = this;
         childNode.mId = generateId();
         children.add(childNode);
         return this;
     }
-//添加多个子节点
+
+    //添加多个子节点
     public TreeNode addChildren(TreeNode... nodes) {
         for (TreeNode n : nodes) {
             addChild(n);
@@ -66,7 +72,8 @@ public class TreeNode {
         }
         return this;
     }
-//删除子节点
+
+    //删除子节点
     public int deleteChild(TreeNode child) {
         for (int i = 0; i < children.size(); i++) {
             //遍历子节点并删除
@@ -85,15 +92,18 @@ public class TreeNode {
     public int size() {
         return children.size();
     }
-//父节点
+
+    //父节点
     public TreeNode getParent() {
         return mParent;
     }
-//当前id
+
+    //当前id
     public int getId() {
         return mId;
     }
-//是否是叶子（最后一个节点）
+
+    //是否是叶子（最后一个节点）
     public boolean isLeaf() {
         return size() == 0;
     }
@@ -101,24 +111,29 @@ public class TreeNode {
     public Object getValue() {
         return mValue;
     }
-//是否已展开
+
+    //是否已展开
     public boolean isExpanded() {
         return mExpanded;
     }
-//设置展开
+
+    //设置展开
     public TreeNode setExpanded(boolean expanded) {
         mExpanded = expanded;
         return this;
     }
-//设置被选中
+
+    //设置被选中
     public void setSelected(boolean selected) {
         mSelected = selected;
     }
-//是否被选中
+
+    //是否被选中
     public boolean isSelected() {
         return mSelectable && mSelected;
     }
-//设置可否被选中
+
+    //设置可否被选中
     public void setSelectable(boolean selectable) {
         mSelectable = selectable;
     }
@@ -126,7 +141,8 @@ public class TreeNode {
     public boolean isSelectable() {
         return mSelectable;
     }
-//获取路径
+
+    //获取路径
     public String getPath() {
         final StringBuilder path = new StringBuilder();
         TreeNode node = this;
@@ -140,7 +156,7 @@ public class TreeNode {
         return path.toString();
     }
 
-//获取当前层级
+    //获取当前层级
     public int getLevel() {
         int level = 0;
         TreeNode root = this;
@@ -150,7 +166,8 @@ public class TreeNode {
         }
         return level;
     }
-//是否为当前层级最后一个节点
+
+    //是否为当前层级最后一个节点
     public boolean isLastChild() {
         if (!isRoot()) {
             int parentSize = mParent.children.size();
@@ -199,11 +216,13 @@ public class TreeNode {
         }
         return false;
     }
-//判断是否为根节点
+
+    //判断是否为根节点
     public boolean isRoot() {
         return mParent == null;
     }
-//获取根节点
+
+    //获取根节点
     public TreeNode getRoot() {
         TreeNode root = this;
         while (root.mParent != null) {
@@ -211,7 +230,8 @@ public class TreeNode {
         }
         return root;
     }
-//监听器接口
+
+    //监听器接口
     public interface TreeNodeClickListener {
         void onClick(TreeNode node, Object value);
     }
@@ -219,10 +239,11 @@ public class TreeNode {
     public interface TreeNodeLongClickListener {
         boolean onLongClick(TreeNode node, Object value);
     }
-//BaseNodeViewHolder类
+
+    //BaseNodeViewHolder类
     public static abstract class BaseNodeViewHolder<E> {
         protected AndroidTreeView tView;
-        protected TreeNode mNode;
+        public TreeNode mNode;
         private View mView;
         protected int containerStyle;
         protected Context context;
@@ -282,4 +303,6 @@ public class TreeNode {
             // empty
         }
     }
+
+
 }

@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONObject;
 import com.practicaltraining.render.R;
+import com.practicaltraining.render.TreeView.holder.IconTreeItemHolder;
+import com.practicaltraining.render.TreeView.model.TreeNode;
 import com.practicaltraining.render.adapters.ModelRecyclerViewAdapter;
 import com.practicaltraining.render.core.SocketIOManager;
 import com.practicaltraining.render.objects.ModelItem;
@@ -25,6 +27,9 @@ public class ModelsFragment extends FatherFragment {
     private String[] modelNames;
     private int[] modelImgsId;
     public static int meshCount=0;
+    public static String meshName="";
+
+
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         final View rootView=inflater.inflate(R.layout.resources_fragment,container,false);
@@ -49,9 +54,12 @@ public class ModelsFragment extends FatherFragment {
             jsonObject.put("para",position);
             //SocketIOManager.getInstance().sendParam(jsonObject);
             meshCount++;
+            meshName=resadap.getModelItem(position).getName();
             changeCurrentFragment.changeCurrentFragment(TreeFragment.class.getName());
+
             closeDrawer.onCloseDrawer();
         });
+
 
         return rootView;
     }
