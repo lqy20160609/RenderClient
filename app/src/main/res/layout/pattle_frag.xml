@@ -106,7 +106,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/seekBar_b" />
 
-    <EditText
+    <TextView
         android:id="@+id/Text_r"
         android:layout_width="51dp"
         android:layout_height="32dp"
@@ -119,7 +119,7 @@
         app:layout_constraintEnd_toEndOf="@+id/seekBar_r"
         app:layout_constraintTop_toBottomOf="@+id/colorView" />
 
-    <EditText
+    <TextView
         android:id="@+id/Text_g"
         android:layout_width="51dp"
         android:layout_height="32dp"
@@ -131,7 +131,7 @@
         app:layout_constraintEnd_toEndOf="@+id/seekBar_g"
         app:layout_constraintTop_toBottomOf="@+id/Text_r" />
 
-    <EditText
+    <TextView
         android:id="@+id/Text_b"
         android:layout_width="51dp"
         android:layout_height="32dp"
