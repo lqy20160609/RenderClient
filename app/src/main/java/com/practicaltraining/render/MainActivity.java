@@ -153,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
         // 设置返回键监听
         backButton.setOnClickListener(view -> {
             String currentTag = currentFragment.getTag();
-
             if (currentTag.equals(SettingFragment.class.getName())) {
                 FragmentSwitchManager.getInstance().switchToPreFragmentByTag(getSupportFragmentManager(),
                         currentTag, TreeFragment.class.getName());
@@ -161,13 +160,10 @@ public class MainActivity extends AppCompatActivity {
             } else if (currentTag.equals(TreeFragment.class.getName())) {
                 popMeunView.closeDrawers();
             } else if (currentTag.equals(ModelsFragment.class.getName())) {
-                if (ModelsFragment.meshCount == 0) {
-                    popMeunView.closeDrawers();
-                } else {
-                    FragmentSwitchManager.getInstance().switchToPreFragmentByTag(getSupportFragmentManager(),
-                            currentTag, TreeFragment.class.getName());
-                    currentFragment = treeFragment;
-                }
+                StaticVar.node = null;
+                FragmentSwitchManager.getInstance().switchToPreFragmentByTag(getSupportFragmentManager(),
+                        currentTag, TreeFragment.class.getName());
+                currentFragment = treeFragment;
             }
         });
         // 设置抽屉组件监听以及动画计算

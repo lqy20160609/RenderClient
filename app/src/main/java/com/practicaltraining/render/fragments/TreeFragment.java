@@ -28,7 +28,7 @@ public class TreeFragment extends FatherFragment {
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        if (!hidden&&(ModelsFragment.meshCount!=0)) {
+        if (!hidden&&(ModelsFragment.meshCount!=0)&&StaticVar.node!=null) {
             TreeNode tempRoot = StaticVar.node;
             String meshName = ModelsFragment.meshName;
             TreeNode obj = new TreeNode(new IconTreeItemHolder.IconTreeItem(meshName));
