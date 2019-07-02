@@ -22,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.alibaba.fastjson.JSONObject;
@@ -69,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
         FragmentSwitchManager.getInstance().hideFragmentByTag(getSupportFragmentManager(),
                 currentFragment.getTag());
         currentFragment = getSupportFragmentManager().findFragmentByTag(newTag);
-        FragmentSwitchManager.getInstance().switchToNextFragment(getSupportFragmentManager(),
-                currentFragment, currentFragment, R.id.nav_view);
+//        FragmentSwitchManager.getInstance().switchToNextFragment(getSupportFragmentManager(),
+//                currentFragment, currentFragment, R.id.nav_view);
 
     };
     private CloseDrawer closeDrawer = () -> popMeunView.closeDrawers();
@@ -113,6 +114,11 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (event.getAction() & MotionEvent.ACTION_MASK) {
                     case MotionEvent.ACTION_DOWN:
+                        if (finalType==-1){
+                            Toast.makeText(MainActivity.this,
+                                    "请选择操作模式",Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
                         mode = 1;
                         preX = event.getX();
                         preY = event.getY();
@@ -133,7 +139,8 @@ public class MainActivity extends AppCompatActivity {
                                 jsonObject.put("preY", preY);
                                 jsonObject.put("currentX", currentX);
                                 jsonObject.put("currentY", currentY);
-                                //SocketIOManager.getInstance().getNewScence(jsonObject);
+                                Log.d(TAG+"1231",jsonObject.toJSONString());
+                                SocketIOManager.getInstance().getNewScence(jsonObject);
                                 preX = currentX;
                                 preY = currentY;
                             }
@@ -209,11 +216,15 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.rb_scale:
                     currentOpType = 1;
-                    rgAxis.setVisibility(View.INVISIBLE);
+                    rgAxis.setVisibility(View.VISIBLE);
                     break;
                 case R.id.rb_rotate:
                     currentOpType = 2;
                     rgAxis.setVisibility(View.VISIBLE);
+                    break;
+                case R.id.rb_rotateCamera:
+                    finalType = 16;
+                    rgAxis.setVisibility(View.INVISIBLE);
                     break;
             }
         });
@@ -256,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
             json.put("operation_type", 12);
             json.put("viewWidth", imgWidth);
             json.put("viewHeight", imgHeight);
-            //SocketIOManager.getInstance().sendParam(json);
+            SocketIOManager.getInstance().sendParam(json);
         });
         // 向服务器发送屏幕宽高
 

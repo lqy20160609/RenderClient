@@ -11,4 +11,5 @@ public class StaticVar {
     public static String picServerAddress = "211.87.227.71:8080/img/";
     public static short serverPort = 8888;
     public static TreeNode node = null;
+    public static int meshNum = 0;
 }

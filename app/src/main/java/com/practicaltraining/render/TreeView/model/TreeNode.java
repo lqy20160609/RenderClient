@@ -30,6 +30,15 @@ public class TreeNode {
     private TreeNodeLongClickListener mLongClickListener;
     private Object mValue;
     private boolean mExpanded;
+    private int groupId;
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
 
     public int getmId() {
         return mId;

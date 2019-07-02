@@ -2,11 +2,13 @@ package com.practicaltraining.render.fragments;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 
+import com.alibaba.fastjson.JSONObject;
 import com.practicaltraining.render.R;
 import com.practicaltraining.render.TreeView.holder.IconTreeItemHolder;
 import com.practicaltraining.render.TreeView.model.TreeNode;
@@ -17,9 +19,9 @@ import com.practicaltraining.render.utils.StaticVar;
 import java.util.List;
 
 public class TreeFragment extends FatherFragment {
+    private static String TAG="TreeFragment";
     private AndroidTreeView tView;
     TreeNode root = TreeNode.root();
-
 
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
@@ -32,7 +34,16 @@ public class TreeFragment extends FatherFragment {
             TreeNode tempRoot = StaticVar.node;
             String meshName = ModelsFragment.meshName;
             TreeNode obj = new TreeNode(new IconTreeItemHolder.IconTreeItem(meshName));
+            obj.setGroupId(StaticVar.meshNum);
+            StaticVar.meshNum++;
             tView.addNode(tempRoot,obj);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("operation_type", 0);
+            jsonObject.put("parent", tempRoot.getGroupId());
+            jsonObject.put("son", obj.getGroupId());
+            jsonObject.put("meshId", meshName);
+            //SocketIOManager.getInstance().sendParam(jsonObject);
+            Log.d(TAG,jsonObject.toJSONString());
         }
         tView.expandAll();
     }
@@ -60,6 +71,8 @@ public class TreeFragment extends FatherFragment {
 
 
         TreeNode obj = new TreeNode(new IconTreeItemHolder.IconTreeItem("Root"));
+        obj.setGroupId(StaticVar.meshNum);
+        StaticVar.meshNum++;
         root.addChild(obj);
         tView = new AndroidTreeView(getActivity(), root);
 
