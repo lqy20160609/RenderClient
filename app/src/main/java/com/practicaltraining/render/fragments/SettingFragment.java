@@ -1,5 +1,6 @@
 package com.practicaltraining.render.fragments;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -39,7 +40,9 @@ public class SettingFragment extends FatherFragment {
         initData();
         mAdapter = new SettingRecyclerViewAdapter();
         mAdapter.initData(data);
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 3, OrientationHelper.VERTICAL, false);
+        //RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 3, OrientationHelper.VERTICAL, false);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1, OrientationHelper.VERTICAL, false);
+        mLayoutManager.canScrollVertically();
         recyclerView.setLayoutManager(mLayoutManager);
 
         mAdapter.setOnSettingItemClickListener(new OnSettingItemClickListener() {
@@ -48,9 +51,20 @@ public class SettingFragment extends FatherFragment {
                 Toast.makeText(getContext(),"点击了"+mAdapter.getItem(position).getDescription(),
                         Toast.LENGTH_LONG).show();
                 if(position==2){
+                    //FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
+                            //SettingFragment.class.getName(),ColorFragment.class.getName());
+                    //changeCurrentFragment.changeCurrentFragment(ColorFragment.class.getName());
+                    AlertDialog.Builder colorBuilder=new AlertDialog.Builder(getContext());
+                    ColorFragment colorFragment=new ColorFragment();
+                    colorBuilder.setView(colorFragment.onCreateView(inflater,container,savedInstanceState));
+                    colorBuilder.setPositiveButton("OK",((dialogInterface, i) -> {}));
+                    colorBuilder.setNegativeButton("Cancel",((dialogInterface, i) -> {}));
+                    colorBuilder.create().show();
+                }
+                if(position==3){
                     FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
-                            SettingFragment.class.getName(),ColorFragment.class.getName());
-                    changeCurrentFragment.changeCurrentFragment(ColorFragment.class.getName());
+                            SettingFragment.class.getName(),ModelStackFrag.class.getName());
+                    changeCurrentFragment.changeCurrentFragment(ModelStackFrag.class.getName());
                 }
             }
 
