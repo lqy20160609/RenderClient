@@ -10,6 +10,7 @@
         android:layout_width="304dp"
         android:layout_height="28dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="3dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="268dp"
         android:max="255"
@@ -24,7 +25,7 @@
         android:layout_width="304dp"
         android:layout_height="33dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="3dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="40dp"
         android:max="255"
@@ -39,7 +40,7 @@
         android:layout_width="304dp"
         android:layout_height="28dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="2dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:max="255"
@@ -110,8 +111,7 @@
         android:id="@+id/Text_r"
         android:layout_width="51dp"
         android:layout_height="32dp"
-        android:layout_marginTop="52dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="48dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="0"
@@ -123,19 +123,19 @@
         android:id="@+id/Text_g"
         android:layout_width="51dp"
         android:layout_height="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="3dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="0"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="@+id/seekBar_g"
-        app:layout_constraintTop_toBottomOf="@+id/Text_r" />
+        app:layout_constraintTop_toBottomOf="@+id/seekBar_r" />
 
     <TextView
         android:id="@+id/Text_b"
         android:layout_width="51dp"
         android:layout_height="32dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="3dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
         android:inputType="textPersonName"
@@ -143,7 +143,7 @@
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/seekBar_b"
-        app:layout_constraintTop_toBottomOf="@+id/Text_g"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar_g"
         app:layout_constraintVertical_bias="0.0" />
 
 

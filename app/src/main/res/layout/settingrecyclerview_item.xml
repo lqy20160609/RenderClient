@@ -4,12 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="80dp"
-    android:layout_height="110dp">
+    android:layout_height="110dp"
+    android:background="@drawable/selected_color">
 <ImageView
     android:layout_width="80dp"
     android:layout_height="80dp"
     android:id="@+id/setting_item_icon"
     android:src="@mipmap/ic_launcher"/>
+
 
     <TextView
         android:id="@+id/setting_item_description"

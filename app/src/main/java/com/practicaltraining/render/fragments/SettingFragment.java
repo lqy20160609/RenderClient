@@ -36,7 +36,7 @@ public class SettingFragment extends FatherFragment {
         initData();
         mAdapter = new SettingRecyclerViewAdapter();
         mAdapter.initData(data);
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1, OrientationHelper.VERTICAL, false);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 3, OrientationHelper.VERTICAL, false);
         mLayoutManager.canScrollVertically();
         recyclerView.setLayoutManager(mLayoutManager);
 

@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-<android.support.v7.widget.RecyclerView
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/setting_recycler_view"/>
-</android.support.constraint.ConstraintLayout>
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:textAlignment="textStart"
+        android:textSize="30sp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Settings"
+        android:layout_marginLeft="20dp"
+        android:textAlignment="textStart"
+        android:textSize="30sp" />
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginLeft="10dp"
+        android:id="@+id/setting_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

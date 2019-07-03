@@ -70,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
     };
     private CloseDrawer closeDrawer = () -> popMeunView.closeDrawers();
     private ModelsFragment modelsFragment;
-    private int imgWidth, imgHeight;
+    private int imgWidth,imgHeight;
+    //test fragment
 
 
     private void initView() {
@@ -288,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
             treeFragment.setCloseDrawer(closeDrawer);
             colorFragment.setChangeCurrentFragment(changeCurrentFragment);
             colorFragment.setCloseDrawer(closeDrawer);
+
             FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
                     settingFragment, R.id.nav_view);
             FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
@@ -296,10 +298,10 @@ public class MainActivity extends AppCompatActivity {
                     treeFragment, R.id.nav_view);
             FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
                     colorFragment, R.id.nav_view);
+
+//            FragmentSwitchManager.getInstance().switchToNextFragment(getSupportFragmentManager(),
+//                    currentFragment, currentFragment, R.id.container);
             currentFragment = treeFragment;
-        } else {
-            FragmentSwitchManager.getInstance().switchToNextFragment(getSupportFragmentManager(),
-                    currentFragment, currentFragment, R.id.container);
         }
         initListener();
     }
