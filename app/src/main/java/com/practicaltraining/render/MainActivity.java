@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout popMeunView;
     private CardView cardView;
     private MySurfaceView img;
-    private TextView postest;
     private Toolbar toolbar;
     private RadioGroup rgTrans;
     private RadioGroup rgAxis;
@@ -72,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         currentFragment = getSupportFragmentManager().findFragmentByTag(newTag);
 //        FragmentSwitchManager.getInstance().switchToNextFragment(getSupportFragmentManager(),
 //                currentFragment, currentFragment, R.id.nav_view);
-
     };
     private CloseDrawer closeDrawer = () -> popMeunView.closeDrawers();
     private ModelsFragment modelsFragment;
@@ -88,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         backButton = findViewById(R.id.nav_back_button);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        postest = findViewById(R.id.postest);
         getSupportActionBar().setTitle("");
         toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
 
@@ -139,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
                                 jsonObject.put("preY", preY);
                                 jsonObject.put("currentX", currentX);
                                 jsonObject.put("currentY", currentY);
-                                Log.d(TAG+"1231",jsonObject.toJSONString());
                                 SocketIOManager.getInstance().getNewScence(jsonObject);
                                 preX = currentX;
                                 preY = currentY;
@@ -224,6 +220,10 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.rb_rotateCamera:
                     finalType = 16;
+                    rgAxis.setVisibility(View.INVISIBLE);
+                    break;
+                case R.id.rb_scaleCamera:
+                    finalType = 17;
                     rgAxis.setVisibility(View.INVISIBLE);
                     break;
             }

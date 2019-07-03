@@ -14,6 +14,7 @@ import com.practicaltraining.render.TreeView.holder.IconTreeItemHolder;
 import com.practicaltraining.render.TreeView.model.TreeNode;
 import com.practicaltraining.render.TreeView.view.AndroidTreeView;
 import com.practicaltraining.render.core.FragmentSwitchManager;
+import com.practicaltraining.render.core.SocketIOManager;
 import com.practicaltraining.render.utils.StaticVar;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class TreeFragment extends FatherFragment {
             jsonObject.put("parent", tempRoot.getGroupId());
             jsonObject.put("son", obj.getGroupId());
             jsonObject.put("meshId", meshName);
-            //SocketIOManager.getInstance().sendParam(jsonObject);
+            SocketIOManager.getInstance().sendParam(jsonObject);
             Log.d(TAG,jsonObject.toJSONString());
         }
         tView.expandAll();

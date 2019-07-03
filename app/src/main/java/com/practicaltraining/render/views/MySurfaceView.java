@@ -3,6 +3,8 @@ package com.practicaltraining.render.views;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
@@ -19,7 +21,12 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private Bitmap bitmap;
 
     public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
+        int width = bitmap.getWidth();
+        float scale_w = ((float) getWidth()) / width;
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale_w, scale_w);
+        this.bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, bitmap.getHeight(), matrix, true);
+
     }
 
     public MySurfaceView(Context context) {
@@ -77,9 +84,10 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private void draw() {
         try {
             canvas = surfaceHolder.lockCanvas();
+            canvas.drawColor(Color.WHITE);
             //执行具体的绘制操作
             if (bitmap!=null) {
-                canvas.drawBitmap(this.bitmap, 0, 0, mPaint);
+                canvas.drawBitmap(this.bitmap, 0, (getHeight()-bitmap.getHeight())/2, mPaint);
             }
         } catch (Exception e) {
             e.printStackTrace();
