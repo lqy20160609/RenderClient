@@ -21,6 +21,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private Bitmap bitmap;
 
     public void setBitmap(Bitmap bitmap) {
+        if(bitmap==null)return;
         int width = bitmap.getWidth();
         float scale_w = ((float) getWidth()) / width;
         Matrix matrix = new Matrix();

@@ -69,18 +69,26 @@ public class SocketIOManager {
     }
 
     public void getNewScence(JSONObject json) {
-        GetNewSceneTask mTask = new GetNewSceneTask(json);
-        mTask.execute();
+        if (socketIOManagerInstance!=null) {
+            GetNewSceneTask mTask = new GetNewSceneTask(json);
+            mTask.execute();
+        }
     }
 
     public void sendParam(JSONObject json){
-        SendParamTask mTask = new SendParamTask(json);
-        mTask.execute();
+        if (socketIOManagerInstance!=null) {
+
+            SendParamTask mTask = new SendParamTask(json);
+            mTask.execute();
+        }
     }
 
     public void sendParamWithBack(JSONObject json){
-        SendParamWithBackTask mTask = new SendParamWithBackTask(json);
-        mTask.execute();
+        if (socketIOManagerInstance!=null) {
+
+            SendParamWithBackTask mTask = new SendParamWithBackTask(json);
+            mTask.execute();
+        }
     }
 
     private class GetNewSceneTask extends AsyncTask {
@@ -105,7 +113,7 @@ public class SocketIOManager {
                     }
                 }
                 return 1;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 Log.d(TAG, "发送异常");
                 e.printStackTrace();
                 return 0;
@@ -131,8 +139,13 @@ public class SocketIOManager {
         @Override
         protected Object doInBackground(Object[] params) {
             sb = new StringBuilder();
-            printWriter.println(json.toJSONString());
-            return 1;
+            try {
+                printWriter.println(json.toJSONString());
+                return 1;
+            }catch (Exception e){
+                e.printStackTrace();
+                return 0;
+            }
         }
 
         @Override
@@ -164,7 +177,7 @@ public class SocketIOManager {
                     }
                 }
                 return 1;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 Log.d(TAG, "发送异常");
                 e.printStackTrace();
                 return 0;

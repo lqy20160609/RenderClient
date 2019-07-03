@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.practicaltraining.render.R;
@@ -47,16 +48,16 @@ public class TreeFragment extends FatherFragment {
             jsonObject.put("operation_type", 0);
             jsonObject.put("parent", tempRoot.getGroupId());
             jsonObject.put("son", obj.getGroupId());
-            jsonObject.put("meshId", meshName);
-            //SocketIOManager.getInstance().sendParamWithBack(jsonObject);
-//            progressDialog = new Dialog(getContext(),R.style.progress_dialog);
-//            progressDialog.setContentView(R.layout.waitting_dialog);
-//            progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-//            TextView msg = progressDialog.findViewById(R.id.id_tv_loadingmsg);
-//            msg.setText("模型加载中");
-//            progressDialog.show();
-//            progressDialog.setCanceledOnTouchOutside(false);
-//            progressDialog.setCancelable(false);
+            jsonObject.put("meshId", 0);
+            SocketIOManager.getInstance().getNewScence(jsonObject);
+            progressDialog = new Dialog(getContext(),R.style.progress_dialog);
+            progressDialog.setContentView(R.layout.waitting_dialog);
+            progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            TextView msg = progressDialog.findViewById(R.id.id_tv_loadingmsg);
+            msg.setText("模型加载中");
+            progressDialog.show();
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.setCancelable(false);
         }
         tView.expandAll();
     }
@@ -108,7 +109,11 @@ public class TreeFragment extends FatherFragment {
     }
 
     private TreeNode.TreeNodeClickListener nodeClickListener = (node, value) -> {
-
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("operation_type",11);
+        jsonObject.put("groupId",node.getGroupId());
+        SocketIOManager.getInstance().getNewScence(jsonObject);
+        Toast.makeText(getContext(),"选中了"+node.getGroupId(),Toast.LENGTH_SHORT).show();
     };
     //长按显示所点击的内容
     private TreeNode.TreeNodeLongClickListener nodeLongClickListener = (node, value) -> {

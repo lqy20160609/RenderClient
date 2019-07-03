@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
             json.put("operation_type", 12);
             json.put("viewWidth", imgWidth);
             json.put("viewHeight", imgHeight);
-            //SocketIOManager.getInstance().sendParam(json);
+            SocketIOManager.getInstance().sendParam(json);
         });
         // 向服务器发送屏幕宽高
 
