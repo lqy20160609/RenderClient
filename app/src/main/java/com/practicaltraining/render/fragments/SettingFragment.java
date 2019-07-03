@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.Toast;
 
 import com.practicaltraining.render.R;
 import com.practicaltraining.render.adapters.SettingRecyclerViewAdapter;
@@ -41,15 +42,43 @@ public class SettingFragment extends FatherFragment {
         recyclerView.setLayoutManager(mLayoutManager);
 
         mAdapter.setOnSettingItemClickListener(position -> {
-            if(position==2){
-                AlertDialog.Builder colorBuilder=new AlertDialog.Builder(getContext());
-                ColorFragment colorFragment=new ColorFragment();
-                colorBuilder.setView(colorFragment.onCreateView(inflater,container,savedInstanceState));
-                colorBuilder.setPositiveButton("确定",((dialogInterface, i) -> {
-                    // 发送网络请求
-                }));
-                colorBuilder.setNegativeButton("取消",((dialogInterface, i) -> {}));
-                colorBuilder.create().show();
+            Toast.makeText(getContext(),"点击了"+mAdapter.getItem(position).getDescription(),
+                    Toast.LENGTH_LONG).show();
+            switch (position){
+                case 0:
+//                    FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
+//                            SettingFragment.class.getName(),LightFragment.class.getName());
+//                    changeCurrentFragment.changeCurrentFragment(LightFragment.class.getName());
+                    AlertDialog.Builder lightBuilder=new AlertDialog.Builder(getContext());
+                    LightFragment lightColorItem=new LightFragment();
+                    lightBuilder.setView(lightColorItem.onCreateView(inflater,container,savedInstanceState));
+                    lightBuilder.setPositiveButton("确定",((dialogInterface, i) -> {
+                        // 发送网络请求
+                    }));
+                    lightBuilder.setNegativeButton("取消",((dialogInterface, i) -> {
+
+                    }));
+                    lightBuilder.create().show();
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    AlertDialog.Builder colorBuilder=new AlertDialog.Builder(getContext());
+                    ColorFragment colorFragment=new ColorFragment();
+                    colorBuilder.setView(colorFragment.onCreateView(inflater,container,savedInstanceState));
+                    colorBuilder.setPositiveButton("确定",((dialogInterface, i) -> {
+                        // 发送网络请求
+                    }));
+                    colorBuilder.setNegativeButton("取消",((dialogInterface, i) -> {
+
+                    }));
+                    colorBuilder.create().show();
+                    break;
+                case 3:
+                    break;
+                    default:
+                        break;
+
             }
         });
 

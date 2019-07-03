@@ -6,4 +6,6 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorSetting">#dfffa8</color>
     <color name="colorChoseItemHead">#ff7980</color>
+    <color name="anc_replace_circle_color">#ff818283</color>
+    <color name="TEMP">#000</color>
 </resources>

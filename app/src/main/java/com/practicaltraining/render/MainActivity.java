@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +35,8 @@ import com.practicaltraining.render.core.FragmentSwitchManager;
 
 import com.practicaltraining.render.fragments.ColorFragment;
 
+
+import com.practicaltraining.render.fragments.LightFragment;
 
 import com.practicaltraining.render.fragments.ModelsFragment;
 import com.practicaltraining.render.fragments.SettingFragment;
@@ -63,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
     private SettingFragment settingFragment;
     public Fragment currentFragment = null;
     private TreeFragment treeFragment;
-    private ColorFragment colorFragment;
     private ChangeCurrentFragment changeCurrentFragment = newTag -> {
         Log.d(TAG + "lqy", newTag);
         currentFragment = getSupportFragmentManager().findFragmentByTag(newTag);
@@ -280,7 +282,6 @@ public class MainActivity extends AppCompatActivity {
             settingFragment = new SettingFragment();
             modelsFragment = new ModelsFragment();
             treeFragment = new TreeFragment();
-            colorFragment = new ColorFragment();
 
             settingFragment.setChangeCurrentFragment(changeCurrentFragment);
             settingFragment.setCloseDrawer(closeDrawer);
@@ -288,8 +289,6 @@ public class MainActivity extends AppCompatActivity {
             modelsFragment.setCloseDrawer(closeDrawer);
             treeFragment.setChangeCurrentFragment(changeCurrentFragment);
             treeFragment.setCloseDrawer(closeDrawer);
-            colorFragment.setChangeCurrentFragment(changeCurrentFragment);
-            colorFragment.setCloseDrawer(closeDrawer);
 
             FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
                     settingFragment, R.id.nav_view);
@@ -297,11 +296,6 @@ public class MainActivity extends AppCompatActivity {
                     modelsFragment, R.id.nav_view);
             FragmentSwitchManager.getInstance().addNewFragmentWithOutHide(getSupportFragmentManager(),
                     treeFragment, R.id.nav_view);
-            FragmentSwitchManager.getInstance().addNewFragmentWithHide(getSupportFragmentManager(),
-                    colorFragment, R.id.nav_view);
-
-//            FragmentSwitchManager.getInstance().switchToNextFragment(getSupportFragmentManager(),
-//                    currentFragment, currentFragment, R.id.container);
             currentFragment = treeFragment;
         }
         initListener();

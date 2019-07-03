@@ -20,7 +20,6 @@ import com.practicaltraining.render.core.FragmentSwitchManager;
 import com.practicaltraining.render.core.SocketIOManager;
 import com.practicaltraining.render.utils.StaticVar;
 
-import java.util.List;
 
 public class TreeFragment extends FatherFragment {
     private static String TAG="TreeFragment";
