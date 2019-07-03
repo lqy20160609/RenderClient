@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
         backButton.setOnClickListener(view -> {
             String currentTag = currentFragment.getTag();
             if (currentTag.equals(SettingFragment.class.getName())) {
+                StaticVar.node = null;
                 FragmentSwitchManager.getInstance().switchToPreFragmentByTag(getSupportFragmentManager(),
                         currentTag, TreeFragment.class.getName());
                 currentFragment = treeFragment;

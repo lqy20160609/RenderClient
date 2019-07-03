@@ -50,14 +50,14 @@ public class TreeFragment extends FatherFragment {
             jsonObject.put("son", obj.getGroupId());
             jsonObject.put("meshId", meshName);
             //SocketIOManager.getInstance().sendParamWithBack(jsonObject);
-            progressDialog = new Dialog(getContext(),R.style.progress_dialog);
-            progressDialog.setContentView(R.layout.waitting_dialog);
-            progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            TextView msg = progressDialog.findViewById(R.id.id_tv_loadingmsg);
-            msg.setText("模型加载中");
-            progressDialog.show();
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setCancelable(false);
+//            progressDialog = new Dialog(getContext(),R.style.progress_dialog);
+//            progressDialog.setContentView(R.layout.waitting_dialog);
+//            progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+//            TextView msg = progressDialog.findViewById(R.id.id_tv_loadingmsg);
+//            msg.setText("模型加载中");
+//            progressDialog.show();
+//            progressDialog.setCanceledOnTouchOutside(false);
+//            progressDialog.setCancelable(false);
         }
         tView.expandAll();
     }
