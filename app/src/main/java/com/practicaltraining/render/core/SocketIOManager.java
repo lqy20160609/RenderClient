@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
+import com.practicaltraining.render.callbacks.CreatedModelFinished;
 import com.practicaltraining.render.callbacks.GetPhotoCompleted;
 import com.practicaltraining.render.utils.StaticVar;
 import com.practicaltraining.render.utils.StringUtils;
@@ -29,6 +30,11 @@ public class SocketIOManager {
     private String result = "";
     private StringBuilder sb = new StringBuilder();
     public GetPhotoCompleted finishcallback;
+    private CreatedModelFinished createdModelFinished;
+
+    public void setCreatedModelFinished(CreatedModelFinished createdModelFinished) {
+        this.createdModelFinished = createdModelFinished;
+    }
 
     private SocketIOManager() {
         new Thread(()-> {
@@ -69,6 +75,11 @@ public class SocketIOManager {
 
     public void sendParam(JSONObject json){
         SendParamTask mTask = new SendParamTask(json);
+        mTask.execute();
+    }
+
+    public void sendParamWithBack(JSONObject json){
+        SendParamWithBackTask mTask = new SendParamWithBackTask(json);
         mTask.execute();
     }
 
@@ -119,6 +130,27 @@ public class SocketIOManager {
 
         @Override
         protected Object doInBackground(Object[] params) {
+            sb = new StringBuilder();
+            printWriter.println(json.toJSONString());
+            return 1;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            if (o.toString().equals("1")) {
+                Log.d(TAG, sb.toString());
+            }
+        }
+    }
+    private class SendParamWithBackTask extends AsyncTask {
+        private JSONObject json;
+
+        public SendParamWithBackTask(JSONObject json) {
+            this.json = json;
+        }
+
+        @Override
+        protected Object doInBackground(Object[] params) {
             try {
                 sb = new StringBuilder();
                 printWriter.println(json.toJSONString());
@@ -142,7 +174,9 @@ public class SocketIOManager {
         @Override
         protected void onPostExecute(Object o) {
             if (o.toString().equals("1")) {
-                Log.d(TAG, sb.toString());
+                if (sb.toString().equals("finish")){
+                    createdModelFinished.onCreatedFinished();
+                }
             }
         }
     }

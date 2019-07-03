@@ -1,5 +1,7 @@
 package com.practicaltraining.render.fragments;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -7,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.practicaltraining.render.R;
@@ -22,8 +25,8 @@ import java.util.List;
 public class TreeFragment extends FatherFragment {
     private static String TAG="TreeFragment";
     private AndroidTreeView tView;
-    TreeNode root = TreeNode.root();
-
+    private TreeNode root = TreeNode.root();
+    private Dialog progressDialog;
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
         return super.onCreateAnimation(transit, enter, nextAnim);
@@ -32,6 +35,9 @@ public class TreeFragment extends FatherFragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (!hidden&&(ModelsFragment.meshCount!=0)&&StaticVar.node!=null) {
+            SocketIOManager.getInstance().setCreatedModelFinished(()->{
+                progressDialog.dismiss();
+            });
             TreeNode tempRoot = StaticVar.node;
             String meshName = ModelsFragment.meshName;
             TreeNode obj = new TreeNode(new IconTreeItemHolder.IconTreeItem(meshName));
@@ -43,8 +49,15 @@ public class TreeFragment extends FatherFragment {
             jsonObject.put("parent", tempRoot.getGroupId());
             jsonObject.put("son", obj.getGroupId());
             jsonObject.put("meshId", meshName);
-            SocketIOManager.getInstance().sendParam(jsonObject);
-            Log.d(TAG,jsonObject.toJSONString());
+            //SocketIOManager.getInstance().sendParamWithBack(jsonObject);
+            progressDialog = new Dialog(getContext(),R.style.progress_dialog);
+            progressDialog.setContentView(R.layout.waitting_dialog);
+            progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            TextView msg = progressDialog.findViewById(R.id.id_tv_loadingmsg);
+            msg.setText("模型加载中");
+            progressDialog.show();
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.setCancelable(false);
         }
         tView.expandAll();
     }

@@ -8,6 +8,7 @@ package com.practicaltraining.render.fragments;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
@@ -39,9 +40,11 @@ public class FatherFragment extends Fragment {
             }
         } else if (FragmentTransaction.TRANSIT_FRAGMENT_CLOSE == transit) {
             if (enter) {
+                Log.d("lqylqy","enter");
                 animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, -1, Animation.RELATIVE_TO_SELF, 0,
                         Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0);
             } else {
+                Log.d("lqylqy","exit");
                 animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 1,
                         Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0);
             }
