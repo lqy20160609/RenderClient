@@ -124,6 +124,7 @@ public class SocketIOManager {
             protected void onPostExecute(Object o) {
                 if (o.toString().equals("1")) {
                     finishcallback.getDataCompleted(sb.toString());
+                    createdModelFinished.onCreatedFinished();
                 }
         }
     }

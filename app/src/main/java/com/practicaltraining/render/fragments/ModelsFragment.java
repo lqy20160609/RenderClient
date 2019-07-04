@@ -35,7 +35,7 @@ public class ModelsFragment extends FatherFragment {
     private List<ModelItem> modelRes = new ArrayList<>();
     private String[] modelNames;
     private int[] modelImgsId;
-    private int positionClick=-1;
+    private int positionClick = -1;
     public static int meshCount = 0;
     public static String meshName = "";
     Button modelSubmitButton;
@@ -48,7 +48,7 @@ public class ModelsFragment extends FatherFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.resources_fragment, container, false);
         //列表添加数据
-        modelSubmitButton=rootView.findViewById(R.id.modelSubmitButton);
+        modelSubmitButton = rootView.findViewById(R.id.modelSubmitButton);
 
         modelNames = new String[]{"0", "1", "2"};//物体的名字
         modelImgsId = new int[]{R.drawable.ic_launcher_background};//物体缩略图
@@ -65,12 +65,12 @@ public class ModelsFragment extends FatherFragment {
         ModelRecyclerViewAdapter resadap = new ModelRecyclerViewAdapter(modelRes);
         modelsResources.setAdapter(resadap);
         resadap.setOnSettingItemClickListener(position -> {
-            positionClick=position;
+            positionClick = position;
         });
         modelSubmitButton.setOnClickListener(view -> {
-            if (positionClick==-1){
-                Toast.makeText(getContext(),"请先选择一个模型",Toast.LENGTH_SHORT).show();
-            }else {
+            if (positionClick == -1) {
+                Toast.makeText(getContext(), "请先选择一个模型", Toast.LENGTH_SHORT).show();
+            } else {
                 meshCount++;
                 meshName = resadap.getModelItem(positionClick).getName();
                 changeCurrentFragment.changeCurrentFragment(TreeFragment.class.getName());

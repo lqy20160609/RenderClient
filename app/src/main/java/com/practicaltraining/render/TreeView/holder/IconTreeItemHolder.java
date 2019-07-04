@@ -19,6 +19,7 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
     public IconTreeItemHolder(Context context) {
         super(context);
     }
+
     private static TreeFragToModelFrag treeFragToModelFrag;
 
     public static void setTreeFragToModelFrag(TreeFragToModelFrag s) {
@@ -59,7 +60,7 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
         public String text;
 
 
-        public IconTreeItem( String text) {
+        public IconTreeItem(String text) {
             this.text = text;
         }
 
