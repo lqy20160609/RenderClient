@@ -36,7 +36,9 @@ public class TreeFragment extends FatherFragment {
     public void onHiddenChanged(boolean hidden) {
         if (!hidden&&(ModelsFragment.meshCount!=0)&&StaticVar.node!=null) {
             SocketIOManager.getInstance().setCreatedModelFinished(()->{
-                progressDialog.dismiss();
+                if (progressDialog!=null) {
+                    progressDialog.dismiss();
+                }
             });
             TreeNode tempRoot = StaticVar.node;
             String meshName = ModelsFragment.meshName;
