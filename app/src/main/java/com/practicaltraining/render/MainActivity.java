@@ -10,6 +10,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,6 +22,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,8 +54,9 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
     private String TAG = "MainActivity";
     private DrawerLayout popMeunView;
+    private RadioButton wholeScale;
     private CardView cardView;
-    private MySurfaceView img;
+    private static MySurfaceView img;
     private Toolbar toolbar;
     private RadioGroup rgTrans;
     private RadioGroup rgAxis;
@@ -62,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private float preX = -1, preY = -1;
     private int index1=-1,index2=-1;
     private long startTime, endTime;
-    private Bitmap bitmap;
+    private static Bitmap bitmap;
     private FloatingActionButton backButton;
     private SettingFragment settingFragment;
     public Fragment currentFragment = null;
@@ -83,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         img = findViewById(R.id.testImage);
         rgTrans = findViewById(R.id.rg_trans);
         rgAxis = findViewById(R.id.rg_axis);
+        wholeScale = findViewById(R.id.rb_wholeScale);
         backButton = findViewById(R.id.nav_back_button);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -100,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
         SocketIOManager.getInstance().setFinishcallback(data -> {
             GetBitmapTask mTask = new GetBitmapTask(StaticVar.picServerAddress + data + ".jpg");
             mTask.execute();
-
         });
         //接收触控信息
         img.setOnTouchListener(new View.OnTouchListener() {
@@ -170,21 +173,20 @@ public class MainActivity extends AppCompatActivity {
         popMeunView.addDrawerListener(new DrawerLayout.DrawerListener() {
 
             @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
                 View mContent = popMeunView.getChildAt(0);
-                View mMenu = drawerView;
                 float scale = 1 - slideOffset;
                 float rightScale = 0.8f + scale * 0.2f;
                 float leftScale = 0.5f + slideOffset * 0.5f;
-                mMenu.setAlpha(leftScale);
-                mMenu.setScaleX(leftScale);
-                mMenu.setScaleY(leftScale);
-                mMenu.setPadding(0, getStatusBarHeight(MainActivity.this), 0, 0);
+                drawerView.setAlpha(leftScale);
+                drawerView.setScaleX(leftScale);
+                drawerView.setScaleY(leftScale);
+                drawerView.setPadding(0, getStatusBarHeight(MainActivity.this), 0, 0);
                 mContent.setPivotX(0);
                 mContent.setPivotY(mContent.getHeight() * 1 / 2);
                 mContent.setScaleX(rightScale);
                 mContent.setScaleY(rightScale);
-                mContent.setTranslationX(mMenu.getWidth() * slideOffset);
+                mContent.setTranslationX(drawerView.getWidth() * slideOffset);
             }
 
             @Override
@@ -211,26 +213,31 @@ public class MainActivity extends AppCompatActivity {
                     index1 = 0;
                     finalType = getCurrentOpType();
                     rgAxis.setVisibility(View.VISIBLE);
+                    wholeScale.setVisibility(View.INVISIBLE);
                     break;
                 case R.id.rb_scale:
                     index1 = 1;
                     finalType = getCurrentOpType();
                     rgAxis.setVisibility(View.VISIBLE);
+                    wholeScale.setVisibility(View.VISIBLE);
                     break;
                 case R.id.rb_rotate:
                     index1 = 2;
                     finalType = getCurrentOpType();
                     rgAxis.setVisibility(View.VISIBLE);
+                    wholeScale.setVisibility(View.INVISIBLE);
                     break;
                 case R.id.rb_rotateCamera:
                     index1 = 3;
                     finalType = getCurrentOpType();
                     rgAxis.setVisibility(View.INVISIBLE);
+                    wholeScale.setVisibility(View.INVISIBLE);
                     break;
                 case R.id.rb_scaleCamera:
                     index1 = 4;
                     finalType = getCurrentOpType();
                     rgAxis.setVisibility(View.INVISIBLE);
+                    wholeScale.setVisibility(View.INVISIBLE);
                     break;
             }
         });
@@ -247,6 +254,10 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.rb_axisZ:
                     index2=2;
+                    finalType = getCurrentOpType();
+                    break;
+                case R.id.rb_wholeScale:
+                    index2=3;
                     finalType = getCurrentOpType();
                     break;
             }
@@ -284,6 +295,8 @@ public class MainActivity extends AppCompatActivity {
                         return 9;
                     case 2:
                         return 10;
+                    case 3:
+                        return 19;
                 }
                 break;
             case 2:
@@ -358,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
-    private class GetBitmapTask extends AsyncTask {
+    private static class GetBitmapTask extends AsyncTask {
         private String imageAddress;
 
         public GetBitmapTask(String imageAddress) {

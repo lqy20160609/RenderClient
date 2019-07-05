@@ -8,7 +8,9 @@ import com.practicaltraining.render.TreeView.model.TreeNode;
  */
 public class StaticVar {
     public static String serverAddress = "211.87.227.71";
-    public static String picServerAddress = "211.87.227.71:8080/img/";
+    //public static String serverAddress = "192.168.43.60";
+    //public static String serverAddress = "10.27.219.145";
+    public static String picServerAddress = serverAddress+":8080/img/";
     public static short serverPort = 8888;
     public static TreeNode node = null;
     public static int meshNum = 0;

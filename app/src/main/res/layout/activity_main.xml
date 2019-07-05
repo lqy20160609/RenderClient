@@ -103,6 +103,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="z轴" />
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rb_wholeScale"
+                    android:text="整体"
+                    android:visibility="invisible"/>
             </RadioGroup>
 
 </android.support.constraint.ConstraintLayout>
