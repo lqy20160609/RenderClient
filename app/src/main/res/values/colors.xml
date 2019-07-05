@@ -7,5 +7,17 @@
     <color name="colorSetting">#dfffa8</color>
     <color name="colorChoseItemHead">#ff7980</color>
     <color name="anc_replace_circle_color">#ff818283</color>
+
+
+    <color name="primary">#E43F3F</color>
     <color name="TEMP">#000</color>
+    <color name="black">#000000</color>
+    <color name="jet">#222222</color>
+    <color name="oil">#333333</color>
+    <color name="monsoon">#777777</color>
+    <color name="jumbo">#888888</color>
+    <color name="aluminum">#999999</color>
+    <color name="base">#AAAAAA</color>
+    <color name="iron">#CCCCCC</color>
+    <color name="white">#FFFFFF</color>
 </resources>

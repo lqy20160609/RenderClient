@@ -40,4 +40,5 @@ dependencies {
     implementation 'com.github.johnkil.print:print:1.2.2'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.getbase:floatingactionbutton:1.10.1'
+    implementation 'com.android.support:design:27.1.1'
 }
