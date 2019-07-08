@@ -120,6 +120,7 @@ public class TreeFragment extends FatherFragment {
     //长按显示所点击的内容
     private TreeNode.TreeNodeLongClickListener nodeLongClickListener = (node, value) -> {
         IconTreeItemHolder.IconTreeItem item = (IconTreeItemHolder.IconTreeItem) value;
+        StaticVar.currentItemId = node.getGroupId();
         FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
                 TreeFragment.class.getName(), SettingFragment.class.getName());
         changeCurrentFragment.changeCurrentFragment(SettingFragment.class.getName());

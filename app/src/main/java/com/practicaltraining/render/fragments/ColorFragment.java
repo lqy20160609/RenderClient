@@ -13,6 +13,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.practicaltraining.render.R;
+import com.practicaltraining.render.utils.StaticVar;
 
 public class ColorFragment extends FatherFragment{
     ImageView currentImg;
@@ -47,6 +48,7 @@ public class ColorFragment extends FatherFragment{
                 //b=true,表示用户使seekbar数值变化,否则是seekbar自己在变化
                 currentImg.setColorFilter(Color.rgb(i,color_g.getProgress(),color_b.getProgress()));
                 text_r.setText(String.valueOf(i));
+                StaticVar.colorR = i;
             }
 
             @Override
@@ -64,6 +66,7 @@ public class ColorFragment extends FatherFragment{
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 currentImg.setColorFilter(Color.rgb(color_r.getProgress(),i,color_b.getProgress()));
                 text_g.setText(String.valueOf(i));
+                StaticVar.colorG = i;
             }
 
             @Override
@@ -81,6 +84,7 @@ public class ColorFragment extends FatherFragment{
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 currentImg.setColorFilter(Color.rgb(color_r.getProgress(),color_g.getProgress(),i));
                 text_b.setText(String.valueOf(i));
+                StaticVar.colorB = i;
             }
 
             @Override

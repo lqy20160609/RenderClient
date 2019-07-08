@@ -13,9 +13,13 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.practicaltraining.render.R;
 import com.practicaltraining.render.adapters.SettingRecyclerViewAdapter;
+import com.practicaltraining.render.core.SocketIOManager;
 import com.practicaltraining.render.objects.SettingItem;
+import com.practicaltraining.render.utils.StaticVar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +58,7 @@ public class SettingFragment extends FatherFragment {
                     lightBuilder.setView(lightColorItem.onCreateView(inflater,container,savedInstanceState));
                     lightBuilder.setPositiveButton("确定",((dialogInterface, i) -> {
                         // 发送网络请求
+
                     }));
                     lightBuilder.setNegativeButton("取消",((dialogInterface, i) -> {
 
@@ -68,6 +73,13 @@ public class SettingFragment extends FatherFragment {
                     colorBuilder.setView(colorFragment.onCreateView(inflater,container,savedInstanceState));
                     colorBuilder.setPositiveButton("确定",((dialogInterface, i) -> {
                         // 发送网络请求
+                        JSONObject json = new JSONObject();
+                        json.put("operation_type",15);
+                        json.put("R",StaticVar.colorR);
+                        json.put("G",StaticVar.colorG);
+                        json.put("B",StaticVar.colorB);
+                        json.put("groupId",StaticVar.currentItemId);
+                        SocketIOManager.getInstance().getNewScence(json);
                     }));
                     colorBuilder.setNegativeButton("取消",((dialogInterface, i) -> {
 
