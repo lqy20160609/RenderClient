@@ -26,6 +26,16 @@
                 android:layout_height="wrap_content"
                 android:fitsSystemWindows="true" />
 
+            <TextView
+                android:id="@+id/main_fps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="fps:20"
+                android:textColor="@color/primary"
+                android:gravity="right"
+                app:layout_constraintBottom_toTopOf="@+id/testImage"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
             <com.practicaltraining.render.views.MySurfaceView
                 android:id="@+id/testImage"
                 android:layout_width="0dp"

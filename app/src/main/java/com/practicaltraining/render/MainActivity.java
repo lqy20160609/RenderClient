@@ -50,6 +50,8 @@ import com.practicaltraining.render.utils.StaticVar;
 import com.practicaltraining.render.views.MySurfaceView;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
     private String TAG = "MainActivity";
@@ -61,22 +63,24 @@ public class MainActivity extends AppCompatActivity {
     private RadioGroup rgTrans;
     private RadioGroup rgAxis;
     private int currentOpType = -1;
+    private TextView fpsText;
     private int finalType = -1;
     private float preX = -1, preY = -1;
-    private int index1=-1,index2=-1;
+    private int index1 = -1, index2 = -1;
     private long startTime, endTime;
     private static Bitmap bitmap;
     private FloatingActionButton backButton;
     private SettingFragment settingFragment;
     public Fragment currentFragment = null;
     private TreeFragment treeFragment;
+    private float currentX, currentY;
     private ChangeCurrentFragment changeCurrentFragment = newTag -> {
         Log.d(TAG + "lqy", newTag);
         currentFragment = getSupportFragmentManager().findFragmentByTag(newTag);
     };
     private CloseDrawer closeDrawer = () -> popMeunView.closeDrawers();
     private ModelsFragment modelsFragment;
-    private int imgWidth,imgHeight;
+    private int imgWidth, imgHeight;
     //test fragment
 
 
@@ -84,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         popMeunView = findViewById(R.id.drawer_layout);
         popMeunView.setScrimColor(Color.TRANSPARENT);
         img = findViewById(R.id.testImage);
+        fpsText = findViewById(R.id.main_fps);
         rgTrans = findViewById(R.id.rg_trans);
         rgAxis = findViewById(R.id.rg_axis);
         wholeScale = findViewById(R.id.rb_wholeScale);
@@ -114,9 +119,9 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (event.getAction() & MotionEvent.ACTION_MASK) {
                     case MotionEvent.ACTION_DOWN:
-                        if (finalType==-1){
+                        if (finalType == -1) {
                             Toast.makeText(MainActivity.this,
-                                    "请选择完整操作模式",Toast.LENGTH_SHORT).show();
+                                    "请选择完整操作模式", Toast.LENGTH_SHORT).show();
                             return true;
                         }
                         mode = 1;
@@ -129,10 +134,10 @@ public class MainActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_MOVE:
                         if (mode == 1) {
                             endTime = System.currentTimeMillis();
-                            if (endTime - startTime >= 50) {
-                                float currentX = event.getX();
-                                float currentY = event.getY();
+                            if (endTime - startTime >= 30) {
                                 startTime = System.currentTimeMillis();
+                                currentX = event.getX();
+                                currentY = event.getY();
                                 JSONObject jsonObject = new JSONObject();
                                 jsonObject.put("operation_type", finalType);
                                 jsonObject.put("preX", preX);
@@ -142,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
                                 SocketIOManager.getInstance().getNewScence(jsonObject);
                                 preX = currentX;
                                 preY = currentY;
+
                             }
                         }
                         break;
@@ -245,19 +251,19 @@ public class MainActivity extends AppCompatActivity {
         rgAxis.setOnCheckedChangeListener((radioGroup, i) -> {
             switch (i) {
                 case R.id.rb_axisX:
-                    index2=0;
+                    index2 = 0;
                     finalType = getCurrentOpType();
                     break;
                 case R.id.rb_axisY:
-                    index2=1;
+                    index2 = 1;
                     finalType = getCurrentOpType();
                     break;
                 case R.id.rb_axisZ:
-                    index2=2;
+                    index2 = 2;
                     finalType = getCurrentOpType();
                     break;
                 case R.id.rb_wholeScale:
-                    index2=3;
+                    index2 = 3;
                     finalType = getCurrentOpType();
                     break;
             }
@@ -275,10 +281,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private int getCurrentOpType(){
-        switch (index1){
+    private int getCurrentOpType() {
+        switch (index1) {
             case 0:
-                switch (index2){
+                switch (index2) {
                     case 0:
                         return 2;
                     case 1:
@@ -288,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case 1:
-                switch (index2){
+                switch (index2) {
                     case 0:
                         return 8;
                     case 1:
@@ -300,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case 2:
-                switch (index2){
+                switch (index2) {
                     case 0:
                         return 5;
                     case 1:
@@ -319,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString("currentFragment",currentFragment.getTag());
+        outState.putString("currentFragment", currentFragment.getTag());
         super.onSaveInstanceState(outState);
     }
 
@@ -352,13 +358,21 @@ public class MainActivity extends AppCompatActivity {
             FragmentSwitchManager.getInstance().addNewFragmentWithOutHide(getSupportFragmentManager(),
                     treeFragment, R.id.nav_view);
             currentFragment = treeFragment;
-        }else{
+        } else {
             currentFragment = getSupportFragmentManager().findFragmentByTag(
-                    (String)savedInstanceState.get("currentFragment"));
-            FragmentSwitchManager.getInstance().switchToNextFragment(getSupportFragmentManager(),currentFragment,
-                    currentFragment,R.id.nav_view);
+                    (String) savedInstanceState.get("currentFragment"));
+            FragmentSwitchManager.getInstance().switchToNextFragment(getSupportFragmentManager(), currentFragment,
+                    currentFragment, R.id.nav_view);
         }
         initListener();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                fpsText.setText("fps:"+(StaticVar.currentSecondFrames*2));
+                StaticVar.currentSecondFrames = 0;
+            }
+        }, 0, 500);
     }
 
     public int getStatusBarHeight(Context context) {
@@ -393,6 +407,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Object o) {
             if (o.toString().equals("1")) {
                 img.setBitmap(bitmap);
+                StaticVar.currentSecondFrames+=1;
             }
         }
     }
