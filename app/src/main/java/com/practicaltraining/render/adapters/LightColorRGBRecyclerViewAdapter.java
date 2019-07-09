@@ -11,17 +11,20 @@ import android.widget.TextView;
 import com.practicaltraining.render.R;
 import com.practicaltraining.render.callbacks.ChangeLightColor;
 import com.practicaltraining.render.objects.LightColorRGBItem;
+
 import java.util.List;
 
 public class LightColorRGBRecyclerViewAdapter extends RecyclerView.Adapter<LightColorRGBRecyclerViewAdapter.VH> {
     private static ChangeLightColor changeLightColor;
-    public static void onChangeLightColor(ChangeLightColor LightColor){
-        changeLightColor =LightColor;
-    }
     private List<LightColorRGBItem> mData;//Adapter接收list作为参数
+
     public LightColorRGBRecyclerViewAdapter(List<LightColorRGBItem> mData){
         this.mData =mData;
     }
+    public static void onChangeLightColor(ChangeLightColor LightColor){
+        changeLightColor =LightColor;
+    }
+
     @NonNull
     @Override
     public VH onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {

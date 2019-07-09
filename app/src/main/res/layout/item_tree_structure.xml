@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/selectableItemBackground">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#F1F1F1">
+
+        <LinearLayout
+            android:id="@+id/TreeNodeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.github.johnkil.print.PrintView
+                android:id="@+id/icon_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:iconColor="#12558C"
+                app:iconFont="fonts/material-icon-font.ttf"
+                android:padding="3dp"
+                app:iconSize="20dp"
+                android:layout_gravity="center"
+                app:iconText="@string/ic_arrow_drop_down" />
+
+
+            <TextView
+                android:id="@+id/node_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/buttonsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="right"
+            android:layout_toRightOf="@+id/TreeNodeText">
+
+
+            <com.github.johnkil.print.PrintView
+                android:id="@+id/node_checked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="3dp"
+                app:iconColor="#03A9F4"
+                app:iconFont="fonts/material-icon-font.ttf"
+                app:iconSize="25dp"
+                app:iconText="@string/ic_check_circle_outline_blank" />
+
+            <com.github.johnkil.print.PrintView
+                android:id="@+id/node_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="3dp"
+                app:iconColor="#99cc00"
+                app:iconFont="fonts/material-icon-font.ttf"
+                app:iconSize="25dp"
+                app:iconText="@string/ic_add" />
+
+
+            <com.github.johnkil.print.PrintView
+                android:id="@+id/node_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="3dp"
+                app:iconColor="#ff4444"
+                app:iconFont="fonts/material-icon-font.ttf"
+                app:iconSize="25dp"
+                app:iconText="@string/ic_close" />
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</LinearLayout>

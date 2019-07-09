@@ -35,11 +35,6 @@ import com.practicaltraining.render.callbacks.CloseDrawer;
 
 import com.practicaltraining.render.core.FragmentSwitchManager;
 
-import com.practicaltraining.render.fragments.ColorFragment;
-
-
-import com.practicaltraining.render.fragments.LightFragment;
-
 import com.practicaltraining.render.fragments.ModelsFragment;
 import com.practicaltraining.render.fragments.SettingFragment;
 

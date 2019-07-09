@@ -1,36 +1,42 @@
 package com.practicaltraining.render.fragments;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
+import android.app.Fragment;
+import android.graphics.Rect;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.practicaltraining.render.R;
-import com.practicaltraining.render.TreeView.holder.IconTreeItemHolder;
-import com.practicaltraining.render.TreeView.model.TreeNode;
-import com.practicaltraining.render.TreeView.view.AndroidTreeView;
+import com.practicaltraining.render.adapters.TreeStructureAdapter;
+import com.practicaltraining.render.callbacks.CheckListener;
+import com.practicaltraining.render.callbacks.OnItemLongClickListener;
 import com.practicaltraining.render.core.FragmentSwitchManager;
+import com.practicaltraining.render.core.Node;
 import com.practicaltraining.render.core.SocketIOManager;
 import com.practicaltraining.render.utils.StaticVar;
+import com.practicaltraining.render.utils.TreeNodeUtil;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class TreeFragment extends FatherFragment {
-    private static String TAG="TreeFragment";
-    private AndroidTreeView tView;
-    private TreeNode root = TreeNode.root();
+    private List<Node> mData = new ArrayList<>();
+    private RecyclerView recyclerView;
     private Dialog progressDialog;
-    @Override
-    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        return super.onCreateAnimation(transit, enter, nextAnim);
-    }
+    private TreeStructureAdapter mAdapter;
 
     @Override
     public void onHiddenChanged(boolean hidden) {
@@ -40,16 +46,17 @@ public class TreeFragment extends FatherFragment {
                     progressDialog.dismiss();
                 }
             });
-            TreeNode tempRoot = StaticVar.node;
+            Node tempRoot = StaticVar.node;
             String meshName = ModelsFragment.meshName;
-            TreeNode obj = new TreeNode(new IconTreeItemHolder.IconTreeItem(meshName));
-            obj.setGroupId(StaticVar.meshNum);
             StaticVar.meshNum++;
-            tView.addNode(tempRoot,obj);
+            Node obj = new Node(StaticVar.meshNum,tempRoot.getId(),tempRoot.getLevel()+1,meshName,tempRoot.isSelected());
+            mData.add(TreeNodeUtil.getLastAddPostion(mData,tempRoot),obj);
+            tempRoot.getChildren().add(obj);
+            mAdapter.notifyDataSetChanged();
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("operation_type", 0);
-            jsonObject.put("parent", tempRoot.getGroupId());
-            jsonObject.put("son", obj.getGroupId());
+            jsonObject.put("parent", tempRoot.getId());
+            jsonObject.put("son", obj.getId());
             jsonObject.put("meshId", 0);
             SocketIOManager.getInstance().getNewScence(jsonObject);
             progressDialog = new Dialog(getContext(),R.style.progress_dialog);
@@ -60,11 +67,18 @@ public class TreeFragment extends FatherFragment {
             progressDialog.show();
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.setCancelable(false);
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (progressDialog!=null&&progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                    timer.cancel();
+                }
+            },0,3000);
         }
-        tView.expandAll();
     }
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,65 +87,110 @@ public class TreeFragment extends FatherFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.layout_tree_structure, container, false);
+        recyclerView = rootView.findViewById(R.id.container_tree_structure);
 
-        View treeView = inflater.inflate(R.layout.fragment_default, null, false);
-        ViewGroup containerView = treeView.findViewById(R.id.container);
+        {
+            //Item初始化 mData&mData_rgb
+            init();
+            //添加manager&adapter
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            mAdapter = new TreeStructureAdapter(mData);
+            //添加操作，切换到module，长按切换到setting
+            mAdapter.setTreeFragToModelFrag(() -> FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
+                    TreeFragment.class.getName(),ModelsFragment.class.getName()));
 
-        IconTreeItemHolder.setTreeFragToModelFrag(() -> {
-            FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
-                    TreeFragment.class.getName(), ModelsFragment.class.getName());
-            changeCurrentFragment.changeCurrentFragment(ModelsFragment.class.getName());
-        });
+            mAdapter.setOnItemLongClickListener(() -> {
+                FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
+                        TreeFragment.class.getName(), SettingFragment.class.getName());
+                changeCurrentFragment.changeCurrentFragment(SettingFragment.class.getName());
+            });
+            //check操作监听
+            mAdapter.setCheckListener(new CheckListener() {
+                @Override
+                public void onCheck(int groupId) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("operation_type",11);
+                    jsonObject.put("groupId",groupId);
+                    SocketIOManager.getInstance().getNewScence(jsonObject);
+                }
 
-        root = TreeNode.root();
+                @Override
+                public void onUncheck(int groupId) {
+                    //TODO 反选操作待实现
+                }
+
+            });
+            recyclerView.setAdapter(mAdapter);
+
+            DefaultItemAnimator animator = new DefaultItemAnimator();
+            //设置动画时间
+            animator.setAddDuration(100);
+            animator.setRemoveDuration(100);
+            recyclerView.setItemAnimator(animator);
+
+            setItemSpace(recyclerView,15,15,0,0);
 
 
-        TreeNode obj = new TreeNode(new IconTreeItemHolder.IconTreeItem("Root"));
-        obj.setGroupId(StaticVar.meshNum);
-        StaticVar.meshNum++;
-        root.addChild(obj);
-        tView = new AndroidTreeView(getActivity(), root);
 
-        tView.setDefaultAnimation(true);
-        tView.setDefaultContainerStyle(R.style.TreeNodeStyleCustom);
-        tView.setDefaultViewHolder(IconTreeItemHolder.class);
-        tView.setDefaultNodeClickListener(nodeClickListener);
-        tView.setDefaultNodeLongClickListener(nodeLongClickListener);
-        containerView.addView(tView.getView());
+        }
+        return rootView;
 
-        if (savedInstanceState != null) {
-            String state = savedInstanceState.getString("tState");
-            if (!TextUtils.isEmpty(state)) {
-                tView.restoreState(state);
+    }
 
-            }
+    //数据初始化
+    public void init() {
+        Node root = new Node(StaticVar.meshNum,-1,0,"Root",false);
+        mData.add(root);
+        Log.d("Node", "rootId:"+root.getId()+"rootPid:"+root.getPid()+"isExpanded:"+root.isExpanded());
+
+    }
+
+    //设置Item间距
+    public class RecyclerViewSpacesItemDecoration extends RecyclerView.ItemDecoration {
+
+        private HashMap<String, Integer> mSpaceValueMap;
+
+        private static final String TOP_DECORATION = "top_decoration";
+        private static final String BOTTOM_DECORATION = "bottom_decoration";
+        private static final String LEFT_DECORATION = "left_decoration";
+        private static final String RIGHT_DECORATION = "right_decoration";
+
+        protected RecyclerViewSpacesItemDecoration(HashMap<String, Integer> mSpaceValueMap) {
+            this.mSpaceValueMap = mSpaceValueMap;
         }
 
-        return treeView;
+        @Override
+        public void getItemOffsets(Rect outRect, View view,
+                                   RecyclerView parent, RecyclerView.State state) {
+            if (mSpaceValueMap.get(TOP_DECORATION) != null)
+                outRect.top = mSpaceValueMap.get(TOP_DECORATION);
+            if (mSpaceValueMap.get(LEFT_DECORATION) != null)
+
+                outRect.left = mSpaceValueMap.get(LEFT_DECORATION);
+            if (mSpaceValueMap.get(RIGHT_DECORATION) != null)
+                outRect.right = mSpaceValueMap.get(RIGHT_DECORATION);
+            if (mSpaceValueMap.get(BOTTOM_DECORATION) != null)
+
+                outRect.bottom = mSpaceValueMap.get(BOTTOM_DECORATION);
+
+        }
+
     }
 
-    private TreeNode.TreeNodeClickListener nodeClickListener = (node, value) -> {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("operation_type",11);
-        jsonObject.put("groupId",node.getGroupId());
-        SocketIOManager.getInstance().getNewScence(jsonObject);
-        Toast.makeText(getContext(),"选中了"+node.getGroupId(),Toast.LENGTH_SHORT).show();
-    };
-    //长按显示所点击的内容
-    private TreeNode.TreeNodeLongClickListener nodeLongClickListener = (node, value) -> {
-        IconTreeItemHolder.IconTreeItem item = (IconTreeItemHolder.IconTreeItem) value;
-        StaticVar.currentItemId = node.getGroupId();
-        FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
-                TreeFragment.class.getName(), SettingFragment.class.getName());
-        changeCurrentFragment.changeCurrentFragment(SettingFragment.class.getName());
-        return true;
-    };
+    //设置两个recyclerview的Item间距
+    public void setItemSpace(RecyclerView recyclerView, int top, int bottom, int left, int right) {
 
-    //储存信息
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("tState", tView.getSaveState());
+        HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION, top);
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION, bottom);
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.LEFT_DECORATION, left);
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.RIGHT_DECORATION, right);
+        recyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
+
     }
+
+
 
 }

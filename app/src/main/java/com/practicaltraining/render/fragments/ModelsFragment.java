@@ -17,8 +17,6 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.practicaltraining.render.R;
-import com.practicaltraining.render.TreeView.holder.IconTreeItemHolder;
-import com.practicaltraining.render.TreeView.model.TreeNode;
 import com.practicaltraining.render.adapters.ModelRecyclerViewAdapter;
 import com.practicaltraining.render.core.FragmentSwitchManager;
 import com.practicaltraining.render.core.SocketIOManager;
