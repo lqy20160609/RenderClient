@@ -9,8 +9,9 @@
     <com.practicaltraining.render.views.MySurfaceView
         android:id="@+id/testImage"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout4"
@@ -18,21 +19,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:id="@+id/constraintLayout4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:gravity="center">
 
         <com.practicaltraining.render.views.LongClickButton
             android:id="@+id/Roaming_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:background="@drawable/button_touch"
             android:text="←"
+            android:textAlignment="center"
             app:buttonType="3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -43,6 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:background="@drawable/button_touch"
             android:text="↑"
             app:buttonType="1"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -54,6 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:background="@drawable/button_touch"
             android:text="↓"
             app:buttonType="2"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -64,12 +70,15 @@
             android:id="@+id/Roaming_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
+            android:background="@drawable/button_touch"
             android:text="→"
+            android:textAlignment="center"
             app:buttonType="4"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/Roaming_down"
             app:layout_constraintTop_toTopOf="parent" />
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>
