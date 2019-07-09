@@ -58,7 +58,7 @@ public class TreeFragment extends FatherFragment {
             jsonObject.put("parent", tempRoot.getId());
             jsonObject.put("son", obj.getId());
             jsonObject.put("meshId", 0);
-            SocketIOManager.getInstance().getNewScence(jsonObject);
+            SocketIOManager.getInstance().getNewModelScence(jsonObject);
             progressDialog = new Dialog(getContext(),R.style.progress_dialog);
             progressDialog.setContentView(R.layout.waitting_dialog);
             progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
@@ -113,7 +113,7 @@ public class TreeFragment extends FatherFragment {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("operation_type",11);
                     jsonObject.put("groupId",groupId);
-                    SocketIOManager.getInstance().getNewScence(jsonObject);
+                    SocketIOManager.getInstance().getNewModelScence(jsonObject);
                 }
 
                 @Override
@@ -131,8 +131,6 @@ public class TreeFragment extends FatherFragment {
             recyclerView.setItemAnimator(animator);
 
             setItemSpace(recyclerView,15,15,0,0);
-
-
 
         }
         return rootView;
@@ -190,7 +188,6 @@ public class TreeFragment extends FatherFragment {
         recyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
 
     }
-
 
 
 }

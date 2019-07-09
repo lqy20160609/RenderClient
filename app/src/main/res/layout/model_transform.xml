@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/modelTransform"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.practicaltraining.render.views.MySurfaceView
+        android:id="@+id/testImage"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/rg_trans"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <RadioGroup
+        android:id="@+id/rg_trans"
+        android:layout_width="match_parent"
+        android:layout_height="29dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/rg_axis">
+
+        <RadioButton
+            android:id="@+id/rb_translate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="平移" />
+
+        <RadioButton
+            android:id="@+id/rb_scale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="缩放" />
+
+        <RadioButton
+            android:id="@+id/rb_rotate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="旋转" />
+
+        <RadioButton
+            android:id="@+id/rb_rotateCamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="相机旋转" />
+
+        <RadioButton
+            android:id="@+id/rb_scaleCamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="相机缩放" />
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/rg_axis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <RadioButton
+            android:id="@+id/rb_axisX"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="x轴" />
+
+        <RadioButton
+            android:id="@+id/rb_axisY"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="y轴" />
+
+        <RadioButton
+            android:id="@+id/rb_axisZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="z轴" />
+
+        <RadioButton
+            android:id="@+id/rb_wholeScale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="整体"
+            android:visibility="invisible" />
+    </RadioGroup>
+</android.support.constraint.ConstraintLayout>

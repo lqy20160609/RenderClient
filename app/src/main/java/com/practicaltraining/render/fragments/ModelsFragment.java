@@ -49,7 +49,7 @@ public class ModelsFragment extends FatherFragment {
         modelSubmitButton = rootView.findViewById(R.id.modelSubmitButton);
 
         modelNames = new String[]{"0", "1", "2"};//物体的名字
-        modelImgsId = new int[]{R.drawable.ic_launcher_background};//物体缩略图
+        modelImgsId = new int[]{R.drawable.star};//物体缩略图
         for (String modelName : modelNames) {
             modelRes.add(new ModelItem(modelName, modelImgsId[0]));
         }

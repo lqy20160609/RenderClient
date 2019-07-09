@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.alibaba.fastjson.JSONObject;
@@ -17,6 +18,7 @@ import java.util.TimerTask;
 
 
 public class LongClickButton extends android.support.v7.widget.AppCompatButton {
+    private static String TAG="LongClickButton";
     private Timer timer;
     // 上下左右分别为 1  2  3  4
     private int buttonType;
@@ -46,21 +48,19 @@ public class LongClickButton extends android.support.v7.widget.AppCompatButton {
     }
 
     @Override
-    public boolean performClick() {
-        return super.performClick();
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent (MotionEvent event) {
         this.performClick();
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
+                Log.d(TAG,"ACTION_DOWN");
                 timer = new Timer();
                 break;
             case MotionEvent.ACTION_UP:
                 timer.cancel();
+                Log.d(TAG,"ACTION_UP");
                 break;
             case MotionEvent.ACTION_MOVE:
+                Log.d(TAG,"ACTION_MOVE");
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {

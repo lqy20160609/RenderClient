@@ -15,113 +15,57 @@
         app:cardCornerRadius="0dp"
         app:cardElevation="20dp">
 
-
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:id="@+id/content_view"
             android:layout_height="match_parent">
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fitsSystemWindows="true" />
 
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+                <android.support.design.widget.TabItem
+                    android:id="@+id/tab1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="模型视图" />
+
+                <android.support.design.widget.TabItem
+                    android:id="@+id/tab2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="场景漫游" />
+            </android.support.design.widget.TabLayout>
+
             <TextView
                 android:id="@+id/main_fps"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:gravity="right"
                 android:text="fps:20"
                 android:textColor="@color/primary"
-                android:gravity="right"
-                app:layout_constraintBottom_toTopOf="@+id/testImage"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-            <com.practicaltraining.render.views.MySurfaceView
-                android:id="@+id/testImage"
-                android:layout_width="0dp"
+                app:layout_constraintTop_toBottomOf="@id/tabs" />
+
+            <com.practicaltraining.render.views.NoScrollViewPager
+                android:id="@+id/viewpager"
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="100dp"
+                android:layout_weight="1.0"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+                app:layout_constraintTop_toBottomOf="@id/main_fps">
 
-            <RadioGroup
-                android:id="@+id/rg_trans"
-                android:layout_width="match_parent"
-                android:layout_height="29dp"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@+id/testImage">
+            </com.practicaltraining.render.views.NoScrollViewPager>
+        </android.support.constraint.ConstraintLayout>
 
-                <RadioButton
-                    android:id="@+id/rb_translate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="平移" />
 
-                <RadioButton
-                    android:id="@+id/rb_scale"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="缩放" />
 
-                <RadioButton
-                    android:id="@+id/rb_rotate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="旋转" />
-                <RadioButton
-                    android:id="@+id/rb_rotateCamera"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="相机旋转" />
-                <RadioButton
-                    android:id="@+id/rb_scaleCamera"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="相机缩放" />
-            </RadioGroup>
-
-            <RadioGroup
-                android:id="@+id/rg_axis"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rg_trans">
-
-                <RadioButton
-                    android:id="@+id/rb_axisX"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="x轴" />
-
-                <RadioButton
-                    android:id="@+id/rb_axisY"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="y轴" />
-
-                <RadioButton
-                    android:id="@+id/rb_axisZ"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="z轴" />
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/rb_wholeScale"
-                    android:text="整体"
-                    android:visibility="invisible"/>
-            </RadioGroup>
-
-</android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>
 

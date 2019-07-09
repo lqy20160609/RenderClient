@@ -5,7 +5,8 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 import com.practicaltraining.render.callbacks.CreatedModelFinished;
-import com.practicaltraining.render.callbacks.GetPhotoCompleted;
+import com.practicaltraining.render.callbacks.GetModelPhotoCompleted;
+import com.practicaltraining.render.callbacks.GetRoamingPhotoCompleted;
 import com.practicaltraining.render.utils.StaticVar;
 import com.practicaltraining.render.utils.StringUtils;
 
@@ -29,8 +30,13 @@ public class SocketIOManager {
     private PrintWriter printWriter;
     private String result = "";
     private StringBuilder sb = new StringBuilder();
-    public GetPhotoCompleted finishcallback;
+    private GetModelPhotoCompleted modelFinishCallBack;
+    private GetRoamingPhotoCompleted roamingPhotoCompleted;
     private CreatedModelFinished createdModelFinished;
+
+    public void setRoamingPhotoCompleted(GetRoamingPhotoCompleted roamingPhotoCompleted) {
+        this.roamingPhotoCompleted = roamingPhotoCompleted;
+    }
 
     public void setCreatedModelFinished(CreatedModelFinished createdModelFinished) {
         this.createdModelFinished = createdModelFinished;
@@ -64,13 +70,20 @@ public class SocketIOManager {
         return socketIOManagerInstance;
     }
 
-    public void setFinishcallback(GetPhotoCompleted finishcallback) {
-        this.finishcallback = finishcallback;
+    public void setModelFinishCallBack(GetModelPhotoCompleted modelFinishCallBack) {
+        this.modelFinishCallBack = modelFinishCallBack;
     }
 
-    public void getNewScence(JSONObject json) {
+    public void getNewModelScence(JSONObject json) {
         if (socketIOManagerInstance!=null) {
-            GetNewSceneTask mTask = new GetNewSceneTask(json);
+            GetNewModelSceneTask mTask = new GetNewModelSceneTask(json);
+            mTask.execute();
+        }
+    }
+
+    public void getNewRoamingScence(JSONObject json){
+        if (socketIOManagerInstance!=null) {
+            GetNewRoamingSceneTask mTask = new GetNewRoamingSceneTask(json);
             mTask.execute();
         }
     }
@@ -89,10 +102,10 @@ public class SocketIOManager {
         }
     }
 
-    private class GetNewSceneTask extends AsyncTask {
+    private class GetNewModelSceneTask extends AsyncTask {
         private JSONObject json;
 
-        public GetNewSceneTask(JSONObject json) {
+        public GetNewModelSceneTask(JSONObject json) {
             this.json = json;
         }
 
@@ -121,11 +134,48 @@ public class SocketIOManager {
         @Override
             protected void onPostExecute(Object o) {
                 if (o.toString().equals("1")) {
-                    finishcallback.getDataCompleted(sb.toString());
+                    modelFinishCallBack.getModelDataCompleted(sb.toString());
                     if (createdModelFinished!=null) {
                         createdModelFinished.onCreatedFinished();
                     }
                 }
+        }
+    }
+
+    private class GetNewRoamingSceneTask extends AsyncTask {
+        private JSONObject json;
+
+        public GetNewRoamingSceneTask(JSONObject json) {
+            this.json = json;
+        }
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            try {
+                sb = new StringBuilder();
+                printWriter.println(json.toJSONString());
+                byte buff[] = new byte[1024];
+                while (bis.read(buff, 0, 1024) != -1) {
+                    result=StringUtils.byteToStr(buff);
+                    sb.append(result);
+                    Log.d(TAG+" pic address", result+"");
+                    if (bis.available() <= 0) {
+                        break;
+                    }
+                }
+                return 1;
+            } catch (Exception e) {
+                Log.d(TAG, "发送异常");
+                e.printStackTrace();
+                return 0;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            if (o.toString().equals("1")) {
+                roamingPhotoCompleted.getRoamingDataCompleted(sb.toString());
+            }
         }
     }
 

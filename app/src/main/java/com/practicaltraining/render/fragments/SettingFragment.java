@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.practicaltraining.render.R;
 import com.practicaltraining.render.adapters.SettingRecyclerViewAdapter;
@@ -46,6 +45,7 @@ public class SettingFragment extends FatherFragment {
         recyclerView.setLayoutManager(mLayoutManager);
 
         mAdapter.setOnSettingItemClickListener(position -> {
+
             Toast.makeText(getContext(),"点击了"+mAdapter.getItem(position).getDescription(),
                     Toast.LENGTH_LONG).show();
             switch (position){
@@ -66,9 +66,22 @@ public class SettingFragment extends FatherFragment {
                     lightBuilder.create().show();
                     break;
                 case 1:
+                    //FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
+                    //SettingFragment.class.getName(),MaterialFragment.class.getName());
+                    //changeCurrentFragment.changeCurrentFragment(MaterialFragment.class.getName());
+                    AlertDialog.Builder matBuilder=new AlertDialog.Builder(getContext());
+                    matBuilder.setTitle("选择材质");
+                    MaterialFragment materialFragment=new MaterialFragment();
+                    matBuilder.setView(materialFragment.onCreateView(inflater,container,savedInstanceState));
+                    matBuilder.setPositiveButton("确定",((dialogInterface, i) -> {
+                        // 发送网络请求
+                    }));
+                    matBuilder.setNegativeButton("取消",((dialogInterface, i) -> {}));
+                    matBuilder.create().show();
                     break;
                 case 2:
                     AlertDialog.Builder colorBuilder=new AlertDialog.Builder(getContext());
+                    colorBuilder.setTitle("更改颜色");
                     ColorFragment colorFragment=new ColorFragment();
                     colorBuilder.setView(colorFragment.onCreateView(inflater,container,savedInstanceState));
                     colorBuilder.setPositiveButton("确定",((dialogInterface, i) -> {
@@ -79,7 +92,7 @@ public class SettingFragment extends FatherFragment {
                         json.put("G",StaticVar.colorG);
                         json.put("B",StaticVar.colorB);
                         json.put("groupId",StaticVar.currentItemId);
-                        SocketIOManager.getInstance().getNewScence(json);
+                        SocketIOManager.getInstance().getNewModelScence(json);
                     }));
                     colorBuilder.setNegativeButton("取消",((dialogInterface, i) -> {
 
@@ -90,6 +103,7 @@ public class SettingFragment extends FatherFragment {
                     break;
                     default:
                         break;
+
 
             }
         });
