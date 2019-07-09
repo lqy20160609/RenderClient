@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.TextView;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.practicaltraining.render.adapters.ModelChangeFuncAdapter;
 import com.practicaltraining.render.callbacks.ChangeCurrentFragment;
@@ -30,6 +31,7 @@ import com.practicaltraining.render.callbacks.CloseDrawer;
 import com.practicaltraining.render.core.FragmentSwitchManager;
 
 
+import com.practicaltraining.render.core.SocketIOManager;
 import com.practicaltraining.render.fragments.ModelChangeFuncFragment;
 import com.practicaltraining.render.fragments.ModelsFragment;
 import com.practicaltraining.render.fragments.RoamingFragment;
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private CardView cardView;
     private List<Fragment> list;
     private Toolbar toolbar;
-
+    private boolean canOpenDrawer =true;
     private TextView fpsText;
 
     private FloatingActionButton backButton;
@@ -86,7 +88,34 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(modelChangeFuncAdapter);
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
-        tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getText().toString().equals("模型视图")){
+                    JSONObject json = new JSONObject();
+                    json.put("operation_type",25);
+                    SocketIOManager.getInstance().sendParam(json);
+                    viewPager.setCurrentItem(0);
+                    canOpenDrawer = true;
+                }else{
+                    JSONObject json = new JSONObject();
+                    json.put("operation_type",25);
+                    SocketIOManager.getInstance().sendParam(json);
+                    viewPager.setCurrentItem(1);
+                    canOpenDrawer = false;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         backButton = findViewById(R.id.nav_back_button);
         toolbar = findViewById(R.id.toolbar);
@@ -100,7 +129,11 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("ClickableViewAccessibility")
     private void initListener() {
         // 设置toolBar监听
-        toolbar.setNavigationOnClickListener(v -> popMeunView.openDrawer(GravityCompat.START));
+        toolbar.setNavigationOnClickListener(v -> {
+            if (canOpenDrawer) {
+                popMeunView.openDrawer(GravityCompat.START);
+            }
+        });
 
 
         // 设置返回键监听
@@ -205,9 +238,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 runOnUiThread(()->{
-                    fpsText.setText("fps:"+(StaticVar.currentSecondFrames*2));
+                    if (viewPager.getCurrentItem()==1) {
+                        fpsText.setText("fps:" + (StaticVar.currentSecondRoamingFrames * 2));
+                    }else{
+                        fpsText.setText("fps:" + (StaticVar.currentSecondModelFrames * 2));
+
+                    }
                 });
-                StaticVar.currentSecondFrames = 0;
+                StaticVar.currentSecondRoamingFrames = 0;
+                StaticVar.currentSecondModelFrames = 0;
+
             }
         }, 0, 500);
     }

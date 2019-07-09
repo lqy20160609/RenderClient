@@ -48,7 +48,7 @@ public class ModelChangeFuncFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.model_transform, container, false);
 
-        img = rootView.findViewById(R.id.testImage);
+        img = rootView.findViewById(R.id.Model_image);
         rgTrans = rootView.findViewById(R.id.rg_trans);
         rgAxis = rootView.findViewById(R.id.rg_axis);
         wholeScale = rootView.findViewById(R.id.rb_wholeScale);
@@ -233,6 +233,7 @@ public class ModelChangeFuncFragment extends Fragment {
         protected void onPostExecute(Object o) {
             if (o.toString().equals("1")) {
                 img.setBitmap(bitmap);
+                StaticVar.currentSecondModelFrames++;
             }
         }
     }

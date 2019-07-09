@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.practicaltraining.render.views.MySurfaceView;
 import java.io.IOException;
 
 public class RoamingFragment extends Fragment {
+    private static String TAG = "RoamingFragment";
     private static MySurfaceView img;
     private static Bitmap bitmap;
     private int imgWidth, imgHeight;
@@ -32,11 +34,6 @@ public class RoamingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.user_walking, container, false);
         initView(rootView);
-        // 设置获取漫游图片回调
-        SocketIOManager.getInstance().setRoamingPhotoCompleted(data -> {
-            RoamingFragment.GetBitmapTask mTask = new RoamingFragment.GetBitmapTask(StaticVar.picServerAddress + data + ".jpg");
-            mTask.execute();
-        });
         // 向服务器发送屏幕宽高
         img.post(() -> {
             imgWidth = img.getWidth();
@@ -48,11 +45,17 @@ public class RoamingFragment extends Fragment {
             SocketIOManager.getInstance().sendParam(json);
         });
         initListenr();
+        // 设置获取漫游图片回调
+        SocketIOManager.getInstance().setRoamingPhotoCompleted(data -> {
+            Log.d(TAG,data);
+            RoamingFragment.GetBitmapTask mTask = new RoamingFragment.GetBitmapTask(StaticVar.picServerAddress + data + ".jpg");
+            mTask.execute();
+        });
         return rootView;
     }
 
     public void initView(View rootView) {
-        img = rootView.findViewById(R.id.testImage);
+        img = rootView.findViewById(R.id.Roaming_image);
         forward = rootView.findViewById(R.id.Roaming_up);
         backward = rootView.findViewById(R.id.Roaming_down);
         left = rootView.findViewById(R.id.Roaming_left);
@@ -91,7 +94,7 @@ public class RoamingFragment extends Fragment {
                                 jsonObject.put("preY", preY);
                                 jsonObject.put("currentX", currentX);
                                 jsonObject.put("currentY", currentY);
-                                SocketIOManager.getInstance().getNewModelScence(jsonObject);
+                                SocketIOManager.getInstance().getNewRoamingScence(jsonObject);
                                 preX = currentX;
                                 preY = currentY;
                             }
@@ -109,22 +112,22 @@ public class RoamingFragment extends Fragment {
         right.setOnTouchListener((view, motionEvent) -> false);
         forward.setLongClickCallBack(() -> {
             JSONObject json = new JSONObject();
-            json.put("operation_type",20);
+            json.put("operation_type", 20);
             SocketIOManager.getInstance().getNewRoamingScence(json);
         });
         backward.setLongClickCallBack(() -> {
             JSONObject json = new JSONObject();
-            json.put("operation_type",21);
+            json.put("operation_type", 21);
             SocketIOManager.getInstance().getNewRoamingScence(json);
         });
         left.setLongClickCallBack(() -> {
             JSONObject json = new JSONObject();
-            json.put("operation_type",23);
+            json.put("operation_type", 23);
             SocketIOManager.getInstance().getNewRoamingScence(json);
         });
         right.setLongClickCallBack(() -> {
             JSONObject json = new JSONObject();
-            json.put("operation_type",22);
+            json.put("operation_type", 22);
             SocketIOManager.getInstance().getNewRoamingScence(json);
         });
 
@@ -152,6 +155,7 @@ public class RoamingFragment extends Fragment {
         protected void onPostExecute(Object o) {
             if (o.toString().equals("1")) {
                 img.setBitmap(bitmap);
+                StaticVar.currentSecondRoamingFrames++;
             }
         }
     }

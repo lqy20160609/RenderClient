@@ -17,5 +17,6 @@ public class StaticVar {
     public static int currentItemId = -1;
     public static int colorR=0,colorG=0,colorB=0;
     public static int lightR,lightG,lightB;
-    public static int currentSecondFrames = 0;
+    public static int currentSecondModelFrames = 0;
+    public static int currentSecondRoamingFrames = 0;
 }
