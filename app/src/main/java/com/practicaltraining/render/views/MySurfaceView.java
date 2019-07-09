@@ -19,6 +19,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     //子线程绘制标记
     private volatile boolean isDrawing;
     private Bitmap bitmap;
+    private Thread thread;
 
     public void setBitmap(Bitmap bitmap) {
         if(bitmap==null)return;
@@ -45,7 +46,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         init();
     }
 
-    private void init() {
+    public void init() {
         surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
         setFocusable(true);
@@ -59,7 +60,8 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         isDrawing = true;
-        new Thread(this).start();
+        thread = new Thread(this);
+        thread.start();
     }
 
     //当SurfaceView的视图发生改变，比如横竖屏切换时，这个方法被调用
@@ -72,7 +74,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         isDrawing = false;
-        surfaceHolder.removeCallback(this);
+        surfaceHolder.removeCallback(this); 
     }
 
     @Override

@@ -237,4 +237,9 @@ public class ModelChangeFuncFragment extends Fragment {
             }
         }
     }
+    @Override
+    public void onStart() {
+        super.onStart();
+        img.init();
+    }
 }

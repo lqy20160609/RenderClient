@@ -159,5 +159,10 @@ public class RoamingFragment extends Fragment {
             }
         }
     }
+    @Override
+    public void onStart() {
+        super.onStart();
+        img.init();
+    }
 }
 

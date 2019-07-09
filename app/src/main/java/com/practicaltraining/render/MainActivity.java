@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.alibaba.fastjson.JSONObject;
@@ -132,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> {
             if (canOpenDrawer) {
                 popMeunView.openDrawer(GravityCompat.START);
+            }else{
+                Toast.makeText(MainActivity.this,"请专心漫游哦",Toast.LENGTH_SHORT).show();
             }
         });
 
