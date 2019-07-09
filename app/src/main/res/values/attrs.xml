@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--最好是自定义View的类名，查看起来一目了然-->
+    <declare-styleable name="LongClickButton">
+        <attr name="buttonType" format="integer"/>
+    </declare-styleable>
+</resources>

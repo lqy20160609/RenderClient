@@ -77,7 +77,6 @@ public class SocketIOManager {
 
     public void sendParam(JSONObject json){
         if (socketIOManagerInstance!=null) {
-
             SendParamTask mTask = new SendParamTask(json);
             mTask.execute();
         }
@@ -85,7 +84,6 @@ public class SocketIOManager {
 
     public void sendParamWithBack(JSONObject json){
         if (socketIOManagerInstance!=null) {
-
             SendParamWithBackTask mTask = new SendParamWithBackTask(json);
             mTask.execute();
         }
