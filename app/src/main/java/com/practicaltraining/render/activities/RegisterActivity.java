@@ -155,9 +155,14 @@ public class RegisterActivity extends AppCompatActivity {
                         sb.append(line);
                     }
                     result = new String(sb);
+                    Log.d(TAG+"lqy", "result"+result);
                     return 1;
-                } else return 2;
+                } else {
+                    Log.d(TAG+"lqy", "responseCode"+conn.getResponseCode());
+                    return 2;
+                }
             } catch (Exception e) {
+                Log.d(TAG+"lqy", "hahahahaha");
                 e.printStackTrace();
                 return 3;
             }

@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -179,9 +180,14 @@ public class LoginActivity extends AppCompatActivity {
                         sb.append(line);
                     }
                     result = new String(sb);
+                    Log.d(TAG+"lqy", "result"+result);
                     return 1;
-                } else return 2;
+                } else {
+                    Log.d(TAG+"lqy", ""+conn.getResponseCode());
+                    return 2;
+                }
             } catch (Exception e) {
+                Log.d(TAG+"lqy", "hahahahah");
                 e.printStackTrace();
                 return 3;
             }

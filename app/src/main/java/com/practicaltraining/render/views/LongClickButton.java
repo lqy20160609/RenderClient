@@ -62,7 +62,6 @@ public class LongClickButton extends android.support.v7.widget.AppCompatButton {
                         }
                     }
                 };
-                Log.d(TAG, "ACTION_MOVE");
                 timer.schedule(tt, 0, 50);
                 break;
             case MotionEvent.ACTION_UP:
@@ -73,7 +72,7 @@ public class LongClickButton extends android.support.v7.widget.AppCompatButton {
                 Log.d(TAG, "ACTION_UP");
                 break;
             case MotionEvent.ACTION_MOVE:
-
+                Log.d(TAG, "ACTION_MOVE");
                 break;
             default:
                 break;
