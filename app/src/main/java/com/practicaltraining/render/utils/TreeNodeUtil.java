@@ -5,8 +5,10 @@ import android.util.Log;
 
 
 import com.practicaltraining.render.core.Node;
+import com.practicaltraining.render.fragments.TreeFragment;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -60,9 +62,9 @@ public class TreeNodeUtil {
         if (node.getId() == 0) {
             node.getChildren().clear();
             return;
-        }else {
+        } else {
             Node node_parent = getParent(nodes, node);
-            if(node_parent!=null){
+            if (node_parent != null) {
                 getParent(nodes, node).getChildren().remove(node);
                 nodes.remove(node);
             }
@@ -84,14 +86,14 @@ public class TreeNodeUtil {
 
         changeChildSelectedState(node, selected);
         changeParentSelectedState(nodes, node, selected);
+        node.setSelected(selected);
+        node.setColor(selected ? Color.RED : Color.GRAY);
 
     }
 
     public static void changeChildSelectedState(Node node, boolean selected) {
 
         //子节点
-        node.setSelected(selected);
-        node.setColor(selected ? Color.RED : Color.GRAY);
         for (Node child : node.getChildren()) {
             child.setSelected(selected);
             child.setColor(selected ? Color.RED : Color.GRAY);
@@ -105,23 +107,24 @@ public class TreeNodeUtil {
 
     public static void changeParentSelectedState(List<Node> nodes, Node node, boolean selected) {
 
-        changeParentSelected(nodes,node,selected);
+        changeParentSelected(nodes, node, selected);
 
     }
-    public static void changeParentSelected(List<Node> nodes, Node node, boolean selected){
+
+    public static void changeParentSelected(List<Node> nodes, Node node, boolean selected) {
 
         Node parent = node;
-        while(parent.getId()!=0){
-            for(Node n:parent.getChildren()){
-                if(n.isSelected()!=selected){
+        while (parent.getId() != 0 && parent != null) {
+            for (Node n : parent.getChildren()) {
+                if (n.isSelected() != selected) {
                     parent.setSelected(false);
                     parent.setColor(Color.GRAY);
                     break;
                 }
             }
-            parent = getParent(nodes,parent);
+            parent = getParent(nodes, parent);
         }
-        if(parent.getId()==0&&parent.isSelected()!=selected){
+        if (parent.getId() == 0 && parent.isSelected() != selected) {
 
             parent.setSelected(false);
             parent.setColor(Color.GRAY);
@@ -185,8 +188,8 @@ public class TreeNodeUtil {
 //    }
 
     public static int getLastAddPostion(List<Node> nodes, Node node) {
-        int lastposition =  nodes.indexOf(getLastNode(node)) + 1;
-        Log.d("Debug", "getLastAddPostion: "+lastposition);
+        int lastposition = nodes.indexOf(getLastNode(node)) + 1;
+        Log.d("Debug", "getLastAddPostion: " + lastposition);
         return lastposition;
 
 
@@ -205,6 +208,78 @@ public class TreeNodeUtil {
         return lastNode;
 
     }
+    //初始化数据
+    public static void initData(List<Node> nodes) {
+        for (Node n : nodes) {
+            n.setLevel(getLevel(nodes,n.getId()));
+            n.setChildren(initChildNode(nodes,n.getId()));
+            if(n.getText()==null){
+                n.setText("New Node"+n.getId());
+            }
+        }
 
+    }
+    //初始化当前节点Level
+    public static int getLevel(List<Node> nodes, int id) {
+        int level = 0;
+        int parent = id;
+        if (parent == 0) {
+            return level;
+        }
+        while (parent != 0) {
+            level++;
+            parent = getParentId(nodes, parent);
+        }
+        return level;
+    }
+    //获取父节点ID
+    public static int getParentId(List<Node> nodes, int id) {
 
+//        if (id == 0) {
+//            return -1;
+//        }
+        for (Node n : nodes) {
+            if (n.getId() == id) {
+                return n.getId();
+            }
+        }
+
+        return 0;
+    }
+    //对children初始化
+    public static List<Node> initChildNode(List<Node> nodes, int id) {
+        List<Node> childNode =new ArrayList<>();
+        for (Node n : nodes) {
+            if (n.getPid() == id) {
+                childNode.add(n);
+            }
+        }
+
+        return childNode;
+
+    }
+    //对Root初始化
+    public static List<Node> initRootNode(List<Node> nodes) {
+        List<Node> childNode =new ArrayList<>();
+        for (Node n : nodes) {
+            if (n.getPid() == 0) {
+                childNode.add(n);
+            }
+        }
+
+        return childNode;
+
+    }
+    //读取JSONArray最大ID
+    public static int findMaxId(List<Node> nodes){
+        int maxId=nodes.get(0).getId();
+
+        for(int i=1;i<nodes.size();i++){
+            if(maxId<nodes.get(i).getId()){
+               maxId = nodes.get(i).getId();
+            }
+        }
+
+        return maxId;
+    }
 }

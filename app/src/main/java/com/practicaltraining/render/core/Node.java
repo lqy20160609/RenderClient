@@ -54,6 +54,17 @@ public class Node {
 
 
     }
+    public Node(int id,int pid){
+        this.id = id;
+        this.pid = pid;
+//        this.level = level;
+//        this.text = text;
+        this.children = new ArrayList<>();
+        this.selected =false;
+        this.expanded = true;
+        this.color = Color.GRAY;
+        this.parent_expanded = false;
+    }
 
     public int getLevel() {
         return level;
