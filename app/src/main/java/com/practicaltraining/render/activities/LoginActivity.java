@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
             onLoginFailed();
             return;
         }
-        //loginButton.setEnabled(false);
+        loginButton.setEnabled(false);
 
         progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
@@ -211,6 +211,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString("number","");
                     editor.putString("password", "");
                     editor.apply();
+                    loginButton.setEnabled(true);
                     Toast.makeText(LoginActivity.this,"账号密码错误",Toast.LENGTH_SHORT).show();
                 }
             }

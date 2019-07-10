@@ -251,19 +251,18 @@ public class MainActivity extends AppCompatActivity {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                runOnUiThread(() -> {
-                    if (viewPager.getCurrentItem() == 1) {
-                        fpsText.setText("fps:" + (StaticVar.currentSecondRoamingFrames * 2));
-                    } else {
-                        fpsText.setText("fps:" + (StaticVar.currentSecondModelFrames * 2));
-
+                runOnUiThread(()->{
+                    if (viewPager.getCurrentItem()==1) {
+                        fpsText.setText("fps:" + (StaticVar.currentSecondRoamingFrames));
+                    }else{
+                        fpsText.setText("fps:" + (StaticVar.currentSecondModelFrames));
                     }
                 });
                 StaticVar.currentSecondRoamingFrames = 0;
                 StaticVar.currentSecondModelFrames = 0;
 
             }
-        }, 0, 500);
+        }, 0, 1000);
     }
 
     //menu

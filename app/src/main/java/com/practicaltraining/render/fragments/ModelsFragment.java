@@ -48,7 +48,7 @@ public class ModelsFragment extends FatherFragment {
         //列表添加数据
         modelSubmitButton = rootView.findViewById(R.id.modelSubmitButton);
 
-        modelNames = new String[]{"0", "1", "2"};//物体的名字
+        modelNames = new String[]{"0", "1", "2","3","4","5"};//物体的名字
         modelImgsId = new int[]{R.drawable.star};//物体缩略图
         for (String modelName : modelNames) {
             modelRes.add(new ModelItem(modelName, modelImgsId[0]));
