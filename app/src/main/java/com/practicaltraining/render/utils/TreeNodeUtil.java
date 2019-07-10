@@ -81,14 +81,43 @@ public class TreeNodeUtil {
     }
 
     public static void changeSelected(List<Node> nodes, Node node, boolean selected) {
+        if(node.isSelected()){
+            return;
+        }
+        changAllSelectedState(nodes,false);
 
-        changeChildSelectedState(node, selected);
-        changeParentSelectedState(nodes, node, selected);
+//        changeSameLevelSelectedState(nodes,node);
+
+        changeChildSelectedState(node, true);
+
+//        changeParentSelectedState(nodes, node, selected);
         node.setSelected(selected);
         node.setColor(selected ? Color.RED : Color.GRAY);
 
     }
+    public static void changAllSelectedState(List<Node> nodes,boolean selected){
+        for(Node n:nodes){
+            n.setSelected(false);
+            n.setColor(Color.GRAY);
+        }
 
+    }
+    public static void changeSameLevelSelectedState(List<Node> nodes, Node node){
+        if(node.getId()==0){
+            return;
+        }
+
+        Node parent = getParent(nodes,node);
+
+        for(Node child:parent.getChildren()){
+            if(child.getId() != node.getId()){
+                changeChildSelectedState(child, false);
+                child.setSelected(false);
+                child.setColor(Color.GRAY);
+            }
+        }
+
+    }
     public static void changeChildSelectedState(Node node, boolean selected) {
 
         //子节点
@@ -110,24 +139,11 @@ public class TreeNodeUtil {
     }
 
     public static void changeParentSelected(List<Node> nodes, Node node, boolean selected) {
-
-        Node parent = node;
-        while (parent.getId() != 0 && parent != null) {
-            for (Node n : parent.getChildren()) {
-                if (n.isSelected() != selected) {
-                    parent.setSelected(false);
-                    parent.setColor(Color.GRAY);
-                    break;
-                }
-            }
-            parent = getParent(nodes, parent);
-        }
-        if (parent.getId() == 0 && parent.isSelected() != selected) {
-
+        Node parent=node;
+        while((parent =getParent(nodes,parent))!=null) {
             parent.setSelected(false);
             parent.setColor(Color.GRAY);
         }
-
     }
 
     public static void changeExpanded(List<Node> nodes, Node node, boolean expanded) {

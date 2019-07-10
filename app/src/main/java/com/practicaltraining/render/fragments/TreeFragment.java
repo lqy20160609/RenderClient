@@ -7,10 +7,11 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -26,8 +27,6 @@ import com.practicaltraining.render.utils.StaticVar;
 import com.practicaltraining.render.utils.TreeNodeUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
@@ -40,6 +39,7 @@ public class TreeFragment extends FatherFragment {
     private RecyclerView recyclerView;
     private Dialog progressDialog;
     private TreeStructureAdapter mAdapter;
+    public String TAG = "jsonarray";
 
     @Override
     public void onHiddenChanged(boolean hidden) {
@@ -102,10 +102,12 @@ public class TreeFragment extends FatherFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.layout_tree_structure, container, false);
         recyclerView = rootView.findViewById(R.id.container_tree_structure);
+        Button clear= rootView.findViewById(R.id.select_clear);
 
         {
             //Item初始化 mData&mData_rgb
             init();
+//            test();
             //添加manager&adapter
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
             recyclerView.setLayoutManager(linearLayoutManager);
@@ -152,6 +154,14 @@ public class TreeFragment extends FatherFragment {
 
 
         }
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TreeNodeUtil.changAllSelectedState(mData,false);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+
         return rootView;
 
     }
@@ -219,6 +229,7 @@ public class TreeFragment extends FatherFragment {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if (jsonObject != null) {
                     nodes.add(new Node(Integer.parseInt(jsonObject.getString("son")), Integer.parseInt(jsonObject.getString("parent"))));
+
                 }
             }
 
@@ -230,9 +241,19 @@ public class TreeFragment extends FatherFragment {
 
         //排序
         nodes = BaseSort(nodes);
+
+        for (Node n : nodes) {
+
+            Log.d("jsonarray", "nodes after sort: " + n.getId());
+
+        }
         //数据初始化
         TreeNodeUtil.initData(nodes);
+        for (Node n : nodes) {
 
+            Log.d("jsonarray", "nodes after initData: " + n.getId());
+
+        }
         //添加到mData
         //添加ROOT
         root.add(new Node(StaticVar.meshNum, -1, 0, "Root", false));
@@ -246,35 +267,35 @@ public class TreeFragment extends FatherFragment {
     //基类排序
     public List<Node> BaseSort(List<Node> nodes) {
         List<Node> templist = new ArrayList<>();
-        List<Node>[] temp;
+        List<List<Node>> temp;
         Integer[] tempBaseBucket = getBaseBucket(nodes).toArray(new Integer[]{});
         //生成相应个数桶
         int[] baseBucket = new int[tempBaseBucket.length];
         for (int i = 0; i < tempBaseBucket.length; i++) {
             baseBucket[i] = tempBaseBucket[i].intValue();
         }
+        temp = new ArrayList();
+        for (int i = 0; i < baseBucket.length; i++) {
+            Log.d("jsonarray", "BaseSort: " + baseBucket[i]);
+            temp.add(new ArrayList<>());
+        }
 
-        temp = new ArrayList[baseBucket.length];
+
         //分到不同桶
         for (Node n : nodes) {
 
-            temp[indexOfBaseBucket(baseBucket, n.getPid())].add(n);
+            Log.d("jsonarray", "temp Pid: " + n.getPid() + "id" + n.getId());
+            temp.get(indexOfBaseBucket(baseBucket, n.getPid())).add(n);
+//            Log.d("jsonarray", "temp:" +temp.get(indexOfBaseBucket(baseBucket, n.getPid())).toString());
         }
         //桶内排序
         for (List<Node> nodes1 : temp) {
-            Collections.sort(nodes1, new Comparator<Node>() {
-                @Override
-                public int compare(Node n1, Node n2) {
-                    int diff = n1.getId() - n2.getId();
-                    if (diff > 0) {
-                        return 1;
-                    } else if (diff < 0) {
-                        return -1;
-                    }
-                    return 0; //相等为0
-                }
-            });
+
+            for (int i = 0; i < nodes1.size(); i++) {
+
+            }
         }
+
         //合桶
         for (List<Node> n : temp) {
             templist.addAll(n);
@@ -303,6 +324,7 @@ public class TreeFragment extends FatherFragment {
     public int indexOfBaseBucket(int[] baseBucket, int x) {
         for (int i = 0; i < baseBucket.length; i++) {
             if (x == baseBucket[i]) {
+                Log.d("jsonarray", "indexOfBaseBucket: " + i);
                 return i;
             }
         }
@@ -311,7 +333,44 @@ public class TreeFragment extends FatherFragment {
     }
 
     public void test() {
-
+        JSONArray jsonArrays = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("parent", 0);
+        jsonObject.put("son", 1);
+        jsonArrays.add(jsonObject);
+        JSONObject jsonObject1 = new JSONObject();
+        jsonObject1.put("parent", 1);
+        jsonObject1.put("son", 7);
+        jsonArrays.add(jsonObject1);
+        JSONObject jsonObject2 = new JSONObject();
+        jsonObject2.put("parent", 0);
+        jsonObject2.put("son", 2);
+        jsonArrays.add(jsonObject2);
+        JSONObject jsonObject3 = new JSONObject();
+        jsonObject3.put("parent", 1);
+        jsonObject3.put("son", 5);
+        jsonArrays.add(jsonObject3);
+        JSONObject jsonObject4 = new JSONObject();
+        jsonObject4.put("parent", 2);
+        jsonObject4.put("son", 4);
+        jsonArrays.add(jsonObject4);
+        Log.d("jsonarray:", "" + jsonArrays.toString());
+        init(jsonArrays);
     }
 
+    public List<Node> InsertSort(List<Node> nodes) {
+        if (nodes.size() == 0) {
+            return nodes;
+        }
+        Node current;
+        for (int i = 0; i < nodes.size(); i++){
+            current= nodes.get(i);
+            int j =i;
+//            while(current.getId()<){
+//
+//
+//            }
+        }
+        return  nodes;
+    }
 }
