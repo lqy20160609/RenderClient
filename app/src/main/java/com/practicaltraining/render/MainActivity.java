@@ -6,7 +6,9 @@ package com.practicaltraining.render;
  */
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -29,6 +31,7 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.practicaltraining.render.activities.HelpActivity;
 import com.practicaltraining.render.adapters.ModelChangeFuncAdapter;
 import com.practicaltraining.render.callbacks.ChangeCurrentFragment;
 import com.practicaltraining.render.callbacks.CloseDrawer;
@@ -293,6 +296,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
             case R.id.setting:
+                return true;
+            case R.id.help:
+                ComponentName helpActivity=new ComponentName(MainActivity.this,HelpActivity.class);
+                Intent intent=new Intent();
+                intent.setComponent(helpActivity);
+                startActivity(intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);
