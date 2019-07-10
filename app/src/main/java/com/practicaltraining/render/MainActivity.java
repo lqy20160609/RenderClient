@@ -37,6 +37,7 @@ import com.practicaltraining.render.core.FragmentSwitchManager;
 
 
 import com.practicaltraining.render.core.SocketIOManager;
+
 import com.practicaltraining.render.fragments.ModelChangeFuncFragment;
 import com.practicaltraining.render.fragments.ModelsFragment;
 import com.practicaltraining.render.fragments.RoamingFragment;
@@ -47,6 +48,7 @@ import com.practicaltraining.render.utils.StaticVar;
 import com.practicaltraining.render.views.NoScrollViewPager;
 
 import java.lang.reflect.Field;
+
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.ArrayList;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Fragment> list;
     private Toolbar toolbar;
     private boolean canOpenDrawer = true;
+
     private TextView fpsText;
 
     private FloatingActionButton backButton;
@@ -270,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int menuItemId = item.getItemId();
@@ -316,4 +320,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return result;
     }
+
 }

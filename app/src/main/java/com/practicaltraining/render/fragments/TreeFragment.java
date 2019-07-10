@@ -1,11 +1,13 @@
 package com.practicaltraining.render.fragments;
 
 import android.app.Dialog;
+
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +71,7 @@ public class TreeFragment extends FatherFragment {
             jsonObject.put("meshId", 0);
             SocketIOManager.getInstance().getNewModelScence(jsonObject);
             progressDialog = new Dialog(getContext(), R.style.progress_dialog);
+
             progressDialog.setContentView(R.layout.waitting_dialog);
             progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             TextView msg = progressDialog.findViewById(R.id.id_tv_loadingmsg);

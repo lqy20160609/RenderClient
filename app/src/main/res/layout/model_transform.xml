@@ -5,12 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/modelTransform"
     android:layout_width="match_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="match_parent">
 
     <com.practicaltraining.render.views.MySurfaceView
         android:id="@+id/Model_image"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="0dp"/>
+
+    <com.practicaltraining.render.views.MySurfaceView
+        android:id="@+id/testImage"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"

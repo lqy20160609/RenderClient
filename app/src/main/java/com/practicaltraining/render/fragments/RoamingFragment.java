@@ -45,6 +45,7 @@ public class RoamingFragment extends Fragment {
             SocketIOManager.getInstance().sendParam(json);
         });
         initListenr();
+
         // 设置获取漫游图片回调
         SocketIOManager.getInstance().setRoamingPhotoCompleted(data -> {
             Log.d(TAG,data);

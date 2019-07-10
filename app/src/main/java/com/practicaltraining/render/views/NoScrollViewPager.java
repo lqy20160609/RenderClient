@@ -11,6 +11,7 @@ public class NoScrollViewPager extends ViewPager {
 
     public NoScrollViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
+
     }
 
     public NoScrollViewPager(Context context) {

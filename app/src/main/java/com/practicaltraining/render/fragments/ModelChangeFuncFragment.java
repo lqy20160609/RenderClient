@@ -48,7 +48,8 @@ public class ModelChangeFuncFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.model_transform, container, false);
 
-        img = rootView.findViewById(R.id.Model_image);
+        img = rootView.findViewById(R.id.Model_image);//testImage
+
         rgTrans = rootView.findViewById(R.id.rg_trans);
         rgAxis = rootView.findViewById(R.id.rg_axis);
         wholeScale = rootView.findViewById(R.id.rb_wholeScale);
@@ -242,4 +243,5 @@ public class ModelChangeFuncFragment extends Fragment {
         super.onStart();
         img.init();
     }
+
 }

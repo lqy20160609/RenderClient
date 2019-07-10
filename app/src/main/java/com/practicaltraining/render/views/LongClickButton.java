@@ -17,7 +17,9 @@ import java.util.TimerTask;
 
 
 public class LongClickButton extends android.support.v7.widget.AppCompatButton {
+
     private static String TAG = "LongClickButton";
+
     private Timer timer;
     private TimerTask tt;
     // 上下左右分别为 1  2  3  4
@@ -55,6 +57,7 @@ public class LongClickButton extends android.support.v7.widget.AppCompatButton {
                 Log.d(TAG, "ACTION_DOWN");
                 timer = new Timer();
                 tt = new TimerTask() {
+
                     @Override
                     public void run() {
                         if (buttonType != -1) {
