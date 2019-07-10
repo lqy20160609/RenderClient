@@ -68,7 +68,7 @@ public class TreeFragment extends FatherFragment {
             jsonObject.put("operation_type", 0);
             jsonObject.put("parent", tempRoot.getId());
             jsonObject.put("son", obj.getId());
-            jsonObject.put("meshId", 0);
+            jsonObject.put("meshId", Integer.parseInt(meshName));
             SocketIOManager.getInstance().getNewModelScence(jsonObject);
             progressDialog = new Dialog(getContext(), R.style.progress_dialog);
 
@@ -132,7 +132,10 @@ public class TreeFragment extends FatherFragment {
 
                 @Override
                 public void onUncheck(int groupId) {
-                    //TODO 反选操作待实现
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("operation_type", 12);
+                    jsonObject.put("groupId", groupId);
+                    SocketIOManager.getInstance().getNewModelScence(jsonObject);
                 }
 
             });
