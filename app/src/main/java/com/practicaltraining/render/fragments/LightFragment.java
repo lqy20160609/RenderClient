@@ -4,9 +4,11 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,16 +30,12 @@ import java.util.List;
 public class LightFragment extends FatherFragment {
     private List<LightColorButtonItem> mData = new ArrayList<>();
     private List<LightColorRGBItem> mData_rgb = new ArrayList<>();
-    private TextView light_Intensity;
     private TextView getLight_intensity_show;
-    private SeekBar seekBar_intensity;
-    private TextView light_Color;
     private ImageView imageView;
-    private RecyclerView recyclerView;
-    private RecyclerView recyclerView_rgb;
     private int light_color;
     private int light_intensity;
-
+    private LightColorButtonRecyclerViewAdapter lCBAdapter;
+    private LightColorRGBRecyclerViewAdapter lightColorRGBRecyclerViewAdapter;
     //获取当前光照颜色和亮度
     public int getLight_color() {
         return light_color;
@@ -58,15 +56,19 @@ public class LightFragment extends FatherFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.setting_light, null, false);
-
+        View rootView = inflater.inflate(R.layout.setting_light, container, false);
+        lCBAdapter = new LightColorButtonRecyclerViewAdapter(mData);
+        lightColorRGBRecyclerViewAdapter =new LightColorRGBRecyclerViewAdapter(mData_rgb);
+        RecyclerView recyclerView;
+        RecyclerView recyclerView_rgb;
+        SeekBar seekBar_intensity;
         {
             //绑定
-            light_Intensity = rootView.findViewById(R.id.text_light_intensity);
+//            TextView light_Intensity = rootView.findViewById(R.id.text_light_intensity);
             getLight_intensity_show = rootView.findViewById(R.id.light_intensity_show);
-            light_Color = rootView.findViewById(R.id.text_light_color);
+//            TextView light_Color = rootView.findViewById(R.id.text_light_color);
             imageView = rootView.findViewById(R.id.light_color_show);
             seekBar_intensity = rootView.findViewById(R.id.light_intensity_bar);
             recyclerView = rootView.findViewById(R.id.container_button_color);
@@ -79,10 +81,10 @@ public class LightFragment extends FatherFragment {
             //添加manager&adapter
             GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 5);
             recyclerView.setLayoutManager(gridLayoutManager);
-            recyclerView.setAdapter(new LightColorButtonRecyclerViewAdapter(mData));
+            recyclerView.setAdapter(lCBAdapter);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
             recyclerView_rgb.setLayoutManager(linearLayoutManager);
-            recyclerView_rgb.setAdapter(new LightColorRGBRecyclerViewAdapter(mData_rgb));
+            recyclerView_rgb.setAdapter(lightColorRGBRecyclerViewAdapter);
 
             //设置两个recyclerview的Item间距
             setItemSpace(recyclerView, 30, 30, 30, 0);
@@ -98,6 +100,10 @@ public class LightFragment extends FatherFragment {
             });
 
             LightColorButtonRecyclerViewAdapter.onChangeLightColor((int color) -> {
+                setButtonCheck(mData, color);
+                setRGB(color,mData_rgb);
+                lCBAdapter.notifyDataSetChanged();
+                lightColorRGBRecyclerViewAdapter.notifyDataSetChanged();
                 imageView.setImageTintList(ColorStateList.valueOf(color));
                 this.setLight_color(color);
 
@@ -106,7 +112,7 @@ public class LightFragment extends FatherFragment {
             seekBar_intensity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    getLight_intensity_show.setText(progress + "");
+                    getLight_intensity_show.setText(String.valueOf(progress));
                     setLight_intensity(progress);
                 }
 
@@ -157,7 +163,7 @@ public class LightFragment extends FatherFragment {
         private static final String LEFT_DECORATION = "left_decoration";
         private static final String RIGHT_DECORATION = "right_decoration";
 
-        protected RecyclerViewSpacesItemDecoration(HashMap<String, Integer> mSpaceValueMap) {
+        RecyclerViewSpacesItemDecoration(HashMap<String, Integer> mSpaceValueMap) {
             this.mSpaceValueMap = mSpaceValueMap;
         }
 
@@ -189,5 +195,28 @@ public class LightFragment extends FatherFragment {
         stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.RIGHT_DECORATION, right);
         recyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
 
+    }
+
+    public void setButtonCheck(List<LightColorButtonItem> mData, int color) {
+        for (LightColorButtonItem lCB : mData) {
+            if(color==lCB.getColor()){
+                lCB.setChecked(true);
+
+            }
+            if (lCB.isChecked() && color != lCB.getColor()) {
+
+                lCB.setChecked(false);
+
+            }
+
+
+        }
+
+    }
+    public void setRGB(int color,List<LightColorRGBItem> mData){
+
+        mData_rgb.get(0).setProgress(Color.red(color));
+        mData_rgb.get(1).setProgress(Color.green(color));
+        mData_rgb.get(2).setProgress(Color.blue(color));
     }
 }
