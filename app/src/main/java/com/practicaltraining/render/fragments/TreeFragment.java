@@ -103,7 +103,6 @@ public class TreeFragment extends FatherFragment {
         View rootView = inflater.inflate(R.layout.layout_tree_structure, container, false);
         recyclerView = rootView.findViewById(R.id.container_tree_structure);
         Button clear = rootView.findViewById(R.id.select_clear);
-
         {
             //Item初始化 mData&mData_rgb
             init();
@@ -113,8 +112,11 @@ public class TreeFragment extends FatherFragment {
             recyclerView.setLayoutManager(linearLayoutManager);
             mAdapter = new TreeStructureAdapter(mData);
             //添加操作，切换到module，长按切换到setting
-            mAdapter.setTreeFragToModelFrag(() -> FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
-                    TreeFragment.class.getName(), ModelsFragment.class.getName()));
+            mAdapter.setTreeFragToModelFrag(() -> {
+                FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
+                        TreeFragment.class.getName(), ModelsFragment.class.getName());
+                changeCurrentFragment.changeCurrentFragment(ModelsFragment.class.getName());
+            });
 
             mAdapter.setOnItemLongClickListener(() -> {
                 FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
