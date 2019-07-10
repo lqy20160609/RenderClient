@@ -14,12 +14,14 @@ public class ModelChangeFuncAdapter extends FragmentPagerAdapter {
         super(fm);
         this.list=list;
     }
+
+
+
     @Override
     public Fragment getItem(int position) {
         //return ModelChangeFuncFragment.newInstance(position+1);
         return list.get(position);
     }
-
     @Override
     public int getCount() {
         return list.size();
