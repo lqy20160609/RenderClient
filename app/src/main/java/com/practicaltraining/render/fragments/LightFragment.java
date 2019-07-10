@@ -48,6 +48,7 @@ public class LightFragment extends FatherFragment {
     }
 
     //设置亮度和光照颜色
+
     public void setLight_intensity(int light_intensity) {
         this.light_intensity = light_intensity;
     }
