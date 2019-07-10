@@ -295,6 +295,8 @@ public class MainActivity extends AppCompatActivity {
                 });*/
                 selectRenderDialog.create().show();
                 return true;
+            case R.id.help:
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

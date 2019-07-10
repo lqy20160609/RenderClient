@@ -13,4 +13,7 @@
     <item
         android:id="@+id/select_render"
         android:title="Select Render" />
+    <item
+        android:id="@+id/help"
+        android:title="Help" />
 </menu>
