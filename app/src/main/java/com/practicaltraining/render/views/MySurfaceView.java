@@ -92,6 +92,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
             if (bitmap!=null) {
                 canvas.drawBitmap(this.bitmap, 0, (getHeight()-bitmap.getHeight())/2, mPaint);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
