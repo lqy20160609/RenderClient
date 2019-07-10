@@ -1,6 +1,6 @@
 package com.practicaltraining.render.utils;
 
-import com.practicaltraining.render.core.Node;
+import com.practicaltraining.render.objects.Node;
 
 /**
  * created By LQY

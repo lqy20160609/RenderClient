@@ -18,8 +18,8 @@ import com.practicaltraining.render.R;
 import com.practicaltraining.render.adapters.TreeStructureAdapter;
 import com.practicaltraining.render.callbacks.CheckListener;
 import com.practicaltraining.render.core.FragmentSwitchManager;
-import com.practicaltraining.render.core.Node;
 import com.practicaltraining.render.core.SocketIOManager;
+import com.practicaltraining.render.objects.Node;
 import com.practicaltraining.render.utils.StaticVar;
 import com.practicaltraining.render.utils.TreeNodeUtil;
 

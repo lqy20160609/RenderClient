@@ -15,7 +15,7 @@ import com.practicaltraining.render.R;
 import com.practicaltraining.render.callbacks.CheckListener;
 import com.practicaltraining.render.callbacks.OnItemLongClickListener;
 import com.practicaltraining.render.callbacks.TreeFragToModelFrag;
-import com.practicaltraining.render.core.Node;
+import com.practicaltraining.render.objects.Node;
 import com.practicaltraining.render.utils.StaticVar;
 import com.practicaltraining.render.utils.TreeNodeUtil;
 
@@ -76,72 +76,57 @@ public class TreeStructureAdapter extends RecyclerView.Adapter<TreeStructureAdap
         }
 
         //点击展开
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        holder.itemView.setOnClickListener(view -> {
 
-                int size = TreeNodeUtil.getLastPosition(mData, node) - position + 1;
-                if (node.isParent_expanded()) {
-                    node.setParent_expanded(false);
-                    TreeNodeUtil.changeExpanded(mData, node, true);
-                } else {
-                    node.setParent_expanded(true);
-                    TreeNodeUtil.changeExpanded(mData, node, false);
-                }
-
-                notifyItemRangeChanged(holder.getAdapterPosition(), size);
+            int size = TreeNodeUtil.getLastPosition(mData, node) - position + 1;
+            if (node.isParent_expanded()) {
+                node.setParent_expanded(false);
+                TreeNodeUtil.changeExpanded(mData, node, true);
+            } else {
+                node.setParent_expanded(true);
+                TreeNodeUtil.changeExpanded(mData, node, false);
             }
+
+            notifyItemRangeChanged(holder.getAdapterPosition(), size);
         });
 
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
+        holder.itemView.setOnLongClickListener(view -> {
 
-                StaticVar.currentItemId = node.getId();
-                onItemLongClickListener.setItemLongClickLinstener();
-                return true;
-            }
+            StaticVar.currentItemId = node.getId();
+            onItemLongClickListener.setItemLongClickLinstener();
+            return true;
         });
 
 
         //选中
-        holder.checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        holder.checkBox.setOnClickListener(view -> {
 
-                if (!node.isSelected()) {
-                    TreeNodeUtil.changeSelected(mData, node, true);
-                    checkListener.onCheck(node.getId());
-                } else {
-                    TreeNodeUtil.changeSelected(mData, node, false);
-                    checkListener.onUncheck(node.getId());
-                }
-                notifyDataSetChanged();
+            if (!node.isSelected()) {
+                TreeNodeUtil.changeSelected(mData, node, true);
+                checkListener.onCheck(node.getId());
+            } else {
+                TreeNodeUtil.changeSelected(mData, node, false);
+                checkListener.onUncheck(node.getId());
             }
+            notifyDataSetChanged();
         });
 
         //添加
-        holder.add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                treeFragToModelFrag.switchToModel();
-                StaticVar.node = node;
-            }
+        holder.add.setOnClickListener(view -> {
+            treeFragToModelFrag.switchToModel();
+            StaticVar.node = node;
         });
 
         //删除
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int lastPosition = TreeNodeUtil.getLastPosition(mData, node);
+        holder.delete.setOnClickListener(view -> {
+            int lastPosition = TreeNodeUtil.getLastPosition(mData, node);
 
-                TreeNodeUtil.removeNode(mData, node);
-                if (holder.getAdapterPosition() == 0) {
-                    notifyItemRangeRemoved(1, lastPosition);
-                } else {
-                    notifyItemRangeRemoved(holder.getAdapterPosition(), lastPosition - holder.getAdapterPosition() + 1);
+            TreeNodeUtil.removeNode(mData, node);
+            if (holder.getAdapterPosition() == 0) {
+                notifyItemRangeRemoved(1, lastPosition);
+            } else {
+                notifyItemRangeRemoved(holder.getAdapterPosition(), lastPosition - holder.getAdapterPosition() + 1);
 
-                }
             }
         });
 
