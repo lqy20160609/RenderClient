@@ -11,7 +11,9 @@ public class StaticVar {
     //public static String serverAddress = "192.168.43.148";
     //public static String serverAddress = "10.27.219.145";
     public static String picServerAddress = serverAddress+":8080/img/";
-    public static short serverPort = 8888;
+    public static short serverPortOptix = 8888;
+    public static short serverPortVulkan = 8900;
+    public static String currentEngine;
     public static Node node = null;
     public static int meshNum = 0;
     public static int currentItemId = -1;

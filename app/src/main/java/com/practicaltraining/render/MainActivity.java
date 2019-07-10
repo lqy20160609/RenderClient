@@ -221,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        StaticVar.currentEngine = "Optix";
         if (savedInstanceState == null) {
             settingFragment = new SettingFragment();
             modelsFragment = new ModelsFragment();
@@ -277,24 +278,21 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int menuItemId = item.getItemId();
         switch (menuItemId) {
-            case R.id.save_scene:
-                Toast.makeText(MainActivity.this, "Saved.", Toast.LENGTH_SHORT).show();//其实没保存（划掉）
+            case R.id.switchTo_Optix:
+                if (StaticVar.currentEngine.equals("Optix")){
+                    Toast.makeText(MainActivity.this,"当前已经是Optix引擎了",Toast.LENGTH_SHORT).show();
+                }else{
+                    SocketIOManager.getInstance().resetSocket(1);
+                }
                 return true;
-            case R.id.select_render:
-                String[] renders = new String[]{"Optix", "Vulkan"};//传递数组
-                AlertDialog.Builder selectRenderDialog = new AlertDialog.Builder(this);
-                selectRenderDialog.setTitle("Select Render");
-                selectRenderDialog.setSingleChoiceItems(renders, whichrender, (dialogInterface, i) -> {
-                    whichrender=i;
-                    Toast.makeText(MainActivity.this,renders[i],Toast.LENGTH_SHORT).show();
-                    dialogInterface.dismiss();
-                });
-                /*selectRenderDialog.setPositiveButton("OK", (dialogInterface, i) -> {
-
-                });*/
-                selectRenderDialog.create().show();
+            case R.id.switchTo_vulkan:
+                if (StaticVar.currentEngine.equals("Vulkan")){
+                    Toast.makeText(MainActivity.this,"当前已经是Vulkan引擎了",Toast.LENGTH_SHORT).show();
+                }else{
+                    SocketIOManager.getInstance().resetSocket(0);
+                }
                 return true;
-            case R.id.help:
+            case R.id.setting:
                 return true;
         }
         return super.onOptionsItemSelected(item);

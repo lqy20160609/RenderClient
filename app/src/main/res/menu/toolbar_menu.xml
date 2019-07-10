@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/new_scene"
-        android:title="New Scene" />
+        android:id="@+id/switchTo_Optix"
+        android:title="切换至optix引擎渲染" />
     <item
-        android:id="@+id/save_scene"
-        android:title="Save Scene" />
+        android:id="@+id/switchTo_vulkan"
+        android:title="切换至vulkan引擎渲染" />
     <item
         android:id="@+id/load_scene"
-        android:title="Load Scene" />
+        android:title="加载场景" />
     <item
-        android:id="@+id/select_render"
-        android:title="Select Render" />
+        android:id="@+id/save_scene"
+        android:title="保存场景" />
     <item
-        android:id="@+id/help"
-        android:title="Help" />
+        android:id="@+id/setting"
+        android:title="设置" />
 </menu>

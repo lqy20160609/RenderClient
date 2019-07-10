@@ -33,6 +33,7 @@ public class SocketIOManager {
     private GetModelPhotoCompleted modelFinishCallBack;
     private GetRoamingPhotoCompleted roamingPhotoCompleted;
     private CreatedModelFinished createdModelFinished;
+    private static int x = 0;
 
     public void setRoamingPhotoCompleted(GetRoamingPhotoCompleted roamingPhotoCompleted) {
         this.roamingPhotoCompleted = roamingPhotoCompleted;
@@ -42,27 +43,52 @@ public class SocketIOManager {
         this.createdModelFinished = createdModelFinished;
     }
 
-    private SocketIOManager() {
-        new Thread(()-> {
-            try {
-                socket = new Socket(StaticVar.serverAddress, StaticVar.serverPort);
-                socket.setKeepAlive(true);
-                printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-                        socket.getOutputStream(), "UTF-8")), true);
-                bis = new BufferedInputStream(socket.getInputStream());
-            } catch (IOException e) {
-                Log.d(TAG+" constructor","连接失败");
-                e.printStackTrace();
-            }
-        }).start();
+    //重置连接
+    public void resetSocket(int x) {
+        socketIOManagerInstance = null;
+        SocketIOManager.x = x;
+    }
 
+    /**
+     * x 为0表示optix  1表示vulkan
+     *
+     * @param x
+     */
+    private SocketIOManager(int x) {
+        if (x == 0) {
+            new Thread(() -> {
+                try {
+                    socket = new Socket(StaticVar.serverAddress, StaticVar.serverPortOptix);
+                    socket.setKeepAlive(true);
+                    printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+                            socket.getOutputStream(), "UTF-8")), true);
+                    bis = new BufferedInputStream(socket.getInputStream());
+                } catch (IOException e) {
+                    Log.d(TAG + " constructor", "连接失败");
+                    e.printStackTrace();
+                }
+            }).start();
+        } else {
+            new Thread(() -> {
+                try {
+                    socket = new Socket(StaticVar.serverAddress, StaticVar.serverPortVulkan);
+                    socket.setKeepAlive(true);
+                    printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+                            socket.getOutputStream(), "UTF-8")), true);
+                    bis = new BufferedInputStream(socket.getInputStream());
+                } catch (IOException e) {
+                    Log.d(TAG + " constructor", "连接失败");
+                    e.printStackTrace();
+                }
+            }).start();
+        }
     }
 
     public static SocketIOManager getInstance() {
         if (socketIOManagerInstance == null) {
             synchronized (SocketIOManager.class) {
                 if (socketIOManagerInstance == null) {
-                    socketIOManagerInstance = new SocketIOManager();
+                    socketIOManagerInstance = new SocketIOManager(SocketIOManager.x);
                     return socketIOManagerInstance;
                 }
             }
@@ -75,28 +101,28 @@ public class SocketIOManager {
     }
 
     public void getNewModelScence(JSONObject json) {
-        if (socketIOManagerInstance!=null) {
+        if (socketIOManagerInstance != null) {
             GetNewModelSceneTask mTask = new GetNewModelSceneTask(json);
             mTask.execute();
         }
     }
 
-    public void getNewRoamingScence(JSONObject json){
-        if (socketIOManagerInstance!=null) {
+    public void getNewRoamingScence(JSONObject json) {
+        if (socketIOManagerInstance != null) {
             GetNewRoamingSceneTask mTask = new GetNewRoamingSceneTask(json);
             mTask.execute();
         }
     }
 
-    public void sendParam(JSONObject json){
-        if (socketIOManagerInstance!=null) {
+    public void sendParam(JSONObject json) {
+        if (socketIOManagerInstance != null) {
             SendParamTask mTask = new SendParamTask(json);
             mTask.execute();
         }
     }
 
-    public void sendParamWithBack(JSONObject json){
-        if (socketIOManagerInstance!=null) {
+    public void sendParamWithBack(JSONObject json) {
+        if (socketIOManagerInstance != null) {
             SendParamWithBackTask mTask = new SendParamWithBackTask(json);
             mTask.execute();
         }
@@ -116,9 +142,9 @@ public class SocketIOManager {
                 printWriter.println(json.toJSONString());
                 byte buff[] = new byte[1024];
                 while (bis.read(buff, 0, 1024) != -1) {
-                    result=StringUtils.byteToStr(buff);
+                    result = StringUtils.byteToStr(buff);
                     sb.append(result);
-                    Log.d(TAG+" pic address", result+"");
+                    Log.d(TAG + " pic address", result + "");
                     if (bis.available() <= 0) {
                         break;
                     }
@@ -132,13 +158,13 @@ public class SocketIOManager {
         }
 
         @Override
-            protected void onPostExecute(Object o) {
-                if (o.toString().equals("1")) {
-                    modelFinishCallBack.getModelDataCompleted(sb.toString());
-                    if (createdModelFinished!=null) {
-                        createdModelFinished.onCreatedFinished();
-                    }
+        protected void onPostExecute(Object o) {
+            if (o.toString().equals("1")) {
+                modelFinishCallBack.getModelDataCompleted(sb.toString());
+                if (createdModelFinished != null) {
+                    createdModelFinished.onCreatedFinished();
                 }
+            }
         }
     }
 
@@ -156,9 +182,9 @@ public class SocketIOManager {
                 printWriter.println(json.toJSONString());
                 byte buff[] = new byte[1024];
                 while (bis.read(buff, 0, 1024) != -1) {
-                    result=StringUtils.byteToStr(buff);
+                    result = StringUtils.byteToStr(buff);
                     sb.append(result);
-                    Log.d(TAG+" pic address", result+"");
+                    Log.d(TAG + " pic address", result + "");
                     if (bis.available() <= 0) {
                         break;
                     }
@@ -193,7 +219,7 @@ public class SocketIOManager {
             try {
                 printWriter.println(json.toJSONString());
                 return 1;
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 return 0;
             }
@@ -206,6 +232,7 @@ public class SocketIOManager {
             }
         }
     }
+
     private class SendParamWithBackTask extends AsyncTask {
         private JSONObject json;
 
@@ -220,9 +247,9 @@ public class SocketIOManager {
                 printWriter.println(json.toJSONString());
                 byte buff[] = new byte[1024];
                 while (bis.read(buff, 0, 1024) != -1) {
-                    result=StringUtils.byteToStr(buff);
+                    result = StringUtils.byteToStr(buff);
                     sb.append(result);
-                    Log.d(TAG+" paramBack", result+"");
+                    Log.d(TAG + " paramBack", result + "");
                     if (bis.available() <= 0) {
                         break;
                     }
@@ -238,7 +265,7 @@ public class SocketIOManager {
         @Override
         protected void onPostExecute(Object o) {
             if (o.toString().equals("1")) {
-                if (sb.toString().equals("finish")){
+                if (sb.toString().equals("finish")) {
                     createdModelFinished.onCreatedFinished();
                 }
             }
