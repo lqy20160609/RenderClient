@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,9 +65,7 @@ public class LightFragment extends FatherFragment {
         SeekBar seekBar_intensity;
         {
             //绑定
-//            TextView light_Intensity = rootView.findViewById(R.id.text_light_intensity);
             getLight_intensity_show = rootView.findViewById(R.id.light_intensity_show);
-//            TextView light_Color = rootView.findViewById(R.id.text_light_color);
             imageView = rootView.findViewById(R.id.light_color_show);
             seekBar_intensity = rootView.findViewById(R.id.light_intensity_bar);
             recyclerView = rootView.findViewById(R.id.container_button_color);
@@ -97,18 +94,14 @@ public class LightFragment extends FatherFragment {
 
                 imageView.setImageTintList(ColorStateList.valueOf(Color.rgb(mData_rgb.get(0).getProgress(), mData_rgb.get(1).getProgress(), mData_rgb.get(2).getProgress())));
                 this.setLight_color(Color.rgb(mData_rgb.get(0).getProgress(), mData_rgb.get(1).getProgress(), mData_rgb.get(2).getProgress()));
+
             });
 
             LightColorButtonRecyclerViewAdapter.onChangeLightColor((int color) -> {
-                setButtonCheck(mData, color);
-                setRGB(color,mData_rgb);
-                lCBAdapter.notifyDataSetChanged();
+                setRGB(color);
                 lightColorRGBRecyclerViewAdapter.notifyDataSetChanged();
-                imageView.setImageTintList(ColorStateList.valueOf(color));
-                this.setLight_color(color);
-
             });
-
+            //亮度变化
             seekBar_intensity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -125,7 +118,6 @@ public class LightFragment extends FatherFragment {
                 }
             });
         }
-
 
         return rootView;
 
@@ -213,7 +205,7 @@ public class LightFragment extends FatherFragment {
         }
 
     }
-    public void setRGB(int color,List<LightColorRGBItem> mData){
+    public void setRGB(int color){
 
         mData_rgb.get(0).setProgress(Color.red(color));
         mData_rgb.get(1).setProgress(Color.green(color));

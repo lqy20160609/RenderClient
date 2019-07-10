@@ -62,10 +62,8 @@ public class TreeFragment extends FatherFragment {
                 tempRoot.setParent_expanded(false);
                 TreeNodeUtil.changeExpanded(mData, tempRoot, true);
             }
-            mAdapter.notifyItemRangeChanged(mData.indexOf(tempRoot), addposition);
 
-
-//            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("operation_type", 0);
             jsonObject.put("parent", tempRoot.getId());

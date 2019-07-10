@@ -38,11 +38,11 @@ public class LightColorRGBRecyclerViewAdapter extends RecyclerView.Adapter<Light
         //传递数据
         holder.textView.setText(mData.get(position).getRGB());
         holder.seekBar.setProgress(mData.get(position).getProgress());
-        holder.showView.setText(mData.get(position).getProgress()+"");
+        holder.showView.setText(String.valueOf(mData.get(position).getProgress()));
         holder.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                holder.showView.setText(progress+"");
+                holder.showView.setText(String.valueOf(progress));
                 mData.get(position).setProgress(progress);
                 changeLightColor.setChangeLightColor(progress);
             }
@@ -64,9 +64,6 @@ public class LightColorRGBRecyclerViewAdapter extends RecyclerView.Adapter<Light
         return mData.size();
     }
 
-    public LightColorRGBItem getLightColorRGBItem(int position){
-        return mData.get(position)!=null?mData.get(position):null;
-    }
 
     public static class VH extends RecyclerView.ViewHolder{
 
