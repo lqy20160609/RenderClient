@@ -35,15 +35,15 @@ public class RoamingFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.user_walking, container, false);
         initView(rootView);
         // 向服务器发送屏幕宽高
-        img.post(() -> {
-            imgWidth = img.getWidth();
-            imgHeight = img.getHeight();
-            JSONObject json = new JSONObject();
-            json.put("operation_type", 12);
-            json.put("viewWidth", imgWidth);
-            json.put("viewHeight", imgHeight);
-            SocketIOManager.getInstance().sendParam(json);
-        });
+//        img.post(() -> {
+//            imgWidth = img.getWidth();
+//            imgHeight = img.getHeight();
+//            JSONObject json = new JSONObject();
+//            json.put("operation_type", 14);
+//            json.put("viewWidth", imgWidth);
+//            json.put("viewHeight", imgHeight);
+//            SocketIOManager.getInstance().sendParam(json);
+//        });
         initListenr();
 
         // 设置获取漫游图片回调

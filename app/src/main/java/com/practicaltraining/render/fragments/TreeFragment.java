@@ -134,10 +134,7 @@ public class TreeFragment extends FatherFragment {
 
                 @Override
                 public void onUncheck(int groupId) {
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("operation_type", 12);
-                    jsonObject.put("groupId", groupId);
-                    SocketIOManager.getInstance().getNewModelScence(jsonObject);
+
                 }
 
             });
@@ -159,6 +156,10 @@ public class TreeFragment extends FatherFragment {
             public void onClick(View v) {
                 TreeNodeUtil.changAllSelectedState(mData,false);
                 mAdapter.notifyDataSetChanged();
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("operation_type", 12);
+                jsonObject.put("groupId", 0);
+                SocketIOManager.getInstance().getNewModelScence(jsonObject);
             }
         });
 

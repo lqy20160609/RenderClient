@@ -163,7 +163,7 @@ public class ModelChangeFuncFragment extends Fragment {
             imgWidth = img.getWidth();
             imgHeight = img.getHeight();
             JSONObject json = new JSONObject();
-            json.put("operation_type", 12);
+            json.put("operation_type", 14);
             json.put("viewWidth", imgWidth);
             json.put("viewHeight", imgHeight);
             SocketIOManager.getInstance().sendParam(json);
