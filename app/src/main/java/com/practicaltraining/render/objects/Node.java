@@ -1,4 +1,4 @@
-package com.practicaltraining.render.core;
+package com.practicaltraining.render.objects;
 
 import android.graphics.Color;
 

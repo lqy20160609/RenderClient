@@ -1,4 +1,4 @@
-package com.practicaltraining.render.MyWidget;
+package com.practicaltraining.render.views;
 
 import android.content.Context;
 import android.content.res.ColorStateList;

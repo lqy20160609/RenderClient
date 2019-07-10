@@ -2,7 +2,7 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-    <com.practicaltraining.render.MyWidget.CircleColorButton
+    <com.practicaltraining.render.views.CircleColorButton
         android:id="@+id/button_color_light"
         android:layout_width="30dp"
         android:layout_height="30dp"/>

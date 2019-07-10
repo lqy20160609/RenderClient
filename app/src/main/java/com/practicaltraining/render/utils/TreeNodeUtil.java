@@ -4,11 +4,9 @@ import android.graphics.Color;
 import android.util.Log;
 
 
-import com.practicaltraining.render.core.Node;
-import com.practicaltraining.render.fragments.TreeFragment;
+import com.practicaltraining.render.objects.Node;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 

@@ -7,14 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
-import com.practicaltraining.render.MyWidget.CircleColorButton;
+import com.practicaltraining.render.views.CircleColorButton;
 import com.practicaltraining.render.R;
-import com.practicaltraining.render.callbacks.ChangeLightColor;
 import com.practicaltraining.render.callbacks.LightButtonColor;
-import com.practicaltraining.render.callbacks.OnSettingItemClickListener;
 import com.practicaltraining.render.objects.LightColorButtonItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class LightColorButtonRecyclerViewAdapter extends RecyclerView.Adapter<LightColorButtonRecyclerViewAdapter.VH> {
