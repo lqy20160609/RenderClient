@@ -102,7 +102,7 @@ public class TreeFragment extends FatherFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.layout_tree_structure, container, false);
         recyclerView = rootView.findViewById(R.id.container_tree_structure);
-        Button clear= rootView.findViewById(R.id.select_clear);
+        Button clear = rootView.findViewById(R.id.select_clear);
 
         {
             //Item初始化 mData&mData_rgb
@@ -154,7 +154,7 @@ public class TreeFragment extends FatherFragment {
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TreeNodeUtil.changAllSelectedState(mData,false);
+                TreeNodeUtil.changAllSelectedState(mData, false);
                 mAdapter.notifyDataSetChanged();
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("operation_type", 12);
@@ -222,7 +222,6 @@ public class TreeFragment extends FatherFragment {
     public void init(JSONArray jsonArray) {
         //除了Root之外的所有节点
         List<Node> nodes = new ArrayList<>();
-        List<Node> root = new ArrayList<>();
         //解析JSONArray 加载node数据
         try {
 
@@ -240,14 +239,11 @@ public class TreeFragment extends FatherFragment {
             e1.printStackTrace();
         }
 
-        //排序
-        nodes = BaseSort(nodes);
-
-        for (Node n : nodes) {
-
-            Log.d("jsonarray", "nodes after sort: " + n.getId());
-
-        }
+        //桶排序
+        nodes = BucketSort(nodes);
+        //添加Root
+        Node root = new Node(0, -1, 0, "Root", false);
+        nodes.add(0, root);
         //数据初始化
         TreeNodeUtil.initData(nodes);
         for (Node n : nodes) {
@@ -255,62 +251,50 @@ public class TreeFragment extends FatherFragment {
             Log.d("jsonarray", "nodes after initData: " + n.getId());
 
         }
-        //添加到mData
-        //添加ROOT
-        root.add(new Node(StaticVar.meshNum, -1, 0, "Root", false));
-        root.addAll(nodes);
 
-        mData.addAll(root);
+        mData.addAll(nodes);
 
 
     }
 
-    //基类排序
-    public List<Node> BaseSort(List<Node> nodes) {
+
+    //桶排序
+    public List<Node> BucketSort(List<Node> nodes) {
         List<Node> templist = new ArrayList<>();
-        List<List<Node>> temp;
-        Integer[] tempBaseBucket = getBaseBucket(nodes).toArray(new Integer[]{});
+        List<List<Node>> temp = new ArrayList<>();
         //生成相应个数桶
+        Integer[] tempBaseBucket = getBucket(nodes).toArray(new Integer[]{});
+
         int[] baseBucket = new int[tempBaseBucket.length];
         for (int i = 0; i < tempBaseBucket.length; i++) {
-            baseBucket[i] = tempBaseBucket[i].intValue();
+            baseBucket[i] = tempBaseBucket[i];
         }
-        temp = new ArrayList();
+        //初始化
         for (int i = 0; i < baseBucket.length; i++) {
-            Log.d("jsonarray", "BaseSort: " + baseBucket[i]);
             temp.add(new ArrayList<>());
         }
 
-
         //分到不同桶
         for (Node n : nodes) {
-
-            Log.d("jsonarray", "temp Pid: " + n.getPid() + "id" + n.getId());
             temp.get(indexOfBaseBucket(baseBucket, n.getPid())).add(n);
-//            Log.d("jsonarray", "temp:" +temp.get(indexOfBaseBucket(baseBucket, n.getPid())).toString());
         }
+
         //桶内排序
-        for (List<Node> nodes1 : temp) {
+        for (int i = 0; i < temp.size(); i++) {
+            InsertSort(temp.get(i));
 
-            for (int i = 0; i < nodes1.size(); i++) {
-
-            }
         }
-
         //合桶
-        for (List<Node> n : temp) {
-            templist.addAll(n);
-        }
+        TreeNodeUtil.getMergeList(temp, templist, baseBucket);
 
-
-        StaticVar.meshNum = TreeNodeUtil.findMaxId(TreeNodeUtil.findLeafs(nodes)) + 1;
-
+        StaticVar.meshNum = TreeNodeUtil.findMaxId(TreeNodeUtil.findLeafs(templist)) + 1;
+        Log.d(TAG, "meshNum: " + StaticVar.meshNum);
         return templist;
 
     }
 
     //基类篮子
-    public TreeSet<Integer> getBaseBucket(List<Node> nodes) {
+    public TreeSet<Integer> getBucket(List<Node> nodes) {
 
         TreeSet<Integer> treeSet = new TreeSet<>();
 
@@ -325,7 +309,6 @@ public class TreeFragment extends FatherFragment {
     public int indexOfBaseBucket(int[] baseBucket, int x) {
         for (int i = 0; i < baseBucket.length; i++) {
             if (x == baseBucket[i]) {
-                Log.d("jsonarray", "indexOfBaseBucket: " + i);
                 return i;
             }
         }
@@ -359,19 +342,19 @@ public class TreeFragment extends FatherFragment {
         init(jsonArrays);
     }
 
-    public List<Node> InsertSort(List<Node> nodes) {
+    public void InsertSort(List<Node> nodes) {
         if (nodes.size() == 0) {
-            return nodes;
+            return;
         }
         Node current;
-        for (int i = 0; i < nodes.size(); i++){
-            current= nodes.get(i);
-            int j =i;
-//            while(current.getId()<){
-//
-//
-//            }
+        for (int i = 0; i < nodes.size() - 1; i++) {
+            current = nodes.get(i + 1);
+            int j = i;
+            while (j >= 0 && current.getId() < nodes.get(j).getId()) {
+                nodes.set(j + 1, nodes.get(j));
+                j--;
+            }
+            nodes.set(j + 1, current);
         }
-        return  nodes;
     }
 }
