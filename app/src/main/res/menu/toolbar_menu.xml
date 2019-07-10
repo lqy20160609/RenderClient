@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/new_scene"
+        android:title="New Scene" />
+    <item
+        android:id="@+id/save_scene"
+        android:title="Save Scene" />
+    <item
+        android:id="@+id/load_scene"
+        android:title="Load Scene" />
+    <item
+        android:id="@+id/select_render"
+        android:title="Select Render" />
+</menu>

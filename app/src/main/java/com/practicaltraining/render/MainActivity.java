@@ -13,12 +13,16 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +46,7 @@ import com.practicaltraining.render.fragments.TreeFragment;
 import com.practicaltraining.render.utils.StaticVar;
 import com.practicaltraining.render.views.NoScrollViewPager;
 
+import java.lang.reflect.Field;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.ArrayList;
@@ -54,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private CardView cardView;
     private List<Fragment> list;
     private Toolbar toolbar;
-    private boolean canOpenDrawer =true;
+    private boolean canOpenDrawer = true;
     private TextView fpsText;
 
     private FloatingActionButton backButton;
@@ -73,34 +78,35 @@ public class MainActivity extends AppCompatActivity {
     private CloseDrawer closeDrawer = () -> popMeunView.closeDrawers();
     private ModelsFragment modelsFragment;
     private int imgWidth, imgHeight;
+    int whichrender=0;//标识正在使用的render，0=optix，1=vulkan
     //test fragment
 
 
     private void initView() {
         popMeunView = findViewById(R.id.drawer_layout);
         popMeunView.setScrimColor(Color.TRANSPARENT);
-        viewPager=findViewById(R.id.viewpager);
-        tabs=findViewById(R.id.tabs);
+        viewPager = findViewById(R.id.viewpager);
+        tabs = findViewById(R.id.tabs);
 
-        list=new ArrayList<>();
+        list = new ArrayList<>();
         list.add(new ModelChangeFuncFragment());
         list.add(new RoamingFragment());
-        modelChangeFuncAdapter=new ModelChangeFuncAdapter(getSupportFragmentManager(),list);
+        modelChangeFuncAdapter = new ModelChangeFuncAdapter(getSupportFragmentManager(), list);
         viewPager.setAdapter(modelChangeFuncAdapter);
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getText().toString().equals("模型视图")){
+                if (tab.getText().toString().equals("模型视图")) {
                     JSONObject json = new JSONObject();
-                    json.put("operation_type",25);
+                    json.put("operation_type", 25);
                     SocketIOManager.getInstance().sendParam(json);
                     viewPager.setCurrentItem(0);
                     canOpenDrawer = true;
-                }else{
+                } else {
                     JSONObject json = new JSONObject();
-                    json.put("operation_type",25);
+                    json.put("operation_type", 25);
                     SocketIOManager.getInstance().sendParam(json);
                     viewPager.setCurrentItem(1);
                     canOpenDrawer = false;
@@ -119,26 +125,28 @@ public class MainActivity extends AppCompatActivity {
         });
 
         backButton = findViewById(R.id.nav_back_button);
+        //toolbar
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
+        getSupportActionBar().setTitle("RenderClient");
         toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
+        makeActionOverflowMenuShown();
+
         fpsText = findViewById(R.id.main_fps);
         cardView = findViewById(R.id.card_view);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private void initListener() {
+
         // 设置toolBar监听
         toolbar.setNavigationOnClickListener(v -> {
             if (canOpenDrawer) {
                 popMeunView.openDrawer(GravityCompat.START);
-            }else{
-                Toast.makeText(MainActivity.this,"请专心漫游哦",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(MainActivity.this, "请专心漫游哦", Toast.LENGTH_SHORT).show();
             }
         });
-
-
         // 设置返回键监听
         backButton.setOnClickListener(view -> {
             String currentTag = currentFragment.getTag();
@@ -240,10 +248,10 @@ public class MainActivity extends AppCompatActivity {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                runOnUiThread(()->{
-                    if (viewPager.getCurrentItem()==1) {
+                runOnUiThread(() -> {
+                    if (viewPager.getCurrentItem() == 1) {
                         fpsText.setText("fps:" + (StaticVar.currentSecondRoamingFrames * 2));
-                    }else{
+                    } else {
                         fpsText.setText("fps:" + (StaticVar.currentSecondModelFrames * 2));
 
                     }
@@ -255,6 +263,50 @@ public class MainActivity extends AppCompatActivity {
         }, 0, 500);
     }
 
+    //menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int menuItemId = item.getItemId();
+        switch (menuItemId) {
+            case R.id.save_scene:
+                Toast.makeText(MainActivity.this, "Saved.", Toast.LENGTH_SHORT).show();//其实没保存（划掉）
+                return true;
+            case R.id.select_render:
+                String[] renders = new String[]{"Optix", "Vulkan"};//传递数组
+                AlertDialog.Builder selectRenderDialog = new AlertDialog.Builder(this);
+                selectRenderDialog.setTitle("Select Render");
+                selectRenderDialog.setSingleChoiceItems(renders, whichrender, (dialogInterface, i) -> {
+                    whichrender=i;
+                    Toast.makeText(MainActivity.this,renders[i],Toast.LENGTH_SHORT).show();
+                    dialogInterface.dismiss();
+                });
+                /*selectRenderDialog.setPositiveButton("OK", (dialogInterface, i) -> {
+
+                });*/
+                selectRenderDialog.create().show();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void makeActionOverflowMenuShown() {
+        try {
+            ViewConfiguration config = ViewConfiguration.get(this);
+            Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+            if (menuKeyField != null) {
+                menuKeyField.setAccessible(true);
+                menuKeyField.setBoolean(config, false);
+            }
+        } catch (Exception e) {
+        }
+    }
+
     public int getStatusBarHeight(Context context) {
         int result = 0;
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen",
@@ -264,6 +316,4 @@ public class MainActivity extends AppCompatActivity {
         }
         return result;
     }
-
-
 }
