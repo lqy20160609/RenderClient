@@ -30,9 +30,9 @@ public class SocketIOManager {
     private PrintWriter printWriter;
     private String result = "";
     private StringBuilder sb = new StringBuilder();
-    private GetModelPhotoCompleted modelFinishCallBack;
-    private GetRoamingPhotoCompleted roamingPhotoCompleted;
-    private CreatedModelFinished createdModelFinished;
+    private static GetModelPhotoCompleted modelFinishCallBack;
+    private static GetRoamingPhotoCompleted roamingPhotoCompleted;
+    private static CreatedModelFinished createdModelFinished;
     private static int x = 0;
 
     public void setRoamingPhotoCompleted(GetRoamingPhotoCompleted roamingPhotoCompleted) {
@@ -45,8 +45,14 @@ public class SocketIOManager {
 
     //重置连接
     public void resetSocket(int x) {
-        socketIOManagerInstance = null;
+        Log.d(TAG+"resetSocket","reset");
         SocketIOManager.x = x;
+        try{
+            socketIOManagerInstance.socket.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        socketIOManagerInstance = null;
     }
 
     /**
@@ -64,7 +70,7 @@ public class SocketIOManager {
                             socket.getOutputStream(), "UTF-8")), true);
                     bis = new BufferedInputStream(socket.getInputStream());
                 } catch (IOException e) {
-                    Log.d(TAG + " constructor", "连接失败");
+                    Log.d(TAG + " constructoroptix", "连接失败");
                     e.printStackTrace();
                 }
             }).start();
@@ -77,7 +83,7 @@ public class SocketIOManager {
                             socket.getOutputStream(), "UTF-8")), true);
                     bis = new BufferedInputStream(socket.getInputStream());
                 } catch (IOException e) {
-                    Log.d(TAG + " constructor", "连接失败");
+                    Log.d(TAG + " constructorvulkan", "连接失败");
                     e.printStackTrace();
                 }
             }).start();

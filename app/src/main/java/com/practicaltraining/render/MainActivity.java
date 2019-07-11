@@ -7,6 +7,7 @@ package com.practicaltraining.render;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,7 +16,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSONObject;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.practicaltraining.render.activities.HelpActivity;
+
 import com.practicaltraining.render.adapters.ModelChangeFuncAdapter;
 import com.practicaltraining.render.callbacks.ChangeCurrentFragment;
 import com.practicaltraining.render.callbacks.CloseDrawer;
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Fragment> list;
     private Toolbar toolbar;
     private boolean canOpenDrawer = true;
-
+    private ProgressDialog progressDialog;
     private TextView fpsText;
 
     private FloatingActionButton backButton;
@@ -83,9 +84,7 @@ public class MainActivity extends AppCompatActivity {
     };
     private CloseDrawer closeDrawer = () -> popMeunView.closeDrawers();
     private ModelsFragment modelsFragment;
-    private int imgWidth, imgHeight;
-    int whichrender=0;//标识正在使用的render，0=optix，1=vulkan
-    //test fragment
+    private boolean flagVulkan=true;
 
 
     private void initView() {
@@ -192,6 +191,15 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDrawerOpened(View drawerView) {
+                if (StaticVar.shouldClear) {
+                    progressDialog = new ProgressDialog(MainActivity.this,
+                            R.style.AppTheme_Dark_Dialog);
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    progressDialog.setCancelable(false);
+                    progressDialog.setMessage("初始化中...");
+                    progressDialog.show();
+                    treeFragment.reset(progressDialog);
+                }
                 cardView.setRadius(20);
             }
 
@@ -285,19 +293,72 @@ public class MainActivity extends AppCompatActivity {
                 if (StaticVar.currentEngine.equals("Optix")){
                     Toast.makeText(MainActivity.this,"当前已经是Optix引擎了",Toast.LENGTH_SHORT).show();
                 }else{
-                    SocketIOManager.getInstance().resetSocket(1);
+                    SocketIOManager.getInstance().resetSocket(0);
+                    StaticVar.currentEngine = "Optix";
+                    progressDialog = new ProgressDialog(MainActivity.this,
+                            R.style.AppTheme_Dark_Dialog);
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    progressDialog.setCancelable(false);
+                    progressDialog.setMessage("切换中...");
+                    progressDialog.show();
+                    new Thread(() -> {
+                        try {
+                            SocketIOManager.getInstance();
+                            Thread.sleep(1000);
+                            JSONObject json = new JSONObject();
+                            json.put("operation_type", 14);
+                            json.put("viewWidth", StaticVar.imgWidth);
+                            json.put("viewHeight", StaticVar.imgHeight);
+                            SocketIOManager.getInstance().sendParam(json);
+                            StaticVar.meshNum = 0;
+                            StaticVar.node = null;
+                            StaticVar.shouldClear = true;
+                            Thread.sleep(1000);
+                            progressDialog.dismiss();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            progressDialog.dismiss();
+                        }
+                    }).start();
+
                 }
                 return true;
             case R.id.switchTo_vulkan:
                 if (StaticVar.currentEngine.equals("Vulkan")){
                     Toast.makeText(MainActivity.this,"当前已经是Vulkan引擎了",Toast.LENGTH_SHORT).show();
                 }else{
-                    SocketIOManager.getInstance().resetSocket(0);
+                    SocketIOManager.getInstance().resetSocket(1);
+                    StaticVar.currentEngine = "Vulkan";
+                    progressDialog = new ProgressDialog(MainActivity.this,
+                            R.style.AppTheme_Dark_Dialog);
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    progressDialog.setCancelable(false);
+                    progressDialog.setMessage("切换中...");
+                    progressDialog.show();
+                    new Thread(() -> {
+                        try {
+                            SocketIOManager.getInstance();
+                            Thread.sleep(1000);
+                            JSONObject json = new JSONObject();
+                            json.put("operation_type", 14);
+                            json.put("viewWidth", StaticVar.imgWidth);
+                            json.put("viewHeight", StaticVar.imgHeight);
+                            SocketIOManager.getInstance().sendParam(json);
+                            StaticVar.meshNum = 0;
+                            StaticVar.node = null;
+                            StaticVar.shouldClear = true;
+                            Thread.sleep(1000);
+                            progressDialog.dismiss();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            progressDialog.dismiss();
+                        }
+                    }).start();
                 }
                 return true;
             case R.id.setting:
                 return true;
-            case R.id.help:
+            case R.id.help_button:
                 ComponentName helpActivity=new ComponentName(MainActivity.this,HelpActivity.class);
                 Intent intent=new Intent();
                 intent.setComponent(helpActivity);

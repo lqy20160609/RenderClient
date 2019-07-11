@@ -2,7 +2,6 @@ package com.practicaltraining.render.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -69,7 +68,8 @@ public class RegisterActivity extends AppCompatActivity {
                         runOnUiThread(()->{
                             progressDialog = new ProgressDialog(RegisterActivity.this,
                                     R.style.AppTheme_Dark_Dialog);
-                            progressDialog.setIndeterminate(true);
+                            progressDialog.setCanceledOnTouchOutside(false);
+                            progressDialog.setCancelable(false);
                             progressDialog.setMessage("创建账号中...");
                             progressDialog.show();
                             name = nameText.getText().toString();

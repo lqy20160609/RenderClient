@@ -2,6 +2,7 @@ package com.practicaltraining.render.fragments;
 
 import android.app.Dialog;
 
+import android.app.ProgressDialog;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -41,6 +43,15 @@ public class TreeFragment extends FatherFragment {
     private TreeStructureAdapter mAdapter;
     public String TAG = "jsonarray";
 
+    public void reset(ProgressDialog progressDialog) {
+        mData.clear();
+        init();
+        mAdapter.notifyDataSetChanged();
+        StaticVar.shouldClear = false;
+        progressDialog.dismiss();
+
+    }
+
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (!hidden && (ModelsFragment.meshCount != 0) && StaticVar.node != null) {
@@ -57,7 +68,6 @@ public class TreeFragment extends FatherFragment {
 //            mData.add(TreeNodeUtil.getLastAddPostion(mData, tempRoot), obj);
             mData.add(addposition,obj);
             tempRoot.getChildren().add(obj);
-
             if (tempRoot.isParent_expanded()) {
                 tempRoot.setParent_expanded(false);
                 TreeNodeUtil.changeExpanded(mData, tempRoot, true);
@@ -87,6 +97,7 @@ public class TreeFragment extends FatherFragment {
                         progressDialog.dismiss();
                     }
                     timer.cancel();
+                    StaticVar.node = null;
                 }
             }, 0, 3000);
         }
@@ -149,20 +160,14 @@ public class TreeFragment extends FatherFragment {
             recyclerView.setItemAnimator(animator);
 
 
-//            setItemSpace(recyclerView, 15, 15, 0, 0);
-
-
         }
-        clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TreeNodeUtil.changAllSelectedState(mData, false);
-                mAdapter.notifyDataSetChanged();
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("operation_type", 12);
-                jsonObject.put("groupId", 0);
-                SocketIOManager.getInstance().getNewModelScence(jsonObject);
-            }
+        clear.setOnClickListener(v -> {
+            TreeNodeUtil.changAllSelectedState(mData, false);
+            mAdapter.notifyDataSetChanged();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("operation_type", 12);
+            jsonObject.put("groupId", 0);
+            SocketIOManager.getInstance().getNewModelScence(jsonObject);
         });
 
         return rootView;
@@ -235,10 +240,8 @@ public class TreeFragment extends FatherFragment {
                 }
             }
 
-        } catch (JSONException e) {
+        } catch (JSONException | NumberFormatException e) {
             e.printStackTrace();
-        } catch (NumberFormatException e1) {
-            e1.printStackTrace();
         }
 
         //桶排序
@@ -359,4 +362,6 @@ public class TreeFragment extends FatherFragment {
             nodes.set(j + 1, current);
         }
     }
+
+
 }

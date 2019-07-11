@@ -162,6 +162,8 @@ public class ModelChangeFuncFragment extends Fragment {
         img.post(() -> {
             imgWidth = img.getWidth();
             imgHeight = img.getHeight();
+            StaticVar.imgHeight = imgHeight;
+            StaticVar.imgWidth = imgWidth;
             JSONObject json = new JSONObject();
             json.put("operation_type", 14);
             json.put("viewWidth", imgWidth);

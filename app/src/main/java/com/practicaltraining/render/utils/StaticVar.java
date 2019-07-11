@@ -21,4 +21,6 @@ public class StaticVar {
     public static int lightR,lightG,lightB;
     public static int currentSecondModelFrames = 0;
     public static int currentSecondRoamingFrames = 0;
+    public static int imgWidth,imgHeight;
+    public static boolean shouldClear = false;
 }
