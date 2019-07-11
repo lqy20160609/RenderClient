@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -293,6 +294,7 @@ public class MainActivity extends AppCompatActivity {
                 if (StaticVar.currentEngine.equals("Optix")){
                     Toast.makeText(MainActivity.this,"当前已经是Optix引擎了",Toast.LENGTH_SHORT).show();
                 }else{
+
                     SocketIOManager.getInstance().resetSocket(0);
                     StaticVar.currentEngine = "Optix";
                     progressDialog = new ProgressDialog(MainActivity.this,
@@ -320,7 +322,6 @@ public class MainActivity extends AppCompatActivity {
                             progressDialog.dismiss();
                         }
                     }).start();
-
                 }
                 return true;
             case R.id.switchTo_vulkan:

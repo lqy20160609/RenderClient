@@ -15,6 +15,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="Skip"
+        android:background="@android:color/transparent"
+        android:textColor="@color/aluminum"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

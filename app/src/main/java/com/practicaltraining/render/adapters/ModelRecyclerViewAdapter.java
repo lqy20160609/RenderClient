@@ -39,6 +39,7 @@ public class ModelRecyclerViewAdapter extends RecyclerView.Adapter<ModelRecycler
         TextView name;
         ImageView icon;
         ConstraintLayout background;
+        TextView mesh;
 
         public VH(View v) {
             //this is a view holder
@@ -46,6 +47,7 @@ public class ModelRecyclerViewAdapter extends RecyclerView.Adapter<ModelRecycler
             this.name=itemView.findViewById(R.id.names);
             this.icon=itemView.findViewById(R.id.imgs);
             this.background=itemView.findViewById(R.id.recyclerItem);
+            this.mesh = itemView.findViewById(R.id.mesh_name);
         }
     }
     private List<ModelItem> mData;//Adapter接收list作为参数
@@ -69,6 +71,7 @@ public class ModelRecyclerViewAdapter extends RecyclerView.Adapter<ModelRecycler
     public void onBindViewHolder(@NonNull VH holder, final int position) {
         //传递数据
         holder.name.setText(mData.get(position).getName());
+        holder.mesh.setText(mData.get(position).getMeshName());
         holder.icon.setImageResource(mData.get(position).getId());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

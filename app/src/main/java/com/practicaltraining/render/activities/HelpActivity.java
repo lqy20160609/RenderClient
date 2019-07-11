@@ -31,6 +31,7 @@ public class HelpActivity extends Activity {
     SparseArray<View> PageCache=new SparseArray<View>();
     private List<Fragment> helpList;
     private Button helpSkip;
+    int pagenum=3;//总页数
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public class HelpActivity extends Activity {
         }
         @Override
         public int getCount() {
-            return 3;
+            return pagenum;
         }
 
         @Override
@@ -111,18 +112,8 @@ public class HelpActivity extends Activity {
 
         @Override
         public void onPageSelected(int position) {
-            switch (position){
-                case 0:
-                    helpPageNum.setText("1/3");
-                    break;
-                case 1:
-                    helpPageNum.setText("2/3");
-                    break;
-                case 2:
-                    helpPageNum.setText("3/3");
-                    break;
-            }
-
+            int positionplusone=position+1;
+            helpPageNum.setText(positionplusone+"/"+pagenum);
         }
 
         @Override

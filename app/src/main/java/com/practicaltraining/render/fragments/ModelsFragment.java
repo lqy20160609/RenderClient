@@ -32,6 +32,7 @@ public class ModelsFragment extends FatherFragment {
     private RecyclerView modelsResources;
     private List<ModelItem> modelRes = new ArrayList<>();
     private String[] modelNames;
+    private String[] meshNames;
     private int[] modelImgsId;
     private int positionClick = -1;
     public static int meshCount = 0;
@@ -48,10 +49,11 @@ public class ModelsFragment extends FatherFragment {
         //列表添加数据
         modelSubmitButton = rootView.findViewById(R.id.modelSubmitButton);
 
-        modelNames = new String[]{"0", "1", "2","3","4","5"};//物体的名字
-        modelImgsId = new int[]{R.drawable.star};//物体缩略图
-        for (String modelName : modelNames) {
-            modelRes.add(new ModelItem(modelName, modelImgsId[0]));
+        modelNames = new String[]{"0", "1", "2","3","4","5"};//物体的编号
+        meshNames = new String[]{"牛", "大脑", "兔子","狗头人","头","lucy"};
+        modelImgsId = new int[]{R.drawable.cow,R.drawable.brain,R.drawable.bunny,R.drawable.goutouren,R.drawable.head,R.drawable.lucy};//物体缩略图
+        for (int i =0;i<6;i++){
+            modelRes.add(new ModelItem(modelNames[i], modelImgsId[i],meshNames[i]));
         }
         //设置recyclerlist参数
         modelsResources = rootView.findViewById(R.id.resources);
@@ -71,6 +73,7 @@ public class ModelsFragment extends FatherFragment {
             } else {
                 meshCount++;
                 meshName = resadap.getModelItem(positionClick).getName();
+                Toast.makeText(getActivity(),meshName,Toast.LENGTH_LONG).show();
                 changeCurrentFragment.changeCurrentFragment(TreeFragment.class.getName());
                 FragmentSwitchManager.getInstance().switchToPreFragmentByTag(getActivity().getSupportFragmentManager(),
                         ModelsFragment.class.getName(), TreeFragment.class.getName());

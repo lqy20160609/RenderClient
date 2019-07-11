@@ -4,9 +4,19 @@ public class ModelItem {
     //规定Resource类用于Arraylist
     private String name;
     private int id;
-    public ModelItem(String name, int id){
+    private String meshName;
+    public ModelItem(String name, int id,String meshName){
         this.name=name;
         this.id=id;
+        this.meshName = meshName;
+    }
+
+    public String getMeshName() {
+        return meshName;
+    }
+
+    public void setMeshName(String meshName) {
+        this.meshName = meshName;
     }
 
     public String getName() {
