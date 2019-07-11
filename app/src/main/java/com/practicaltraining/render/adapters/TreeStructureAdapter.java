@@ -10,11 +10,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.johnkil.print.PrintView;
 import com.practicaltraining.render.R;
 import com.practicaltraining.render.callbacks.CheckListener;
 import com.practicaltraining.render.callbacks.OnItemLongClickListener;
 import com.practicaltraining.render.callbacks.TreeFragToModelFrag;
+import com.practicaltraining.render.core.SocketIOManager;
 import com.practicaltraining.render.objects.Node;
 import com.practicaltraining.render.utils.StaticVar;
 import com.practicaltraining.render.utils.TreeNodeUtil;
@@ -120,8 +122,14 @@ public class TreeStructureAdapter extends RecyclerView.Adapter<TreeStructureAdap
         //删除
         holder.delete.setOnClickListener(view -> {
             int lastPosition = TreeNodeUtil.getLastPosition(mData, node);
-
             TreeNodeUtil.removeNode(mData, node);
+            int sonId = node.getId();
+            int parentId = node.getPid();
+            JSONObject json = new JSONObject();
+            json.put("operation_type",1);
+            json.put("groupId",sonId);
+            json.put("parent",parentId);
+            SocketIOManager.getInstance().getNewModelScence(json);
             if (holder.getAdapterPosition() == 0) {
                 notifyItemRangeRemoved(1, lastPosition);
             } else {
