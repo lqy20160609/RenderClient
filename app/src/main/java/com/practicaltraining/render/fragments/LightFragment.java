@@ -59,90 +59,64 @@ public class LightFragment extends FatherFragment {
 
         View rootView = inflater.inflate(R.layout.setting_light, container, false);
         lCBAdapter = new LightColorButtonRecyclerViewAdapter(mData);
-        lightColorRGBRecyclerViewAdapter =new LightColorRGBRecyclerViewAdapter(mData_rgb);
+        lightColorRGBRecyclerViewAdapter = new LightColorRGBRecyclerViewAdapter(mData_rgb);
         RecyclerView recyclerView;
         RecyclerView recyclerView_rgb;
         SeekBar seekBar_intensity;
-        {
-            //绑定
-            getLight_intensity_show = rootView.findViewById(R.id.light_intensity_show);
-            imageView = rootView.findViewById(R.id.light_color_show);
-            seekBar_intensity = rootView.findViewById(R.id.light_intensity_bar);
-            recyclerView = rootView.findViewById(R.id.container_button_color);
-            recyclerView_rgb = rootView.findViewById(R.id.light_color_rgb);
-        }
 
-        {
-            //Item初始化 mData&mData_rgb
-            init();
-            //添加manager&adapter
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 5);
-            recyclerView.setLayoutManager(gridLayoutManager);
-            recyclerView.setAdapter(lCBAdapter);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-            recyclerView_rgb.setLayoutManager(linearLayoutManager);
-            recyclerView_rgb.setAdapter(lightColorRGBRecyclerViewAdapter);
+        //绑定
+        getLight_intensity_show = rootView.findViewById(R.id.light_intensity_show);
+        imageView = rootView.findViewById(R.id.light_color_show);
+        seekBar_intensity = rootView.findViewById(R.id.light_intensity_bar);
+        recyclerView = rootView.findViewById(R.id.container_button_color);
+        recyclerView_rgb = rootView.findViewById(R.id.light_color_rgb);
 
-            //设置两个recyclerview的Item间距
-            setItemSpace(recyclerView, 30, 30, 30, 0);
-            setItemSpace(recyclerView_rgb, 30, 0, 0, 0);
-        }
+        //Item初始化 mData&mData_rgb
+        init();
+        //添加manager&adapter
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 5);
+        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setAdapter(lCBAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView_rgb.setLayoutManager(linearLayoutManager);
+        recyclerView_rgb.setAdapter(lightColorRGBRecyclerViewAdapter);
 
-        {
-            //颜色随button_color或者rgb_bar动态变化，保存color数据
-            LightColorRGBRecyclerViewAdapter.onChangeLightColor((int progress) -> {
+        //设置两个recyclerview的Item间距
+        setItemSpace(recyclerView, 30, 30, 30, 0);
+        setItemSpace(recyclerView_rgb, 30, 0, 0, 0);
 
-                imageView.setImageTintList(ColorStateList.valueOf(Color.rgb(mData_rgb.get(0).getProgress(), mData_rgb.get(1).getProgress(), mData_rgb.get(2).getProgress())));
-                this.setLight_color(Color.rgb(mData_rgb.get(0).getProgress(), mData_rgb.get(1).getProgress(), mData_rgb.get(2).getProgress()));
+        //颜色随button或者rgb动态变化，并保存color数据
+        //rgb变化
+        LightColorRGBRecyclerViewAdapter.onChangeLightColor((int progress) -> {
 
-            });
+            imageView.setImageTintList(ColorStateList.valueOf(Color.rgb(mData_rgb.get(0).getProgress(), mData_rgb.get(1).getProgress(), mData_rgb.get(2).getProgress())));
+            this.setLight_color(Color.rgb(mData_rgb.get(0).getProgress(), mData_rgb.get(1).getProgress(), mData_rgb.get(2).getProgress()));
 
-            LightColorButtonRecyclerViewAdapter.onChangeLightColor((int color) -> {
-                setRGB(color);
-                lightColorRGBRecyclerViewAdapter.notifyDataSetChanged();
-            });
-            //亮度变化
-            seekBar_intensity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    getLight_intensity_show.setText(String.valueOf(progress));
-                    setLight_intensity(progress);
-                }
+        });
+        //按钮与rgb同步
+        LightColorButtonRecyclerViewAdapter.onChangeLightColor((int color) -> {
+            setRGB(color);
+            lightColorRGBRecyclerViewAdapter.notifyDataSetChanged();
+        });
+        //亮度变化
+        seekBar_intensity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                getLight_intensity_show.setText(String.valueOf(progress));
+                setLight_intensity(progress);
+            }
 
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-                }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                }
-            });
-        }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
         return rootView;
 
-    }
-
-    //按钮和rgb_edit数据初始化
-    public void init() {
-        mData.add(new LightColorButtonItem(Color.parseColor("#FFFF0000"), false));
-        mData.add(new LightColorButtonItem(Color.parseColor("#FFFF6600"), false));
-        mData.add(new LightColorButtonItem(Color.parseColor("#FFFFFF00"), false));
-        mData.add(new LightColorButtonItem(Color.parseColor("#FF00CC00"), false));
-        mData.add(new LightColorButtonItem(Color.parseColor("#FF669999"), false));
-        mData.add(new LightColorButtonItem(Color.parseColor("#FF0066CC"), false));
-        mData.add(new LightColorButtonItem(Color.parseColor("#FF990099"), false));
-        mData.add(new LightColorButtonItem(Color.parseColor("#FF7C7C7C"), false));
-        if (mData_rgb.size() >= 3) {
-            imageView.setImageTintList(ColorStateList.valueOf(Color.rgb(mData_rgb.get(0).getProgress(), mData_rgb.get(1).getProgress(), mData_rgb.get(2).getProgress())));
-
-        } else {
-            mData_rgb.add(0, new LightColorRGBItem("R", 255));
-            mData_rgb.add(1, new LightColorRGBItem("G", 255));
-            mData_rgb.add(2, new LightColorRGBItem("B", 255));
-            imageView.setImageTintList(ColorStateList.valueOf(Color.rgb(mData_rgb.get(0).getProgress(), mData_rgb.get(1).getProgress(), mData_rgb.get(2).getProgress())));
-
-        }
     }
 
     //设置Item间距
@@ -189,26 +163,33 @@ public class LightFragment extends FatherFragment {
 
     }
 
-    public void setButtonCheck(List<LightColorButtonItem> mData, int color) {
-        for (LightColorButtonItem lCB : mData) {
-            if(color==lCB.getColor()){
-                lCB.setChecked(true);
 
-            }
-            if (lCB.isChecked() && color != lCB.getColor()) {
-
-                lCB.setChecked(false);
-
-            }
-
-
-        }
-
-    }
-    public void setRGB(int color){
+    public void setRGB(int color) {
 
         mData_rgb.get(0).setProgress(Color.red(color));
         mData_rgb.get(1).setProgress(Color.green(color));
         mData_rgb.get(2).setProgress(Color.blue(color));
+    }
+
+    //按钮和rgb_edit数据初始化
+    public void init() {
+        mData.add(new LightColorButtonItem(Color.parseColor("#FFFF0000"), false));
+        mData.add(new LightColorButtonItem(Color.parseColor("#FFFF6600"), false));
+        mData.add(new LightColorButtonItem(Color.parseColor("#FFFFFF00"), false));
+        mData.add(new LightColorButtonItem(Color.parseColor("#FF00CC00"), false));
+        mData.add(new LightColorButtonItem(Color.parseColor("#FF669999"), false));
+        mData.add(new LightColorButtonItem(Color.parseColor("#FF0066CC"), false));
+        mData.add(new LightColorButtonItem(Color.parseColor("#FF990099"), false));
+        mData.add(new LightColorButtonItem(Color.parseColor("#FF7C7C7C"), false));
+        if (mData_rgb.size() >= 3) {
+            imageView.setImageTintList(ColorStateList.valueOf(Color.rgb(mData_rgb.get(0).getProgress(), mData_rgb.get(1).getProgress(), mData_rgb.get(2).getProgress())));
+
+        } else {
+            mData_rgb.add(0, new LightColorRGBItem("R", 255));
+            mData_rgb.add(1, new LightColorRGBItem("G", 255));
+            mData_rgb.add(2, new LightColorRGBItem("B", 255));
+            imageView.setImageTintList(ColorStateList.valueOf(Color.rgb(mData_rgb.get(0).getProgress(), mData_rgb.get(1).getProgress(), mData_rgb.get(2).getProgress())));
+
+        }
     }
 }

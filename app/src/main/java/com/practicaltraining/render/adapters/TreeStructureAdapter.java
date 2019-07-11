@@ -3,6 +3,7 @@ package com.practicaltraining.render.adapters;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,12 +25,18 @@ import com.practicaltraining.render.utils.TreeNodeUtil;
 import java.util.List;
 
 public class TreeStructureAdapter extends RecyclerView.Adapter<TreeStructureAdapter.VH> {
+    //数据
     private List<Node> mData;
-    public String TAG = "Debug";
+    //接口
     private TreeFragToModelFrag treeFragToModelFrag;
     private CheckListener checkListener;
     private OnItemLongClickListener onItemLongClickListener;
 
+    //初始化
+    public TreeStructureAdapter(List<Node> mData) {
+        this.mData = mData;
+    }
+    //接口
     public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
         this.onItemLongClickListener = onItemLongClickListener;
     }
@@ -40,10 +47,6 @@ public class TreeStructureAdapter extends RecyclerView.Adapter<TreeStructureAdap
 
     public void setTreeFragToModelFrag(TreeFragToModelFrag treeFragToModelFrag) {
         this.treeFragToModelFrag = treeFragToModelFrag;
-    }
-
-    public TreeStructureAdapter(List<Node> mData) {
-        this.mData = mData;
     }
 
     @NonNull
@@ -60,7 +63,9 @@ public class TreeStructureAdapter extends RecyclerView.Adapter<TreeStructureAdap
         final Node node = mData.get(holder.getAdapterPosition());
         //设置缩进
         holder.itemView.setPadding(80 * node.getLevel(), 0, 0, 0);
+        //设置文本内容
         holder.tvValue.setText(node.getText());
+
         //设置checked状态
         holder.checkBox.setIconText(node.isSelected() ? R.string.ic_check_circle : R.string.ic_check_circle_outline_blank);
         holder.tvValue.setTextColor(node.isSelected() ? Color.RED : Color.GRAY);
@@ -69,6 +74,7 @@ public class TreeStructureAdapter extends RecyclerView.Adapter<TreeStructureAdap
         } else {
             holder.arrowView.setIconText(R.string.ic_arrow_drop_down);
         }
+
         //设置展开
         if (!node.isExpanded()) {
             setVisibility(holder.itemView, false);
@@ -92,6 +98,7 @@ public class TreeStructureAdapter extends RecyclerView.Adapter<TreeStructureAdap
             notifyItemRangeChanged(holder.getAdapterPosition(), size);
         });
 
+        //长按切换fragment
         holder.itemView.setOnLongClickListener(view -> {
 
             StaticVar.currentItemId = node.getId();
@@ -100,7 +107,7 @@ public class TreeStructureAdapter extends RecyclerView.Adapter<TreeStructureAdap
         });
 
 
-        //选中
+        //设置选中状态
         holder.checkBox.setOnClickListener(view -> {
 
             if (!node.isSelected()) {
@@ -113,7 +120,7 @@ public class TreeStructureAdapter extends RecyclerView.Adapter<TreeStructureAdap
             notifyDataSetChanged();
         });
 
-        //添加
+        //添加，切换页面，在fragment中完成添加
         holder.add.setOnClickListener(view -> {
             treeFragToModelFrag.switchToModel();
             StaticVar.node = node;
@@ -122,6 +129,7 @@ public class TreeStructureAdapter extends RecyclerView.Adapter<TreeStructureAdap
         //删除
         holder.delete.setOnClickListener(view -> {
             int lastPosition = TreeNodeUtil.getLastPosition(mData, node);
+            Log.d("lastPosition", ""+lastPosition);
             TreeNodeUtil.removeNode(mData, node);
             int sonId = node.getId();
             int parentId = node.getPid();
@@ -133,7 +141,9 @@ public class TreeStructureAdapter extends RecyclerView.Adapter<TreeStructureAdap
             if (holder.getAdapterPosition() == 0) {
                 notifyItemRangeRemoved(1, lastPosition);
             } else {
-                notifyItemRangeRemoved(holder.getAdapterPosition(), lastPosition - holder.getAdapterPosition() + 1);
+                int itemCount = lastPosition - holder.getAdapterPosition() + 1;
+                Log.d("itemCount", ""+itemCount);
+                notifyItemRangeRemoved(holder.getAdapterPosition(), itemCount);
 
             }
         });

@@ -17,7 +17,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.practicaltraining.render.R;
 import com.practicaltraining.render.adapters.TreeStructureAdapter;
@@ -25,6 +24,7 @@ import com.practicaltraining.render.callbacks.CheckListener;
 import com.practicaltraining.render.core.FragmentSwitchManager;
 import com.practicaltraining.render.core.SocketIOManager;
 import com.practicaltraining.render.objects.Node;
+import com.practicaltraining.render.utils.LoadDataUtil;
 import com.practicaltraining.render.utils.StaticVar;
 import com.practicaltraining.render.utils.TreeNodeUtil;
 
@@ -33,15 +33,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.TreeSet;
 
 
 public class TreeFragment extends FatherFragment {
     private List<Node> mData = new ArrayList<>();
-    private RecyclerView recyclerView;
     private Dialog progressDialog;
     private TreeStructureAdapter mAdapter;
-    public String TAG = "jsonarray";
+    private String TAG = "TreeFragment";
 
     public void reset(ProgressDialog progressDialog) {
         mData.clear();
@@ -64,10 +62,15 @@ public class TreeFragment extends FatherFragment {
             String meshName = ModelsFragment.meshName;
             StaticVar.meshNum++;
             Node obj = new Node(StaticVar.meshNum, tempRoot.getId(), tempRoot.getLevel() + 1, meshName, tempRoot.isSelected());
-            int addposition =TreeNodeUtil.getLastAddPostion(mData, tempRoot);
-//            mData.add(TreeNodeUtil.getLastAddPostion(mData, tempRoot), obj);
-            mData.add(addposition,obj);
-            tempRoot.getChildren().add(obj);
+
+            obj.getParentList().addAll(tempRoot.getParentList());
+            obj.getParentList().add(0,tempRoot);
+            int addposition = TreeNodeUtil.getLastAddPosition(mData, tempRoot);
+
+            Log.d(TAG, "onHiddenChanged: "+obj.getParent().getId());
+            mData.add(addposition, obj);
+            TreeNodeUtil.getNode(mData,tempRoot).getChildren().add(obj);
+
             if (tempRoot.isParent_expanded()) {
                 tempRoot.setParent_expanded(false);
                 TreeNodeUtil.changeExpanded(mData, tempRoot, true);
@@ -112,12 +115,12 @@ public class TreeFragment extends FatherFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.layout_tree_structure, container, false);
-        recyclerView = rootView.findViewById(R.id.container_tree_structure);
+        RecyclerView recyclerView = rootView.findViewById(R.id.container_tree_structure);
         Button clear = rootView.findViewById(R.id.select_clear);
         {
             //Item初始化 mData&mData_rgb
             init();
-//            test();
+//            test1();
             //添加manager&adapter
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
             recyclerView.setLayoutManager(linearLayoutManager);
@@ -174,12 +177,6 @@ public class TreeFragment extends FatherFragment {
 
     }
 
-    //数据初始化
-    public void init() {
-        Node root = new Node(StaticVar.meshNum, -1, 0, "Root", false);
-        mData.add(root);
-
-    }
 
     //设置Item间距
     public class RecyclerViewSpacesItemDecoration extends RecyclerView.ItemDecoration {
@@ -191,7 +188,7 @@ public class TreeFragment extends FatherFragment {
         private static final String LEFT_DECORATION = "left_decoration";
         private static final String RIGHT_DECORATION = "right_decoration";
 
-        protected RecyclerViewSpacesItemDecoration(HashMap<String, Integer> mSpaceValueMap) {
+        RecyclerViewSpacesItemDecoration(HashMap<String, Integer> mSpaceValueMap) {
             this.mSpaceValueMap = mSpaceValueMap;
         }
 
@@ -225,101 +222,14 @@ public class TreeFragment extends FatherFragment {
 
     }
 
-    //初始化
-    public void init(JSONArray jsonArray) {
-        //除了Root之外的所有节点
-        List<Node> nodes = new ArrayList<>();
-        //解析JSONArray 加载node数据
-        try {
-
-            for (int i = 0; i < jsonArray.size(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                if (jsonObject != null) {
-                    nodes.add(new Node(Integer.parseInt(jsonObject.getString("son")), Integer.parseInt(jsonObject.getString("parent"))));
-
-                }
-            }
-
-        } catch (JSONException | NumberFormatException e) {
-            e.printStackTrace();
-        }
-
-        //桶排序
-        nodes = BucketSort(nodes);
-        //添加Root
-        Node root = new Node(0, -1, 0, "Root", false);
-        nodes.add(0, root);
-        //数据初始化
-        TreeNodeUtil.initData(nodes);
-        for (Node n : nodes) {
-
-            Log.d("jsonarray", "nodes after initData: " + n.getId());
-
-        }
-
-        mData.addAll(nodes);
+    //数据初始化
+    public void init() {
+        Node root = new Node(StaticVar.meshNum, -1, 0, "Root", false);
+        mData.add(root);
 
 
     }
 
-
-    //桶排序
-    public List<Node> BucketSort(List<Node> nodes) {
-        List<Node> templist = new ArrayList<>();
-        List<List<Node>> temp = new ArrayList<>();
-        //生成相应个数桶
-        Integer[] tempBaseBucket = getBucket(nodes).toArray(new Integer[]{});
-
-        int[] baseBucket = new int[tempBaseBucket.length];
-        for (int i = 0; i < tempBaseBucket.length; i++) {
-            baseBucket[i] = tempBaseBucket[i];
-        }
-        //初始化
-        for (int i = 0; i < baseBucket.length; i++) {
-            temp.add(new ArrayList<>());
-        }
-
-        //分到不同桶
-        for (Node n : nodes) {
-            temp.get(indexOfBaseBucket(baseBucket, n.getPid())).add(n);
-        }
-
-        //桶内排序
-        for (int i = 0; i < temp.size(); i++) {
-            InsertSort(temp.get(i));
-
-        }
-        //合桶
-        TreeNodeUtil.getMergeList(temp, templist, baseBucket);
-
-        StaticVar.meshNum = TreeNodeUtil.findMaxId(TreeNodeUtil.findLeafs(templist)) + 1;
-        Log.d(TAG, "meshNum: " + StaticVar.meshNum);
-        return templist;
-
-    }
-
-    //基类篮子
-    public TreeSet<Integer> getBucket(List<Node> nodes) {
-
-        TreeSet<Integer> treeSet = new TreeSet<>();
-
-        for (Node n : nodes) {
-            treeSet.add(n.getPid());
-        }
-
-        return treeSet;
-    }
-
-    //position
-    public int indexOfBaseBucket(int[] baseBucket, int x) {
-        for (int i = 0; i < baseBucket.length; i++) {
-            if (x == baseBucket[i]) {
-                return i;
-            }
-        }
-        return -1;
-
-    }
 
     public void test() {
         JSONArray jsonArrays = new JSONArray();
@@ -344,24 +254,21 @@ public class TreeFragment extends FatherFragment {
         jsonObject4.put("son", 4);
         jsonArrays.add(jsonObject4);
         Log.d("jsonarray:", "" + jsonArrays.toString());
-        init(jsonArrays);
+        LoadDataUtil.loadData(mData,jsonArrays);
     }
 
-    public void InsertSort(List<Node> nodes) {
-        if (nodes.size() == 0) {
-            return;
+    public void test1() {
+        List<Node> nodes = new ArrayList<>();
+        nodes.add(new Node(1, 0));
+        nodes.add(new Node(2, 0));
+        nodes.add(new Node(3, 2));
+        nodes.add(new Node(5, 1));
+        nodes.add(new Node(4, 1));
+        nodes.add(new Node(8, 2));
+        for (Node node : nodes) {
+            Log.d("test1: ", node.getId() + "");
         }
-        Node current;
-        for (int i = 0; i < nodes.size() - 1; i++) {
-            current = nodes.get(i + 1);
-            int j = i;
-            while (j >= 0 && current.getId() < nodes.get(j).getId()) {
-                nodes.set(j + 1, nodes.get(j));
-                j--;
-            }
-            nodes.set(j + 1, current);
-        }
+        LoadDataUtil.loadNodeData(mData,nodes);
     }
-
 
 }

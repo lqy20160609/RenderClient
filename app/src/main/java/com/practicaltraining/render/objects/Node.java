@@ -19,14 +19,51 @@ public class Node {
     private int id;
     private int pid;
     private List<Node> children;
+    private List<Node> parent_list;
     private int level;
     private String text;
     private boolean selected;
     private boolean expanded;
     private int color;
     private boolean parent_expanded;
-    public int getColor() {
-        return color;
+
+
+    public Node(int id, int pid) {
+        this.id = id;
+        this.pid = pid;
+        this.parent_list = new ArrayList<>();
+        this.children = new ArrayList<>();
+        this.selected = false;
+        this.expanded = true;
+        this.color = Color.GRAY;
+        this.parent_expanded = false;
+    }
+
+    public Node(int id, int pid, int level, String text, boolean selected) {
+        this.id = id;
+        this.pid = pid;
+        this.level = level;
+        this.text = text;
+        this.parent_list = new ArrayList<>();
+        this.children = new ArrayList<>();
+        this.selected = selected;
+        this.expanded = true;
+        this.color = Color.GRAY;
+        this.parent_expanded = false;
+    }
+    public Node(int id, int pid, int level, List<Node> parent_list, String text, boolean selected) {
+        this.id = id;
+        this.pid = pid;
+        this.level = level;
+        this.text = text;
+        this.parent_list = parent_list;
+        this.children = new ArrayList<>();
+        this.selected = selected;
+        this.expanded = true;
+        this.color = Color.GRAY;
+        this.parent_expanded = false;
+
+
     }
 
     public boolean isParent_expanded() {
@@ -37,33 +74,20 @@ public class Node {
         this.parent_expanded = parent_expanded;
     }
 
+    public int getColor() {
+        return color;
+    }
+
     public void setColor(int color) {
         this.color = color;
     }
 
-    public Node(int id, int pid, int level, String text, boolean selected) {
-        this.id = id;
-        this.pid = pid;
-        this.level = level;
-        this.text = text;
-        this.children = new ArrayList<>();
-        this.selected =selected;
-        this.expanded = true;
-        this.color = Color.GRAY;
-        this.parent_expanded = false;
-
-
+    public List<Node> getParentList() {
+        return parent_list;
     }
-    public Node(int id,int pid){
-        this.id = id;
-        this.pid = pid;
-//        this.level = level;
-//        this.text = text;
-        this.children = new ArrayList<>();
-        this.selected =false;
-        this.expanded = true;
-        this.color = Color.GRAY;
-        this.parent_expanded = false;
+
+    public void setParentList(List<Node> parent) {
+        this.parent_list = parent;
     }
 
     public int getLevel() {
@@ -122,10 +146,11 @@ public class Node {
         this.expanded = expanded;
     }
 
+    public Node getParent() {
 
-    public void addNode(Node node) {
-        this.children.add(node);
+        return this.getParentList() != null ? this.getParentList().get(0) : null;
     }
+
 
 
 }

@@ -8,36 +8,9 @@
 
 
     <LinearLayout
-        android:id="@+id/light_color"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/text_light_color"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="颜色效果"
-            android:textSize="15sp" />
-
-        <ImageView
-            android:id="@+id/light_color_show"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/anc_ic_circle_color_stroke"
-
-            />
-
-
-
-    </LinearLayout>
-    <LinearLayout
         android:id="@+id/light_intensity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/light_color"
         android:layout_marginTop="15dp">
 
         <TextView
@@ -68,29 +41,52 @@
             android:layout_toRightOf="@+id/light_intensity_show" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/light_color"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
 
+        android:layout_below="@+id/light_intensity"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_light_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="颜色效果"
+            android:textSize="15sp" />
+
+        <ImageView
+            android:id="@+id/light_color_show"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/anc_ic_circle_color_stroke"
+
+            />
+
+
+
+    </LinearLayout>
 
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/container_button_color"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/light_intensity"
+        android:layout_below="@+id/light_color"
         android:layout_marginTop="10dp"
-        android:overScrollMode="never">
-
-    </android.support.v7.widget.RecyclerView>
+        android:overScrollMode="never" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/light_color_rgb"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/container_button_color"
-        android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
-        android:overScrollMode="never">
-
-    </android.support.v7.widget.RecyclerView>
+        android:layout_marginTop="10dp"
+        android:overScrollMode="never" />
 
 
 </RelativeLayout>
