@@ -360,10 +360,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.setting:
                 return true;
             case R.id.help_button:
+                //因内存分配问题请在加载模型之前启动
                 ComponentName helpActivity=new ComponentName(MainActivity.this,HelpActivity.class);
                 Intent intent=new Intent();
                 intent.setComponent(helpActivity);
                 startActivity(intent);
+                return true;
+            case R.id.exit:
+                System.exit(0);
                 return true;
         }
         return super.onOptionsItemSelected(item);
