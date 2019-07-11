@@ -7,7 +7,6 @@
     >
     <Button
         android:id="@+id/select_clear"
-
         android:layout_width="wrap_content"
         android:layout_height="25dp"
         android:text="Clear Selected"
@@ -21,6 +20,7 @@
         android:id="@+id/container_tree_structure"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="5dp"
         >
     </android.support.v7.widget.RecyclerView>
 

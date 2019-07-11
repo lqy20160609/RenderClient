@@ -53,15 +53,15 @@ public class TreeFragment extends FatherFragment {
             String meshName = ModelsFragment.meshName;
             StaticVar.meshNum++;
             Node obj = new Node(StaticVar.meshNum, tempRoot.getId(), tempRoot.getLevel() + 1, meshName, tempRoot.isSelected());
-            mData.add(TreeNodeUtil.getLastAddPostion(mData, tempRoot), obj);
+            int addposition =TreeNodeUtil.getLastAddPostion(mData, tempRoot);
+//            mData.add(TreeNodeUtil.getLastAddPostion(mData, tempRoot), obj);
+            mData.add(addposition,obj);
             tempRoot.getChildren().add(obj);
 
             if (tempRoot.isParent_expanded()) {
                 tempRoot.setParent_expanded(false);
                 TreeNodeUtil.changeExpanded(mData, tempRoot, true);
             }
-//            mAdapter.notifyItemRangeChanged(holder.getAdapterPosition(), size);
-
 
             mAdapter.notifyDataSetChanged();
             JSONObject jsonObject = new JSONObject();
@@ -144,7 +144,7 @@ public class TreeFragment extends FatherFragment {
 
             DefaultItemAnimator animator = new DefaultItemAnimator();
             //设置动画时间
-            animator.setAddDuration(100);
+            animator.setAddDuration(300);
             animator.setRemoveDuration(100);
             recyclerView.setItemAnimator(animator);
 

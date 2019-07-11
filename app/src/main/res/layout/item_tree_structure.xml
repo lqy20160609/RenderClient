@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/selectableItemBackground"
-    android:minHeight= "45dp">
+    android:minHeight= "35dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textSize="20sp" />
+                android:textSize="15sp" />
 
         </LinearLayout>
 
@@ -50,19 +50,20 @@
 
             <com.github.johnkil.print.PrintView
                 android:id="@+id/node_checked"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="3dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="5dp"
                 app:iconColor="#03A9F4"
                 app:iconFont="fonts/material-icon-font.ttf"
-                app:iconSize="25dp"
+                app:iconSize="20dp"
                 app:iconText="@string/ic_check_circle_outline_blank" />
 
             <com.github.johnkil.print.PrintView
                 android:id="@+id/node_add"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="3dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
                 app:iconColor="#99cc00"
                 app:iconFont="fonts/material-icon-font.ttf"
                 app:iconSize="25dp"
@@ -71,9 +72,9 @@
 
             <com.github.johnkil.print.PrintView
                 android:id="@+id/node_delete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="3dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
                 app:iconColor="#ff4444"
                 app:iconFont="fonts/material-icon-font.ttf"
                 app:iconSize="25dp"

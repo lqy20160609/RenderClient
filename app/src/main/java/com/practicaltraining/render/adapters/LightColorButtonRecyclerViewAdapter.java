@@ -2,6 +2,7 @@ package com.practicaltraining.render.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,11 @@ public class LightColorButtonRecyclerViewAdapter extends RecyclerView.Adapter<Li
         holder.circleColorButton.setChecked(mData.get(position).isChecked());
         holder.circleColorButton.setColor(mData.get(position).getColor());
         holder.itemView.setOnClickListener(view -> {
+            if(holder.circleColorButton.isChecked()) {
+                return;
+            }
+            setButtonCheck(holder.circleColorButton.getColor());
+            notifyDataSetChanged();
             changeLightColor.setChangeLightColorButton(holder.circleColorButton.getColor());
         });
     }
@@ -50,9 +56,6 @@ public class LightColorButtonRecyclerViewAdapter extends RecyclerView.Adapter<Li
         return mData.size();
     }
 
-//    public LightColorButtonItem getLightColorItem(int position){
-//        return mData.get(position)!=null?mData.get(position):null;
-//    }
 
     public static class VH extends RecyclerView.ViewHolder{
 
@@ -63,5 +66,16 @@ public class LightColorButtonRecyclerViewAdapter extends RecyclerView.Adapter<Li
             circleColorButton=itemView.findViewById(R.id.button_color_light);
 
         }
+    }
+    public void setButtonCheck(int color) {
+        for (LightColorButtonItem lCB : mData) {
+            if(color==lCB.getColor()){
+                lCB.setChecked(true);
+            }
+            if (lCB.isChecked() && color != lCB.getColor()) {
+                lCB.setChecked(false);
+            }
+        }
+
     }
 }
