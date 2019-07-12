@@ -21,7 +21,7 @@
         android:title="设置" />
     <item
         android:id="@+id/help_button"
-        android:title="帮助(添加模型前启动)" />
+        android:title="帮助" />
     <item
         android:id="@+id/exit"
         android:title="退出" />
