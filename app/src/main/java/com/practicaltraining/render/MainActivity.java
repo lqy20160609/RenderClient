@@ -268,16 +268,16 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 runOnUiThread(()->{
                     if (viewPager.getCurrentItem()==1) {
-                        fpsText.setText("fps:" + (StaticVar.currentSecondRoamingFrames));
+                        fpsText.setText("fps:" + (StaticVar.currentSecondRoamingFrames*2));
                     }else{
-                        fpsText.setText("fps:" + (StaticVar.currentSecondModelFrames));
+                        fpsText.setText("fps:" + (StaticVar.currentSecondModelFrames*2));
                     }
+                    StaticVar.currentSecondRoamingFrames = 0;
+                    StaticVar.currentSecondModelFrames = 0;
                 });
-                StaticVar.currentSecondRoamingFrames = 0;
-                StaticVar.currentSecondModelFrames = 0;
 
             }
-        }, 0, 1000);
+        }, 0, 500);
     }
 
     //menu
