@@ -1,5 +1,6 @@
 package com.practicaltraining.render.fragments;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,6 +35,7 @@ public class ModelsFragment extends FatherFragment {
     private String[] modelNames;
     private String[] meshNames;
     private int[] modelImgsId;
+    private ModelRecyclerViewAdapter resadap;
     private int positionClick = -1;
     public static int meshCount = 0;
     public static String meshName = "";
@@ -48,7 +50,6 @@ public class ModelsFragment extends FatherFragment {
         final View rootView = inflater.inflate(R.layout.resources_fragment, container, false);
         //列表添加数据
         modelSubmitButton = rootView.findViewById(R.id.modelSubmitButton);
-
         modelNames = new String[]{"0", "1", "2","3","4","5"};//物体的编号
         meshNames = new String[]{"牛", "大脑", "兔子","狗头人","头","lucy"};
         modelImgsId = new int[]{R.drawable.cow,R.drawable.brain,R.drawable.bunny,R.drawable.goutouren,R.drawable.head,R.drawable.lucy};//物体缩略图
@@ -62,7 +63,7 @@ public class ModelsFragment extends FatherFragment {
                 OrientationHelper.VERTICAL, false);
         reslayout.canScrollVertically();
         modelsResources.setLayoutManager(reslayout);
-        ModelRecyclerViewAdapter resadap = new ModelRecyclerViewAdapter(modelRes);
+        resadap = new ModelRecyclerViewAdapter(modelRes,getActivity());
         modelsResources.setAdapter(resadap);
         resadap.setOnSettingItemClickListener(position -> {
             positionClick = position;
@@ -80,5 +81,27 @@ public class ModelsFragment extends FatherFragment {
             }
         });
         return rootView;
+    }
+    public void changeLists(String state, ProgressDialog progressDialog){
+        modelRes.clear();
+        if (state.equals("Optix")){
+            modelNames = new String[]{"0", "1", "2","3","4","5"};//物体的编号
+            meshNames = new String[]{"牛", "大脑", "兔子","狗头人","头","lucy"};
+            modelImgsId = new int[]{R.drawable.cow,R.drawable.brain,R.drawable.bunny,R.drawable.goutouren,R.drawable.head,R.drawable.lucy};//物体缩略图
+            for (int i =0;i<6;i++){
+                modelRes.add(new ModelItem(modelNames[i], modelImgsId[i],meshNames[i]));
+            }
+        }
+        else{
+            modelNames = new String[]{"0", "1", "2","3","4"};//物体的编号
+            meshNames = new String[]{"0", "1", "2","3","4"};
+            modelImgsId = new int[]{R.drawable.p0,R.drawable.p1,R.drawable.p2,R.drawable.p3,R.drawable.p4};
+            for (int i =0;i<5;i++){
+                modelRes.add(new ModelItem(modelNames[i], modelImgsId[i],meshNames[i]));
+            }
+        }
+        resadap.notifyDataSetChanged();
+        progressDialog.dismiss();
+        StaticVar.shouldClear = false;
     }
 }

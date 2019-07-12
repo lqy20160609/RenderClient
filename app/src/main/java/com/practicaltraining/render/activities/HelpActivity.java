@@ -3,6 +3,8 @@ package com.practicaltraining.render.activities;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,9 +30,11 @@ public class HelpActivity extends Activity {
     TextView helpText;//引导文字
     ImageView helpImage;//引导图片
     TextView helpPageNum;//标识页码
+    private BitmapFactory.Options opts;
     SparseArray<View> PageCache=new SparseArray<View>();
     private List<Fragment> helpList;
     private Button helpSkip;
+    private Bitmap bitmap;
     int pagenum=3;//总页数
 
     @Override
@@ -78,15 +82,25 @@ public class HelpActivity extends Activity {
                 helpImage=page.findViewById(R.id.help_image);
                 switch (position){
                     case 0:
+                        opts = new BitmapFactory.Options();
+                        opts.inSampleSize= 2;
+                        bitmap =BitmapFactory.decodeResource(getResources(),R.drawable.renderhelp, opts);
+                        helpImage.setImageBitmap(bitmap);
                         helpText.setText("点击左上角弹出Drawer，右上角弹出菜单\n"
                                 +"点击Tab切换操作模式\n"+"滑动视图进行模型操作");
                         break;
                     case 1:
-                        helpImage.setImageResource(R.drawable.renderhelp2);
+                        opts = new BitmapFactory.Options();
+                        opts.inSampleSize= 2;
+                        bitmap =BitmapFactory.decodeResource(getResources(),R.drawable.renderhelp2, opts);
+                        helpImage.setImageBitmap(bitmap);
                         helpText.setText("长按项目进行设置，点击圆圈进行模型选择\n，+添加模型，×删除模型");
                         break;
                     case 2:
-                        helpImage.setImageResource(R.drawable.renderhelp3);
+                        opts = new BitmapFactory.Options();
+                        opts.inSampleSize= 2;
+                        bitmap =BitmapFactory.decodeResource(getResources(),R.drawable.renderhelp3, opts);
+                        helpImage.setImageBitmap(bitmap);
                         helpText.setText("选择一个模型，点击确认按钮完成添加");
                         break;
                     default:

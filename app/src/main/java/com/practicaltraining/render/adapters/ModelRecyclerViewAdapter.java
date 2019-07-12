@@ -1,5 +1,8 @@
 package com.practicaltraining.render.adapters;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -24,8 +27,9 @@ import java.util.List;
 
 public class ModelRecyclerViewAdapter extends RecyclerView.Adapter<ModelRecyclerViewAdapter.VH> {
     private OnSettingItemClickListener onSettingItemClickListener;
-
+    private Context context;
     private List<Boolean> isClicked;
+    private Bitmap bitmap;
 
     public List<Boolean> getIsClicked() {
         return isClicked;
@@ -51,12 +55,13 @@ public class ModelRecyclerViewAdapter extends RecyclerView.Adapter<ModelRecycler
         }
     }
     private List<ModelItem> mData;//Adapter接收list作为参数
-    public ModelRecyclerViewAdapter(List<ModelItem>lis){
+    public ModelRecyclerViewAdapter(List<ModelItem>lis,Context c){
         this.mData =lis;
         isClicked=new ArrayList<>();
         for(int i=0;i<lis.size();i++){
             isClicked.add(false);
         }
+        context = c;
     }
     @NonNull
     @Override
@@ -72,7 +77,10 @@ public class ModelRecyclerViewAdapter extends RecyclerView.Adapter<ModelRecycler
         //传递数据
         holder.name.setText(mData.get(position).getName());
         holder.mesh.setText(mData.get(position).getMeshName());
-        holder.icon.setImageResource(mData.get(position).getId());
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inSampleSize= 4;
+        bitmap =BitmapFactory.decodeResource(context.getResources(),mData.get(position).getId(), opts);
+        holder.icon.setImageBitmap(bitmap);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

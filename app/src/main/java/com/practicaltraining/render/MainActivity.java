@@ -200,7 +200,9 @@ public class MainActivity extends AppCompatActivity {
                     progressDialog.setMessage("初始化中...");
                     progressDialog.show();
                     treeFragment.reset(progressDialog);
+                    modelsFragment.changeLists(StaticVar.currentEngine,progressDialog);
                 }
+
                 cardView.setRadius(20);
             }
 
@@ -315,6 +317,7 @@ public class MainActivity extends AppCompatActivity {
                             StaticVar.meshNum = 0;
                             StaticVar.node = null;
                             StaticVar.shouldClear = true;
+                            //modelsFragment.changeLists(StaticVar.currentEngine);
                             Thread.sleep(1000);
                             progressDialog.dismiss();
                         }catch (Exception e){
@@ -348,6 +351,7 @@ public class MainActivity extends AppCompatActivity {
                             StaticVar.meshNum = 0;
                             StaticVar.node = null;
                             StaticVar.shouldClear = true;
+                            //modelsFragment.changeLists(StaticVar.currentEngine);
                             Thread.sleep(1000);
                             progressDialog.dismiss();
                         }catch (Exception e){

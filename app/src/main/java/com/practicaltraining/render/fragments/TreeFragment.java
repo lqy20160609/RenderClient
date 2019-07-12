@@ -45,7 +45,6 @@ public class TreeFragment extends FatherFragment {
         mData.clear();
         init();
         mAdapter.notifyDataSetChanged();
-        StaticVar.shouldClear = false;
         progressDialog.dismiss();
 
     }
