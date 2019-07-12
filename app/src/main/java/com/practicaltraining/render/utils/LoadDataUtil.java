@@ -163,6 +163,7 @@ public class LoadDataUtil {
     parent_list: 桶的数据，有序存放的pid数组
     temp：临时数据 代替 list每个节点 进入递归
      */
+
     private static void getBaseMergeList(List<List<Node>> list, List<Node> nodes, int[] parent_list, List<Node> temp) {
 
         for (Node node : temp) {
