@@ -49,7 +49,7 @@ public class TreeFragment extends FatherFragment {
         progressDialog.dismiss();
 
     }
-
+    //隐藏再次显现时调用，model页面返回数据后，实现添加操作，并完成数据传输
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (!hidden && (ModelsFragment.meshCount != 0) && StaticVar.node != null) {
@@ -58,25 +58,36 @@ public class TreeFragment extends FatherFragment {
                     progressDialog.dismiss();
                 }
             });
+            //获取所记录的node
             Node tempRoot = StaticVar.node;
+            //获取从model中获取的model name
             String meshName = ModelsFragment.meshName;
+            //id++
             StaticVar.meshNum++;
+            //生成新的Node
             Node obj = new Node(StaticVar.meshNum, tempRoot.getId(), tempRoot.getLevel() + 1, meshName, tempRoot.isSelected());
-
+            //obj 父节点链表初始化
             obj.getParentList().addAll(tempRoot.getParentList());
             obj.getParentList().add(0,tempRoot);
+            //获取当前需要添加节点的位置
             int addposition = TreeNodeUtil.getLastAddPosition(mData, tempRoot);
-
             Log.d(TAG, "onHiddenChanged: "+obj.getParent().getId());
+
+            //mData、tempRoot 数据更新
             mData.add(addposition, obj);
             TreeNodeUtil.getNode(mData,tempRoot).getChildren().add(obj);
 
+            //如果当前节点处于未展开状态，完成添加操作，自动展开
             if (tempRoot.isParent_expanded()) {
+                //设置当前节点不再是展开节点的父节点
                 tempRoot.setParent_expanded(false);
+                //设置所有子节点展开
                 TreeNodeUtil.changeExpanded(mData, tempRoot, true);
             }
-
+            //数据更新
             mAdapter.notifyDataSetChanged();
+
+            //传输数据
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("operation_type", 0);
             jsonObject.put("parent", tempRoot.getId());
@@ -118,14 +129,15 @@ public class TreeFragment extends FatherFragment {
         RecyclerView recyclerView = rootView.findViewById(R.id.container_tree_structure);
         Button clear = rootView.findViewById(R.id.select_clear);
         {
-            //Item初始化 mData&mData_rgb
-            init();
-//            test1();
+
+            init(); // 初始化不含Load数据
+//            test1(); //关于Load的测试
             //添加manager&adapter
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
             recyclerView.setLayoutManager(linearLayoutManager);
             mAdapter = new TreeStructureAdapter(mData);
-            //添加操作，切换到module，长按切换到setting
+
+            //添加操作，切换到module，长按切换到setting界面
             mAdapter.setTreeFragToModelFrag(() -> {
                 FragmentSwitchManager.getInstance().switchToNextFragmentByTag(getActivity().getSupportFragmentManager(),
                         TreeFragment.class.getName(), ModelsFragment.class.getName());
@@ -137,7 +149,10 @@ public class TreeFragment extends FatherFragment {
                         TreeFragment.class.getName(), SettingFragment.class.getName());
                 changeCurrentFragment.changeCurrentFragment(SettingFragment.class.getName());
             });
-            //check操作监听
+
+
+
+            //check操作监听、传输数据
             mAdapter.setCheckListener(new CheckListener() {
                 @Override
                 public void onCheck(int groupId) {
@@ -155,7 +170,7 @@ public class TreeFragment extends FatherFragment {
 
             });
             recyclerView.setAdapter(mAdapter);
-
+            //设置初始动画
             DefaultItemAnimator animator = new DefaultItemAnimator();
             //设置动画时间
             animator.setAddDuration(300);
@@ -164,6 +179,7 @@ public class TreeFragment extends FatherFragment {
 
 
         }
+        //清空所有选中状态
         clear.setOnClickListener(v -> {
             TreeNodeUtil.changAllSelectedState(mData, false);
             mAdapter.notifyDataSetChanged();
@@ -230,7 +246,7 @@ public class TreeFragment extends FatherFragment {
 
     }
 
-
+    // Load JSONArray数据测试
     public void test() {
         JSONArray jsonArrays = new JSONArray();
         JSONObject jsonObject = new JSONObject();
@@ -256,7 +272,7 @@ public class TreeFragment extends FatherFragment {
         Log.d("jsonarray:", "" + jsonArrays.toString());
         LoadDataUtil.loadData(mData,jsonArrays);
     }
-
+    //Load 解析后的Node数据测试
     public void test1() {
         List<Node> nodes = new ArrayList<>();
         nodes.add(new Node(1, 0));

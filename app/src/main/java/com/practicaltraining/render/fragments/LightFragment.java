@@ -86,15 +86,16 @@ public class LightFragment extends FatherFragment {
         setItemSpace(recyclerView_rgb, 30, 0, 0, 0);
 
         //颜色随button或者rgb动态变化，并保存color数据
-        //rgb变化
-        LightColorRGBRecyclerViewAdapter.onChangeLightColor((int progress) -> {
 
+        LightColorRGBRecyclerViewAdapter.onChangeLightColor((int progress) -> {
+            //更新rgb bar，在rgb中完成对imageView的更新
             imageView.setImageTintList(ColorStateList.valueOf(Color.rgb(mData_rgb.get(0).getProgress(), mData_rgb.get(1).getProgress(), mData_rgb.get(2).getProgress())));
             this.setLight_color(Color.rgb(mData_rgb.get(0).getProgress(), mData_rgb.get(1).getProgress(), mData_rgb.get(2).getProgress()));
 
         });
-        //按钮与rgb同步
+        //button与rgb同步
         LightColorButtonRecyclerViewAdapter.onChangeLightColor((int color) -> {
+            //点击button后， 传递button color 更新rgb bar，然后在rgb中完成对imageView的更新
             setRGB(color);
             lightColorRGBRecyclerViewAdapter.notifyDataSetChanged();
         });
@@ -171,7 +172,7 @@ public class LightFragment extends FatherFragment {
         mData_rgb.get(2).setProgress(Color.blue(color));
     }
 
-    //按钮和rgb_edit数据初始化
+    //button和rgb_edit数据初始化
     public void init() {
         mData.add(new LightColorButtonItem(Color.parseColor("#FFFF0000"), false));
         mData.add(new LightColorButtonItem(Color.parseColor("#FFFF6600"), false));

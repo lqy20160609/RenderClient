@@ -8,8 +8,9 @@ import java.util.List;
 public class Node {
     /*
     id: 唯一标识
-    pid: 父节点
-    children:子节点
+    pid: 父节点Id
+    children:子节点链表
+    parent_list：父节点链表
     level: 当前层数
     text: 内容
     selected： 是否是选中状态
@@ -51,6 +52,8 @@ public class Node {
         this.color = Color.GRAY;
         this.parent_expanded = false;
     }
+
+    //废弃，parent_list没有初始化，容易出Bug
     public Node(int id, int pid, int level, List<Node> parent_list, String text, boolean selected) {
         this.id = id;
         this.pid = pid;

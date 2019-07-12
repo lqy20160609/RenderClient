@@ -2,7 +2,6 @@ package com.practicaltraining.render.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +35,7 @@ public class LightColorButtonRecyclerViewAdapter extends RecyclerView.Adapter<Li
     }
     @Override
     public void onBindViewHolder(@NonNull VH holder, final int position) {
-        //传递数据
+
         holder.circleColorButton.setChecked(mData.get(position).isChecked());
         holder.circleColorButton.setColor(mData.get(position).getColor());
         holder.itemView.setOnClickListener(view -> {

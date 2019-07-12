@@ -148,27 +148,36 @@ public class LoadDataUtil {
 
     //合并数据list
     private static void getMergeList(List<List<Node>> list, List<Node> nodes, int[] parent_list) {
-
+        //判断当前数据是否合法
         if (list.isEmpty() || list.get(0).isEmpty() || list.get(0).get(0) == null || list.get(0).get(0).getPid() != 0) {
             Log.d(TAG, "getMergeList: data of getMergeList is empty");
             return;
         }
+        //合并数据list
         getBaseMergeList(list, nodes, parent_list, list.get(0));
     }
-
+    //合并数据list 递归
+    /*
+    list: 初始数据 List<List<Node>>
+    nodes：归并后的数据
+    parent_list: 桶的数据，有序存放的pid数组
+    temp：临时数据 代替 list每个节点 进入递归
+     */
     private static void getBaseMergeList(List<List<Node>> list, List<Node> nodes, int[] parent_list, List<Node> temp) {
 
         for (Node node : temp) {
             nodes.add(node);
             if (hasChildren(parent_list, node.getId())) {
                 int indexOfList = findChildrenList(node.getId(), parent_list);
+
                 Log.d(TAG, "indexOfList :" + indexOfList);
+
                 getBaseMergeList(list, nodes, parent_list, list.get(indexOfList));
             }
         }
 
     }
-
+    // 是否有子节点
     private static boolean hasChildren(int[] parent_list, int id) {
         for (int n : parent_list) {
             if (id == n) {
@@ -177,7 +186,7 @@ public class LoadDataUtil {
         }
         return false;
     }
-
+    //通过当前节点ID，找到子节点对应的list中的节点链表
     private static int findChildrenList(int id, int[] parent_list) {
         if (parent_list.length == 0 || id < 0) {
             return -1;
@@ -205,7 +214,13 @@ public class LoadDataUtil {
         return parent_id;
     }
 
-    //初始化Load数据
+    /*
+    初始化Load 生成的Nodes数据
+    setParentList: 初始化当前节点的父节点链表
+    setLevel: 初始化当前节点的Level
+    setChildren: 初始化当前节点的子节点链表
+    setText: 当前内容初始化(需要与后台沟通 更新方法)
+     */
     public static void initData(List<Node> nodes) {
 
         for (Node n : nodes) {
@@ -220,6 +235,7 @@ public class LoadDataUtil {
 
     }
     //对parent_list初始化
+    //因为父节点Id 小于当前节点Id 直接反向遍历找父节点
     private static List<Node> initParentList(List<Node> nodes, Node node) {
         List<Node> parent_list = new ArrayList<>();
         int id = node.getPid();
@@ -232,7 +248,7 @@ public class LoadDataUtil {
         return parent_list;
     }
 
-    //初始化当前节点Level
+    //初始化当前节点Level，根据父节点个数获取，初始Root Level为0
     private static int getLevel(Node node) {
         int level =node.getParentList().size();
         Log.d(TAG, "initData: setLevel " +level);
@@ -255,6 +271,8 @@ public class LoadDataUtil {
 
 
     //读取load数据中最大Id
+    //也可以通过先初始化数据后，获取所有叶子饥节点，在叶子节点内得到最大值Id，为所求最大值Id
+
     public static int findMaxId(List<Node> nodes) {
         int maxId = nodes.get(0).getId();
 

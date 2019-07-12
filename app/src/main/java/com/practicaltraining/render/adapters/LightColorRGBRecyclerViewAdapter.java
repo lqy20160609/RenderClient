@@ -35,7 +35,7 @@ public class LightColorRGBRecyclerViewAdapter extends RecyclerView.Adapter<Light
     }
     @Override
     public void onBindViewHolder(@NonNull VH holder, final int position) {
-        //传递数据
+
         holder.textView.setText(mData.get(position).getRGB());
         holder.seekBar.setProgress(mData.get(position).getProgress());
         holder.showView.setText(String.valueOf(mData.get(position).getProgress()));

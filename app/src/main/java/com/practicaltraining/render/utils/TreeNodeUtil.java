@@ -15,29 +15,31 @@ public class TreeNodeUtil {
 
     //删除节点与其子节点
     public static void removeNode(List<Node> nodes, Node node) {
+        //删除所有子节点
         removeAllChildNode(nodes, node);
 
+        //删除当前节点
+        Log.d(TAG, "removeNode: " + node.getId());
         if (node.getId() == 0) {
             node.getChildren().clear();
         } else {
             if (node.getParent() != null) {
-                Log.d(TAG, "removeNode: " + node.getId());
-
-
                 Node parent = node.getParent();
                 node.getParentList().clear();
-
-                parent.getChildren().remove(getNodePosition(parent.getChildren(),node));
+                parent.getChildren().remove(getNodePosition(parent.getChildren(), node));
                 nodes.remove(node);
 
+            } else {
+                Log.d(TAG, "remove current node， parent of current node not found");
             }
         }
         for (Node n : nodes) {
-            Log.d(TAG, "Node: " + n.getId());
+            Log.d(TAG, "CurrentNodeList: " + n.getId());
         }
 
     }
 
+    //通过nodeId 来获取nodes中的node
     public static Node getNode(List<Node> nodes, Node node) {
 
         for (Node n : nodes) {
@@ -47,10 +49,12 @@ public class TreeNodeUtil {
         }
         return node;
     }
+
+    ////通过nodeId 来获取nodes中的node的位置
     public static int getNodePosition(List<Node> nodes, Node node) {
 
-        for(int i = 0;i<nodes.size();i++){
-            if(nodes.get(i).getId()==node.getId()){
+        for (int i = 0; i < nodes.size(); i++) {
+            if (nodes.get(i).getId() == node.getId()) {
                 return i;
             }
 
@@ -74,10 +78,11 @@ public class TreeNodeUtil {
         if (node.isSelected()) {
             return;
         }
-
+        //清空所有选中状态
         changAllSelectedState(nodes, false);
+        //设置所有子节点选中状态
         changeChildSelectedState(node, true);
-
+        //设置当前节点选中状态
         node.setSelected(selected);
         node.setColor(selected ? Color.RED : Color.GRAY);
 
@@ -134,7 +139,7 @@ public class TreeNodeUtil {
 
     }
 
-    //父节点
+    //父节点选中状态
     private static void changeParentSelected(Node node, boolean selected) {
         Node parent = node;
         while ((parent = parent.getParent()) != null) {
@@ -144,7 +149,7 @@ public class TreeNodeUtil {
     }
 
 
-    //是否子节点被选中
+    //是否子节点全部选中
     public static boolean isChildrenSelected(Node node) {
 
         for (Node child : node.getChildren()) {
@@ -155,7 +160,7 @@ public class TreeNodeUtil {
         return true;
     }
 
-    //设置展开状态
+    //设置展开状态 递归
     public static void changeExpanded(List<Node> nodes, Node node, boolean expanded) {
         for (Node n : nodes) {
             if (n.getPid() == node.getId()) {
@@ -183,19 +188,27 @@ public class TreeNodeUtil {
     //添加节点的位置
     public static int getLastAddPosition(List<Node> nodes, Node node) {
         int last_position = getLastPosition(nodes, node) + 1;
+
         Log.d(TAG, "getLastAddPosition: " + last_position);
+
         return last_position;
     }
 
     //获得选中节点的最后一个叶子节点位置
     public static int getLastPosition(List<Node> nodes, Node node) {
+
+//        return nodes.indexOf(getLastNode(node));
+
+
         Node lastNode = getLastNode(node);
 
         for (int i = 0; i < nodes.size(); i++) {
+
             if (lastNode.getId() == nodes.get(i).getId()) {
                 return i;
             }
         }
+        Log.d(TAG, "getLastPosition: lastNode not found" );
         return -1;
     }
 
@@ -203,9 +216,11 @@ public class TreeNodeUtil {
     private static Node getLastNode(Node node) {
         Node lastNode = null;
         lastNode = node;
+
         while (!lastNode.getChildren().isEmpty()) {
             lastNode = lastNode.getChildren().get(lastNode.getChildren().size() - 1);
         }
+
         Log.d(TAG, "getLastNode: " + lastNode.getId());
         return lastNode;
 
@@ -219,6 +234,7 @@ public class TreeNodeUtil {
                 maxId = nodes.get(i).getId();
             }
         }
+        Log.d(TAG, "MaxId: " + maxId);
         return maxId;
     }
 
